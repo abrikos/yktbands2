@@ -1,7 +1,6 @@
-//import {User} from "~/server/models.BAK/user.model";
+import {User} from "~/server/models/user.model";
 
 export default defineEventHandler(async (event) => {
-    //const users = await User.find();
-    console.log('ZZZZZZ',event.context.cloudflare)
-    return "{users}";
+    const users = await User.find();
+    return users;
 });
