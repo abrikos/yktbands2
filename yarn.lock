@@ -912,7 +912,7 @@
     which "^3.0.1"
     ws "^8.14.2"
 
-"@nuxt/kit@3.8.2", "@nuxt/kit@^3.6.2", "@nuxt/kit@^3.7.4", "@nuxt/kit@^3.8.0", "@nuxt/kit@^3.8.1", "@nuxt/kit@^3.8.2":
+"@nuxt/kit@3.8.2", "@nuxt/kit@^3.2.3", "@nuxt/kit@^3.6.2", "@nuxt/kit@^3.7.4", "@nuxt/kit@^3.8.0", "@nuxt/kit@^3.8.1", "@nuxt/kit@^3.8.2":
   version "3.8.2"
   resolved "https://registry.yarnpkg.com/@nuxt/kit/-/kit-3.8.2.tgz#f4548f3449d2566dbd2febe2b84f47060f7c668c"
   integrity sha512-LrXCm8hAkw+zpX8teUSD/LqXRarlXjbRiYxDkaqw739JSHFReWzBFgJbojsJqL4h1XIEScDGGOWiEgO4QO1sMg==
@@ -2282,6 +2282,11 @@ character-parser@^2.2.0:
   dependencies:
     is-regex "^1.0.3"
 
+charenc@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/charenc/-/charenc-0.0.2.tgz#c0a1d2f3a7092e03774bfa83f14c0fc5790a8667"
+  integrity sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==
+
 "chokidar@>=3.0.0 <4.0.0", chokidar@^3.5.1, chokidar@^3.5.3:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.5.3.tgz#1cf37c8707b932bd1af1ae22c0432e2acd1903bd"
@@ -2480,6 +2485,11 @@ cross-spawn@^7.0.0, cross-spawn@^7.0.3:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
     which "^2.0.1"
+
+crypt@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/crypt/-/crypt-0.0.2.tgz#88d7ff7ec0dfb86f713dc87bbb42d044d3e6c41b"
+  integrity sha512-mCxBlsHFYh9C+HVpiEacem8FEBnMXgU9gy4zmNC+SXAZNB/1idgp/aulFJ4FgCi7GPEVbfyng092GqL2k2rmow==
 
 css-declaration-sorter@^6.3.1:
   version "6.4.1"
@@ -3507,6 +3517,11 @@ is-binary-path@~2.1.0:
   dependencies:
     binary-extensions "^2.0.0"
 
+is-buffer@~1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-1.1.6.tgz#efaa2ea9daa0d7ab2ea13a97b2b8ad51fefbe8be"
+  integrity sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w==
+
 is-builtin-module@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/is-builtin-module/-/is-builtin-module-3.2.1.tgz#f03271717d8654cfcaf07ab0463faa3571581169"
@@ -3948,6 +3963,15 @@ make-fetch-happen@^13.0.0:
     negotiator "^0.6.3"
     promise-retry "^2.0.1"
     ssri "^10.0.0"
+
+md5@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/md5/-/md5-2.3.0.tgz#c3da9a6aae3a30b46b7b0c349b87b110dc3bda4f"
+  integrity sha512-T1GITYmFaKuO91vxyoQMFETst+O71VUPEU3ze5GNzDm0OWdP8v1ziTaAEPUr/3kLsY3Sftgz242A1SetQiDL7g==
+  dependencies:
+    charenc "0.0.2"
+    crypt "0.0.2"
+    is-buffer "~1.1.6"
 
 mdn-data@2.0.28:
   version "2.0.28"
@@ -4464,6 +4488,15 @@ nuxt-mongoose@^1.0.3:
     pathe "^1.1.1"
     pluralize "^8.0.0"
     sirv "^2.0.3"
+
+nuxt-snackbar@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/nuxt-snackbar/-/nuxt-snackbar-1.0.4.tgz#f1885b1017d65e7bd07e1669ac71b555da991241"
+  integrity sha512-7C8m7Kma60FYs1F0zw1bYSYj2lPtaTSIIXBdI1rc3mDMYngpnUTvZhoqBF5w/LyIggFpgNjpYKJLOpsW9wzcEA==
+  dependencies:
+    "@nuxt/kit" "^3.2.3"
+    defu "^6.1.2"
+    vue3-snackbar "^2.1.5"
 
 nuxt@^3.8.2:
   version "3.8.2"
@@ -5798,6 +5831,11 @@ terser@^5.17.4:
     commander "^2.20.0"
     source-map-support "~0.5.20"
 
+tiny-emitter@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
+  integrity sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==
+
 tiny-invariant@^1.1.0:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/tiny-invariant/-/tiny-invariant-1.3.1.tgz#8560808c916ef02ecfd55e66090df23a4b7aa642"
@@ -6278,6 +6316,19 @@ vue-router@^4.2.5:
   integrity sha512-DIUpKcyg4+PTQKfFPX88UWhlagBEBEfJ5A8XDXRJLUnZOvcpMF8o/dnL90vpVkGaPbjvXazV/rC1qBKrZlFugw==
   dependencies:
     "@vue/devtools-api" "^6.5.0"
+
+vue3-icon@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/vue3-icon/-/vue3-icon-2.1.0.tgz#9b217204eaeed20e428ec7615fac5579b66d396f"
+  integrity sha512-cnFiGAEwzp/KQKody2Yj8cBDP4Kez0AUp5mDnp052FA1fECl8a9uYUKLaeRdH0JakmZ7Jfp3tdHbpBEWF9sgBA==
+
+vue3-snackbar@^2.1.5:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/vue3-snackbar/-/vue3-snackbar-2.2.0.tgz#1bd128bea810ffc13c772e806b7efd21ae346d0f"
+  integrity sha512-x/J1NFdnDtg290LUbh8kN44RBgxUbSoVsqGu5PxAA/KzW/LK7W+KTbbRekAIehJ1c+Ep58neEtyFPbejnZyfZg==
+  dependencies:
+    tiny-emitter "^2.1.0"
+    vue3-icon "^2.1.0"
 
 vue@^3.3.10, vue@^3.3.8:
   version "3.3.11"

@@ -1,6 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@invictus.codes/nuxt-vuetify', 'nuxt-mongoose'],
+  modules: ['@invictus.codes/nuxt-vuetify', 'nuxt-mongoose', 'nuxt-snackbar'],
+  snackbar: {
+    bottom: true,
+    right: true,
+    duration: 5000
+  },
   mongoose: {
     uri: process.env.MONGODB_URI,
     options: {},

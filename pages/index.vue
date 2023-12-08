@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const {$GET, $POST, $PUT} = useNuxtApp()
-const {data: users, refresh} = await $GET('/users')
+const {data: users, refresh} = await $GET('/user')
 
 
 //const users = ref([])
