@@ -1,5 +1,10 @@
 const router = createRouter()
-const maxAge = 3600 * 24
+import {Instrument, Band, Artist, Place, Concert} from "#imports";
+//Create mongo collection
+Artist.find()
+Place.find()
+Concert.find()
+Instrument.find()
 
 router.get('/my-list', defineEventHandler(async (event) => {
     const user =event.context.user
@@ -23,9 +28,10 @@ router.put('/create', defineEventHandler(async (event) => {
     // @ts-ignore
     return Band.create({user})
 }))
-router.post('/my-view', defineEventHandler(async (event) => {
-    const {_id} = await readBody(event)
+router.get('/my-view/:_id', defineEventHandler(async (event) => {
+    //const {_id} = await readBody(event)
     const user =event.context.user
+    const {_id} = event.context.params as Record<string, string>
     if(!user){
         throw createError({
             statusCode: 403,
