@@ -73,4 +73,4 @@ schema.virtual('tokens', {
 })
 
 
-export const User = defineMongooseModel('User', schema)
+export const User = defineMongooseModel('user', schema)

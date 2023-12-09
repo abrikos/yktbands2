@@ -44,10 +44,10 @@ export default defineNuxtPlugin((_nuxtApp) => {
 
     return {
         provide: {
-            async POST(path: String, body: Object) {
+            async POST(path: String, body?: Object) {
                 return useCustomFetch('/api' + path, {method: 'POST', body})
             },
-            async PUT(path: String, body: Object) {
+            async PUT(path: String, body?: Object) {
                 return useCustomFetch('/api' + path, {method: 'PUT', body})
             },
             async GET(path: String) {

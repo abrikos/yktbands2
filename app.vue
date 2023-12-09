@@ -38,10 +38,10 @@ v-app
     v-navigation-drawer(v-model="drawerLeft")
         v-list
             v-list-item(to="/") Начало
-            v-list-item(to="/bands") Bands
+            v-list-item(to="/my-bands" v-if="user") Мои группы
             v-list-item(to="/login" v-if="!user") Войти
             v-list-item(to="/signup" v-if="!user") Регистрация
-            v-list-item(@click="logUserOut" v-if="user") Выйти
+            v-list-item(@click="logUserOut" v-if="user" append-icon="mdi-logout" ) Выйти
 
     v-main
         v-container

@@ -15,7 +15,7 @@ const Schema = mongoose.Schema;
 const schema = new Schema({
     access_token: {type: String},
     refresh_token: {type: String},
-    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
     resetCode: {type: String},
     maxAge: {type: Number, default: 0},
 }, {

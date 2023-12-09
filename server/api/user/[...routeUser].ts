@@ -8,24 +8,9 @@ import {H3Event} from "h3";
 const router = createRouter()
 const maxAge = 3600 * 24
 
-function adaptUser(user:IUser){
-    user.passwordHash = ''
-    return user
-}
-
-async function getAuthUser(event: H3Event){
-    const cookies = parseCookies(event)
-    // @ts-ignore
-    await Token.deleteExpired(maxAge)
-    const token: IToken | null = await Token.findOne({access_token: cookies.auth}).populate('user');
-    if (!token) {
-        return setResponseStatus(event, 401)
-    }
-    return adaptUser(token.user);
-}
 
 router.get('/checkAuth', defineEventHandler(async (event) => {
-    return getAuthUser(event)
+    return event.context.user
 }))
 router.get('/logout', defineEventHandler(async (event) => {
     const cookies = parseCookies(event)
@@ -50,18 +35,18 @@ router.post('/login', defineEventHandler(async (event) => {
     if (user?.checkPasswd(password)) {
         const token: IToken = await Token.create({user}) as unknown as IToken
         setCookie(event, 'auth', token.access_token, {maxAge})
-        return adaptUser(user)
+        return utils.adaptUser(user)
     } else {
         throw createError({
             statusCode: 401,
-            message: 'Ошибка аутентификации',
+            message: '/login: Ошибка аутентификации',
         })
 
     }
 }))
 router.post('/update', defineEventHandler(async (event) => {
     const {name, password, photo} = await readBody(event)
-    const user = await getAuthUser(event)
+    const user = event.context.user
     if(!user){
         throw createError({
             statusCode: 403,
@@ -76,7 +61,7 @@ router.post('/update', defineEventHandler(async (event) => {
 }))
 router.post('/password', defineEventHandler(async (event) => {
     const {password} = await readBody(event)
-    const user = await getAuthUser(event)
+    const user = event.context.user
     if(!user){
         throw createError({
             statusCode: 403,
@@ -123,7 +108,7 @@ router.post('/telegram', defineEventHandler(async (event) => {
         }
         const token: IToken = await Token.create({user}) as unknown as IToken
         setCookie(event, 'auth', token.access_token,{maxAge})
-        return adaptUser(user)
+        return utils.adaptUser(user)
     } else {
         throw createError({
             statusCode: 401,

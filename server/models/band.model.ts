@@ -30,7 +30,7 @@ const schema = new Schema({
 schema.statics.getPopulation = () => [
     {path: 'user', select: {email: 1, fullName: 1, photo: 1}},
     {path: 'instruments', populate: 'artist'},
-    {path: 'dates', populate: 'place'},
+    {path: 'concerts', populate: 'place'},
 ]
 
 schema.virtual('date')
@@ -61,8 +61,8 @@ schema.pre('save', function (next) {
 })
 
 
-schema.virtual('dates', {
-    ref: 'date',
+schema.virtual('concerts', {
+    ref: 'concert',
     localField: '_id',
     foreignField: 'band',
     options: {sort: {begin: -1}}

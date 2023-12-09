@@ -23,24 +23,25 @@ async function changePassword() {
 
 <template lang="pug">
 div
-    v-card
-        v-card-title Профиль
-        v-card-text
-            img.avatar(:src="`/${user.strategy}.svg`" v-if="user.strategy" )
-            v-text-field(v-model="user.email" label="Email" disabled v-if="!user.strategy")
-            v-text-field(v-model="user.name" label="Имя")
-            v-text-field(v-model="user.photo" label="Фото")
-            img.avatar(:src="user.photo" onerror="this.src='/avatar.png'")
-        v-card-actions
-            v-btn(@click="submit") Сохранить
-    br
-    v-card(v-if="!user.strategy")
-        v-card-title Пароль
-        v-card-text
-            v-text-field(v-model="password" label="Пароль" type="password")
-            v-text-field(v-model="password2" label="Подтверждение пароля" type="password" :rules="[() => user.password === password2 || 'Пароль и подтверждение должны совпадать']")
-        v-card-actions
-            v-btn(@click="changePassword" v-if="canSubmit()") Сохранить
+    div(v-if="user")
+        v-card
+            v-card-title Профиль
+            v-card-text
+                img.avatar(:src="`/${user.strategy}.svg`" v-if="user.strategy" )
+                v-text-field(v-model="user.email" label="Email" disabled v-if="!user.strategy")
+                v-text-field(v-model="user.name" label="Имя")
+                v-text-field(v-model="user.photo" label="Фото")
+                img.avatar(:src="user.photo" onerror="this.src='/avatar.png'")
+            v-card-actions
+                v-btn(@click="submit") Сохранить
+        br
+        v-card(v-if="!user.strategy")
+            v-card-title Пароль
+            v-card-text
+                v-text-field(v-model="password" label="Пароль" type="password")
+                v-text-field(v-model="password2" label="Подтверждение пароля" type="password" :rules="[() => user.password === password2 || 'Пароль и подтверждение должны совпадать']")
+            v-card-actions
+                v-btn(@click="changePassword" v-if="canSubmit()") Сохранить
 
 </template>
 
