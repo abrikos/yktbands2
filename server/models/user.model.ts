@@ -74,3 +74,6 @@ schema.virtual('tokens', {
 
 
 export const User = defineMongooseModel('user', schema)
+User.find().then(res=>{
+    console.log('Init user')
+})

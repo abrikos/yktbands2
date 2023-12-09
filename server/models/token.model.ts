@@ -44,3 +44,6 @@ schema.pre('save', function (next) {
 })
 
 export const Token = defineMongooseModel('token', schema)
+Token.find().then(res=>{
+    console.log('Init token')
+})
