@@ -11,7 +11,7 @@ const { logUserOut } = useAuthStore(); // use authenticateUser action from  auth
 const { user } = storeToRefs(useAuthStore()); // make authenticated state reactive with storeToRefs
 
 const drawerLeft = ref(true)
-const drawerRight = ref(true)
+const drawerRight = ref(false)
 const nightMode = ref(true)
 
 
