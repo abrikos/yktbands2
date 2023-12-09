@@ -1,12 +1,13 @@
 import {defineMongooseModel} from '#nuxt/mongoose'
 import mongoose from 'mongoose';
+import {IUser} from "~/server/models/user.model";
 
 export interface IToken extends mongoose.Document {
     access_token: string;
     refresh_token: string;
     resetCode: string;
     maxAge: number
-    user: mongoose.Schema.Types.ObjectId
+    user: IUser
 }
 
 const Schema = mongoose.Schema;

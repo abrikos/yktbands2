@@ -7,6 +7,7 @@ export interface IUser extends mongoose.Document {
     photo: string;
     passwordHash: string;
     email: string;
+    strategy: string;
     checkPasswd: (passwd: string) => boolean
     _doc:any
 }
@@ -25,6 +26,7 @@ function md5(str: string) {
 const schema = new Schema({
     nameStored: String,
     photo: String,
+    strategy: String,
     passwordHash: {
         type: String,
     },
@@ -51,6 +53,9 @@ schema.methods.checkPasswd = function (passwd: string) {
 schema.virtual('name')
     .get(function () {
         return this.nameStored || this.email;
+    })
+    .set(function (value) {
+        this.nameStored = value
     })
 schema.virtual('password')
     .get(function () {
