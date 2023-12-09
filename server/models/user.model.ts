@@ -6,6 +6,7 @@ export interface IUser extends mongoose.Document {
     name: string;
     photo: string;
     passwordHash: string;
+    password: string;
     email: string;
     strategy: string;
     checkPasswd: (passwd: string) => boolean
@@ -59,7 +60,7 @@ schema.virtual('name')
     })
 schema.virtual('password')
     .get(function () {
-        return '----';
+        return '';
     })
     .set(function (value) {
         this.passwordHash = md5(value)

@@ -17,6 +17,7 @@ v-app
     v-app-bar(density="compact" )
         v-app-bar-title Ykt Bands
         v-btn(to="/cabinet" v-if="user") {{user.name}}
+            img.avatar(:src="user.photo"  onerror="this.src='/avatar.png'")
         template(v-slot:prepend)
             v-app-bar-nav-icon(@click.stop="drawerLeft = !drawerLeft")
         template(v-slot:append)
@@ -38,3 +39,9 @@ v-app
             NuxtPage
     NuxtSnackbar
 </template>
+
+<style scoped lang="sass">
+.avatar
+    max-height: 30px
+    max-width: 30px
+</style>

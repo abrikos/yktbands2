@@ -2,6 +2,7 @@ import {Token, IToken} from "~/server/models/token.model";
 import {User, IUser} from "~/server/models/user.model";
 import {BinaryLike} from "node:crypto";
 import crypto from "crypto";
+import {H3Event} from "h3";
 
 //User.deleteMany().then(console.log)
 const router = createRouter()
@@ -12,7 +13,7 @@ function adaptUser(user:IUser){
     return user
 }
 
-router.get('/checkAuth', defineEventHandler(async (event) => {
+async function getAuthUser(event: H3Event){
     const cookies = parseCookies(event)
     // @ts-ignore
     await Token.deleteExpired(maxAge)
@@ -21,7 +22,10 @@ router.get('/checkAuth', defineEventHandler(async (event) => {
         return setResponseStatus(event, 401)
     }
     return adaptUser(token.user);
+}
 
+router.get('/checkAuth', defineEventHandler(async (event) => {
+    return getAuthUser(event)
 }))
 router.get('/logout', defineEventHandler(async (event) => {
     const cookies = parseCookies(event)
@@ -52,9 +56,38 @@ router.post('/login', defineEventHandler(async (event) => {
             statusCode: 401,
             message: 'Ошибка аутентификации',
         })
-        //setResponseStatus(event, 401)
-    }
 
+    }
+}))
+router.post('/update', defineEventHandler(async (event) => {
+    const {name, password, photo} = await readBody(event)
+    const user = await getAuthUser(event)
+    if(!user){
+        throw createError({
+            statusCode: 403,
+            message: 'Доступ запрещён',
+        })
+    }
+    user.name = name
+    user.photo = photo
+    if(password) user.password = password
+    await user.save()
+    setResponseStatus(event, 200)
+}))
+router.post('/password', defineEventHandler(async (event) => {
+    const {password} = await readBody(event)
+    const user = await getAuthUser(event)
+    if(!user){
+        throw createError({
+            statusCode: 403,
+            message: 'Доступ запрещён',
+        })
+    }
+    if(password) {
+        user.password = password
+        await user.save()
+    }
+    setResponseStatus(event, 200)
 }))
 router.post('/telegram', defineEventHandler(async (event) => {
     const body = await readBody(event)
