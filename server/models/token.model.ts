@@ -5,6 +5,7 @@ export interface IToken extends mongoose.Document {
     access_token: string;
     refresh_token: string;
     resetCode: string;
+    maxAge: number
     user: mongoose.Schema.Types.ObjectId
 }
 
@@ -15,6 +16,7 @@ const schema = new Schema({
     refresh_token: {type: String},
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     resetCode: {type: String},
+    maxAge: {type: Number, default: 0},
 }, {
     timestamps: {createdAt: 'createdAt'},
     toObject: {virtuals: true},
@@ -26,6 +28,12 @@ const schema = new Schema({
 schema.methods.refresh = async function () {
     this.access_token = 'auth' + Math.random().toString()
     await this.save()
+}
+
+schema.statics.deleteExpired = async function (maxAge) {
+    const cutoff = new Date()
+    cutoff.setSeconds(cutoff.getSeconds() - maxAge)
+    await this.deleteMany({createdAt: {$lt: cutoff}})
 }
 
 schema.pre('save', function (next) {

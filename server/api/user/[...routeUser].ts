@@ -2,8 +2,12 @@ import {Token, IToken} from "~/server/models/token.model";
 import {User, IUser} from "~/server/models/user.model";
 
 const router = createRouter()
+const maxAge = 10
+
 router.get('/checkAuth', defineEventHandler(async (event) => {
     const cookies = parseCookies(event)
+    // @ts-ignore
+    await Token.deleteExpired(maxAge)
     const token: IToken | null = await Token.findOne({access_token: cookies.auth}).populate('user', ['email', 'name', 'photo']);
     if (!token) {
         return setResponseStatus(event, 401)
@@ -22,7 +26,7 @@ router.put('/signup', defineEventHandler(async (event) => {
     const {email, password} = await readBody(event)
     const user: IUser | null = await User.create({email, password}) as unknown as IUser;
     const token: IToken = await Token.create({user}) as unknown as IToken
-    setCookie(event, 'auth', token.access_token)
+    setCookie(event, 'auth', token.access_token,{maxAge})
     const found: IUser | null = await User.findById(user.id,'-passwordHash') as unknown as IUser;
     //const {passwordHash, ...rest} = found._doc
     return found
@@ -33,7 +37,7 @@ router.post('/login', defineEventHandler(async (event) => {
     const user: IUser | null = await User.findOne({email});
     if (user?.checkPasswd(password)) {
         const token: IToken = await Token.create({user}) as unknown as IToken
-        setCookie(event, 'auth', token.access_token)
+        setCookie(event, 'auth', token.access_token, {maxAge})
         const {passwordHash, ...rest} = user._doc
         return rest
     } else {
