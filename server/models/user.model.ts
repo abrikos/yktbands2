@@ -7,7 +7,8 @@ export interface IUser extends mongoose.Document {
     photo: string;
     passwordHash: string;
     email: string;
-    checkPasswd:(passwd:string)=>boolean
+    checkPasswd: (passwd: string) => boolean
+    _doc:any
 }
 
 
@@ -15,14 +16,15 @@ const Schema = mongoose.Schema;
 const validateEmail = function (email: string) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
 };
-function md5(str:string){
-    return base64urlEncode( str)
+
+function md5(str: string) {
+    return base64urlEncode(str)
 }
 
 
 const schema = new Schema({
-    nameStored:String,
-    photo:String,
+    nameStored: String,
+    photo: String,
     passwordHash: {
         type: String,
     },
@@ -34,7 +36,7 @@ const schema = new Schema({
         validate: [validateEmail, 'Please fill a valid email address'],
         required: true,
     }
-},{
+}, {
     timestamps: {createdAt: 'createdAt'},
     toObject: {virtuals: true},
     // use if your results might be retrieved as JSON
@@ -42,7 +44,7 @@ const schema = new Schema({
     toJSON: {virtuals: true}
 })
 
-schema.methods.checkPasswd = function (passwd:string) {
+schema.methods.checkPasswd = function (passwd: string) {
     return md5(passwd) === this.passwordHash;
 }
 

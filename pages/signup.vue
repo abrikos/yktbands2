@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'; // import storeToRefs helper hook from pinia
 import { useAuthStore } from '~/store/auth-store'; // import the auth store we just created
 
 const { signupUser } = useAuthStore(); // use authenticateUser action from  auth store
-const { authenticated } = storeToRefs(useAuthStore()); // make authenticated state reactive with storeToRefs
 
-const user = ref({email: '12@1.com', password: '1'})
+const user = ref({email: Math.random() + '12@1.com', password: '1'})
 const password2 = ref('1')
 const canSubmit = ()=>user.value.password === password2.value
 async function submit(){

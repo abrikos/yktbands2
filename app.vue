@@ -5,7 +5,7 @@ const { getUser } = useAuthStore();
 await getUser()
 
 const { logUserOut } = useAuthStore(); // use authenticateUser action from  auth store
-const { authenticated, user } = storeToRefs(useAuthStore()); // make authenticated state reactive with storeToRefs
+const { user } = storeToRefs(useAuthStore()); // make authenticated state reactive with storeToRefs
 
 const drawerLeft = ref(true)
 const drawerRight = ref(false)
@@ -29,9 +29,9 @@ v-app
         v-list
             v-list-item(to="/") Начало
             v-list-item(to="/bands") Bands
-            v-list-item(to="/login" v-if="!authenticated") Войти
-            v-list-item(to="/signup" v-if="!authenticated") Регистрация
-            v-list-item(@click="logUserOut" v-if="authenticated") Выйти
+            v-list-item(to="/login" v-if="!user") Войти
+            v-list-item(to="/signup" v-if="!user") Регистрация
+            v-list-item(@click="logUserOut" v-if="user") Выйти
 
     v-main
         v-container
