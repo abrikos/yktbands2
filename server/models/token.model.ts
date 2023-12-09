@@ -1,6 +1,12 @@
 import {defineMongooseModel} from '#nuxt/mongoose'
 import mongoose from 'mongoose';
 
+export interface IToken extends mongoose.Document {
+    access_token: string;
+    refresh_token: string;
+    resetCode: string;
+    user: mongoose.Schema.Types.ObjectId
+}
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
@@ -11,13 +17,13 @@ const schema = new Schema({
 })
 
 schema.methods.refresh = async function() {
-    this.access_token = Math.random().toString()
+    this.access_token = 'auth'+Math.random().toString()
     await this.save()
 }
 
 schema.pre('save', function (next) {
     // do stuff
-    this.refresh_token = this.access_token = Math.random().toString()
+    this.refresh_token = this.access_token = 'auth'+Math.random().toString()
     next();
 })
 

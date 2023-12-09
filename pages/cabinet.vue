@@ -1,11 +1,10 @@
 <script setup lang="ts">
-const {$GET, $POST, $PUT} = useNuxtApp()
+
 </script>
 
 <template lang="pug">
 v-card
-    v-card-text INDEX
-
+    v-card-title Cabinet
 </template>
 
 <style scoped>

@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@invictus.codes/nuxt-vuetify', 'nuxt-mongoose', 'nuxt-snackbar'],
+  modules: ['@invictus.codes/nuxt-vuetify', 'nuxt-mongoose', 'nuxt-snackbar','@pinia/nuxt'],
   snackbar: {
     bottom: true,
     right: true,

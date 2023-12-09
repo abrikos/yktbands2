@@ -2,6 +2,15 @@ import {base64urlEncode} from "iron-webcrypto";
 import {defineMongooseModel} from '#nuxt/mongoose'
 import mongoose from 'mongoose';
 
+export interface IUser extends mongoose.Document {
+    name: string;
+    photo: string;
+    passwordHash: string;
+    email: string;
+    checkPasswd:(passwd:string)=>boolean
+}
+
+
 const Schema = mongoose.Schema;
 const validateEmail = function (email: string) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
@@ -12,6 +21,8 @@ function md5(str:string){
 
 
 const schema = new Schema({
+    nameStored:String,
+    photo:String,
     passwordHash: {
         type: String,
     },
@@ -29,9 +40,13 @@ schema.methods.checkPasswd = function (passwd:string) {
     return md5(passwd) === this.passwordHash;
 }
 
+schema.virtual('name')
+    .get(function () {
+        return this.nameStored || this.email;
+    })
 schema.virtual('password')
     .get(function () {
-        return '';
+        return '----';
     })
     .set(function (value) {
         this.passwordHash = md5(value)
