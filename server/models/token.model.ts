@@ -14,6 +14,12 @@ const schema = new Schema({
     refresh_token: {type: String},
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     resetCode: {type: String},
+},{
+    timestamps: {createdAt: 'createdAt'},
+    toObject: {virtuals: true},
+    // use if your results might be retrieved as JSON
+    // see http://stackoverflow.com/q/13133911/488666
+    toJSON: {virtuals: true}
 })
 
 schema.methods.refresh = async function() {

@@ -15,7 +15,8 @@ const drawerRight = ref(false)
 <template lang="pug">
 v-app
     v-app-bar(density="compact" )
-        v-app-bar-title Ykt Bands {{user}}
+        v-app-bar-title Ykt Bands
+        v-btn(to="/cabinet" v-if="user") {{user.name}}
         template(v-slot:prepend)
             v-app-bar-nav-icon(@click.stop="drawerLeft = !drawerLeft")
         template(v-slot:append)
@@ -27,7 +28,6 @@ v-app
     v-navigation-drawer(v-model="drawerLeft")
         v-list
             v-list-item(to="/") Начало
-            v-list-item(to="/cabinet") Кабинет
             v-list-item(to="/bands") Bands
             v-list-item(to="/login" v-if="!authenticated") Войти
             v-list-item(to="/signup" v-if="!authenticated") Регистрация

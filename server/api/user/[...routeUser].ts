@@ -4,7 +4,7 @@ import {User, IUser} from "~/server/models/user.model";
 const router = createRouter()
 router.get('/checkAuth', defineEventHandler(async (event)=>{
     const cookies = parseCookies(event)
-    const token: IToken | null = await Token.findOne({access_token: cookies.auth}).populate([{path: 'user', select: ['email', 'name', 'photo']}]);
+    const token: IToken | null = await Token.findOne({access_token: cookies.auth}).populate('user', ['email', 'name', 'photo']);
     if (!token) {
         return setResponseStatus(event, 401)
     }
@@ -33,9 +33,13 @@ router.post('/login', defineEventHandler(async (event)=>{
     if (user?.checkPasswd(password)) {
         const token: IToken = await Token.create({user}) as unknown as IToken
         setCookie(event, 'auth', token.access_token)
-        return token.access_token
+        return {user,token}
     } else {
-        setResponseStatus(event, 401)
+        throw createError({
+            statusCode: 401,
+            statusMessage: 'Ошибка аутентификации',
+        })
+        //setResponseStatus(event, 401)
     }
 
 }))

@@ -20,11 +20,14 @@ export const useAuthStore = defineStore('auth', {
         },
         async authenticateUser({email, password}: UserPayloadInterface) {
             // useFetch from nuxt 3
-            const {data: token, pending}: any = await useNuxtApp().$POST('/user/login', {email, password,});
+            const {data, pending}: any = await useNuxtApp().$POST('/user/login', {email, password,});
+            if (!data.value) return
+            console.log('zzzzzzz', data.value)
+            this.user = data.value.user
             this.loading = pending;
             const auth = useCookie('auth'); // useCookie new hook in nuxt 3
-            this.authenticated = token.value === auth.value; // set authenticated  state value to true
-            if(!this.authenticated) return
+            this.authenticated = data.value.token.access_token === auth.value; // set authenticated  state value to true
+            if (!this.authenticated) return
             const router = useRouter();
             await router.push('/cabinet')
         },
@@ -34,7 +37,7 @@ export const useAuthStore = defineStore('auth', {
             this.loading = pending;
             const auth = useCookie('auth'); // useCookie new hook in nuxt 3
             this.authenticated = token.value === auth.value; // set authenticated  state value to true
-            if(!this.authenticated) return
+            if (!this.authenticated) return
             const router = useRouter();
             await router.push('/cabinet')
         },
