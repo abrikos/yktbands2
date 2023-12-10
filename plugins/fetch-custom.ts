@@ -9,11 +9,11 @@ export default defineNuxtPlugin((_nuxtApp) => {
     function useCustomFetch<T>(url: string | (() => string), options: UseFetchOptions<T> = {}, debug?:boolean) {
         const defaults: UseFetchOptions<T> = {
             onRequest(_ctx) {
-                debug && console.log('REQ', options.method, url, JSON.stringify(_ctx.options.body))
+                debug && console.log('REQ', options.method, url, (_ctx.options.body))
                 // _ctx.response._data = new myBusinessResponse(_ctx.response._data)
             },
             onResponse(_ctx) {
-                debug && console.log('RES', options.method, url, JSON.stringify(_ctx.response._data))
+                debug && console.log('RES', options.method, url, (_ctx.response._data))
             },
 
             onResponseError(_ctx) {
@@ -22,7 +22,7 @@ export default defineNuxtPlugin((_nuxtApp) => {
                     text = 'Такой e-mail уже зарегистрирован'
                 }
                 snackbar.add({
-                    type: _ctx.response.status === 406 ? 'warning' : 'error',
+                    type: 'error',
                     text
                 })
             }
