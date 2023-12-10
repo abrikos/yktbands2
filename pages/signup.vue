@@ -3,9 +3,11 @@ import { useAuthStore } from '~/store/authStore'; // import the auth store we ju
 
 const { signupUser } = useAuthStore(); // use authenticateUser action from  auth store
 
-const user = ref({email: Math.random() + '12@1.com', password: '1'})
-const password2 = ref('1')
-const canSubmit = ()=>user.value.password === password2.value
+//const user = ref({email: Math.random()+'@c.c', password: '1'})
+//const password2 = ref('1')
+const user = ref({email: '', password: ''})
+const password2 = ref()
+const canSubmit = ()=>user.value.email && user.value.password && user.value.password === password2.value
 async function submit(){
     if(!canSubmit) return
     await signupUser(user.value)

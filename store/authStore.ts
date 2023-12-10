@@ -7,18 +7,18 @@ interface UserPayloadInterface {
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
-        user: null,
+        loggedUser: null,
         loading: false,
     }),
     actions: {
         async getUser() {
             const {data, pending}: any = await useNuxtApp().$GET('/user/checkAuth');
-            this.user = data.value
+            this.loggedUser = data.value
         },
         async authenticateTelegram(body:Object) {
             const {data, pending}: any = await useNuxtApp().$POST('/user/telegram', body);
             if (!data.value) return
-            this.user = data.value
+            this.loggedUser = data.value
             this.loading = pending;
             const router = useRouter();
             await router.push('/cabinet')
@@ -27,7 +27,7 @@ export const useAuthStore = defineStore('auth', {
             // useFetch from nuxt 3
             const {data, pending}: any = await useNuxtApp().$POST('/user/login', {email, password,});
             if (!data.value) return
-            this.user = data.value
+            this.loggedUser = data.value
             this.loading = pending;
             const router = useRouter();
             await router.push('/cabinet')
@@ -36,13 +36,13 @@ export const useAuthStore = defineStore('auth', {
             // useFetch from nuxt 3
             const {data, pending}: any = await useNuxtApp().$PUT('/user/signup', {email, password,});
             this.loading = pending;
-            this.user = data.value
+            this.loggedUser = data.value
             const router = useRouter();
             await router.push('/cabinet')
         },
         async logUserOut() {
             await useNuxtApp().$GET('/user/logout')
-            this.user = null
+            this.loggedUser = null
             const router = useRouter();
             await router.push('/login')
 

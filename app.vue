@@ -8,7 +8,7 @@ const { getUser } = useAuthStore();
 await getUser()
 
 const { logUserOut } = useAuthStore(); // use authenticateUser action from  auth store
-const { user } = storeToRefs(useAuthStore()); // make authenticated state reactive with storeToRefs
+const { loggedUser } = storeToRefs(useAuthStore()); // make authenticated state reactive with storeToRefs
 
 const drawerLeft = ref(true)
 const drawerRight = ref(false)
@@ -25,8 +25,8 @@ v-app
     NuxtLoadingIndicator
     v-app-bar(density="compact" )
         v-app-bar-title Ykt Bands
-        v-btn(to="/cabinet" v-if="user") {{user.name}}
-            img.avatar22(:src="user.photo"  onerror="this.src='/avatar.png'")
+        v-btn(to="/cabinet" v-if="loggedUser") {{loggedUser.name}}
+            UserAvatar(:user="loggedUser")
         template(v-slot:prepend)
             v-app-bar-nav-icon(@click.stop="drawerLeft = !drawerLeft")
         template(v-slot:append)
@@ -40,9 +40,9 @@ v-app
         v-list
             v-list-item(to="/") Начало
             v-list-item(to="/my-bands" vif="user") Мои группы
-            v-list-item(to="/login" v-if="!user") Войти
-            v-list-item(to="/signup" v-if="!user") Регистрация
-            v-list-item(@click="logUserOut" v-if="user" append-icon="mdi-logout" ) Выйти
+            v-list-item(to="/login" v-if="!loggedUser") Войти
+            v-list-item(to="/signup" v-if="!loggedUser") Регистрация
+            v-list-item(@click="logUserOut" v-if="loggedUser" append-icon="mdi-logout" ) Выйти
 
     v-main
         v-container
@@ -51,7 +51,5 @@ v-app
 </template>
 
 <style scoped lang="sass">
-.avatar22
-    max-height: 30px
-    max-width: 30px
+
 </style>
