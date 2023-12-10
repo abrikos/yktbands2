@@ -12,7 +12,7 @@ export const useAuthStore = defineStore('auth', {
     }),
     actions: {
         async getUser() {
-            const {data, pending}: any = await useNuxtApp().$GET('/user/checkAuth');
+            const {data}: any = await useNuxtApp().$GET('/user/checkAuth');
             this.loggedUser = data.value
         },
         async authenticateTelegram(body:Object) {

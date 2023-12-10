@@ -1,4 +1,4 @@
-import {base64urlEncode} from "iron-webcrypto";
+import crypto from "crypto";
 import {defineMongooseModel} from '#nuxt/mongoose'
 import mongoose from 'mongoose';
 
@@ -7,6 +7,7 @@ export interface IUser extends mongoose.Document {
     photo: string;
     passwordHash: string;
     password: string;
+    restorePassword: string
     email: string;
     strategy: string;
     checkPasswd: (passwd: string) => boolean
@@ -20,7 +21,7 @@ const validateEmail = function (email: string) {
 };
 
 function md5(str: string) {
-    return base64urlEncode(str)
+    return crypto.createHmac('sha256','').update(str).digest('hex')
 }
 
 
@@ -28,9 +29,7 @@ const schema = new Schema({
     nameStored: String,
     photo: String,
     strategy: String,
-    passwordHash: {
-        type: String,
-    },
+    passwordHash:  String,
     email: {
         type: String,
         trim: true,
@@ -38,7 +37,8 @@ const schema = new Schema({
         unique: true,
         validate: [validateEmail, 'Please fill a valid email address'],
         required: true,
-    }
+    },
+    restorePassword: String,
 }, {
     timestamps: {createdAt: 'createdAt'},
     toObject: {virtuals: true},

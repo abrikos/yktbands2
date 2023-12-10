@@ -18,6 +18,8 @@ async function submit() {
 }
 async function changePassword() {
     await useNuxtApp().$POST('/user/password', {password})
+    password2.value = undefined
+    password.value = undefined
 }
 </script>
 
@@ -40,8 +42,8 @@ div
         v-card(v-if="!loggedUser.strategy")
             v-card-title Пароль
             v-card-text
-                v-text-field(v-model="password" label="Пароль" xtype="password")
-                v-text-field(v-model="password2" label="Подтверждение пароля" xtype="password" :rules="[() => loggedUser.password === password2 || 'Пароль и подтверждение должны совпадать']")
+                v-text-field(v-model="password" label="Пароль" type="password")
+                v-text-field(v-model="password2" label="Подтверждение пароля" type="password" :rules="[() => password === password2 || 'Пароль и подтверждение должны совпадать']")
             v-card-actions
                 v-btn(@click="changePassword" v-if="canSubmit()") Сохранить
 

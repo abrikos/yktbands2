@@ -97,9 +97,3 @@ router.post('/my-update', defineEventHandler(async (event) => {
 }))
 
 export default useBase('/api/my-band', router.handler)
-
-function sleep(ms: number) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
-}
