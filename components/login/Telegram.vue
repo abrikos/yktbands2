@@ -1,5 +1,5 @@
 <script setup>
-import { useAuthStore } from '~/store/auth-store.js';
+import { useAuthStore } from '~/store/authStore.ts';
 const { authenticateTelegram } = useAuthStore(); // use authenticateUser action from  auth store
 const holder = ref(null)
 function login(data){

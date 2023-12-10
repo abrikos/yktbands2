@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'; // import storeToRefs helper hook from pinia
-import { useAuthStore } from '~/store/auth-store'; // import the auth store we just created
+import { useAuthStore } from '~/store/authStore'; // import the auth store we just created
 import { useTheme } from 'vuetify'
 const theme = useTheme()
 
@@ -39,7 +39,7 @@ v-app
     v-navigation-drawer(v-model="drawerLeft")
         v-list
             v-list-item(to="/") Начало
-            v-list-item(to="/my-bands" v-if="user") Мои группы
+            v-list-item(to="/my-bands" vif="user") Мои группы
             v-list-item(to="/login" v-if="!user") Войти
             v-list-item(to="/signup" v-if="!user") Регистрация
             v-list-item(@click="logUserOut" v-if="user" append-icon="mdi-logout" ) Выйти
