@@ -6,27 +6,19 @@ import type {UseFetchOptions} from "#app";
 export default defineNuxtPlugin((_nuxtApp) => {
     const snackbar = useSnackbar();
 
-    function useCustomFetch<T>(url: string | (() => string), options: UseFetchOptions<T> = {}) {
-        const userAuth = useCookie('token')
-        const config = useRuntimeConfig()
-
+    function useCustomFetch<T>(url: string | (() => string), options: UseFetchOptions<T> = {}, debug?:boolean) {
         const defaults: UseFetchOptions<T> = {
-            // set user token if connected
-            headers: userAuth.value
-                ? {Authorization: `Bearer ${userAuth.value}`}
-                : {},
-
             onRequest(_ctx) {
-                console.log('REQ', options.method, url, _ctx.options.body)
+                debug && console.log('REQ', options.method, url, (_ctx.options.body))
                 // _ctx.response._data = new myBusinessResponse(_ctx.response._data)
             },
             onResponse(_ctx) {
-                console.log('RES', options.method, url, _ctx.response._data)
+                debug && console.log('RES', options.method, url, (_ctx.response._data))
             },
 
             onResponseError(_ctx) {
                 let text = _ctx.response._data.message
-                if(_ctx.response._data.message.match('E11000')){
+                if (_ctx.response._data.message.match('E11000')) {
                     text = 'Такой e-mail уже зарегистрирован'
                 }
                 snackbar.add({
@@ -44,17 +36,17 @@ export default defineNuxtPlugin((_nuxtApp) => {
 
     return {
         provide: {
-            async POST(path: String, body: Object) {
-                return useCustomFetch('/api' + path, {method: 'POST', body})
+            async POST(path: String, body?: Object, debug?:boolean) {
+                return useCustomFetch('/api' + path, {method: 'POST', body}, debug)
             },
-            async PUT(path: String, body: Object) {
-                return useCustomFetch('/api' + path, {method: 'PUT', body})
+            async PUT(path: String, body?: Object, debug?:boolean) {
+                return useCustomFetch('/api' + path, {method: 'PUT', body}, debug)
             },
-            async GET(path: String) {
-                return useCustomFetch('/api' + path, {method: 'GET'})
+            async GET(path: String, debug?:boolean) {
+                return useCustomFetch('/api' + path, {method: 'GET'}, debug)
             },
-            async DELETE(path: String) {
-                return useCustomFetch('/api' + path, {method: 'DELETE'})
+            async DELETE(path: String, debug?:boolean) {
+                return useCustomFetch('/api' + path, {method: 'DELETE'}, debug)
             },
         }
     }
