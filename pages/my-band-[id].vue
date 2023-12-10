@@ -34,7 +34,7 @@ async function loadSaved(){
 </script>
 
 <template lang="pug">
-div(v-if="!pending")
+div
     h1 Группа "{{data.name || data.shortcut}}"
     v-card
         v-card-title Параметры
@@ -47,8 +47,7 @@ div(v-if="!pending")
             v-spacer
             v-btn(@click="loadSaved") Сбросить
     br
-    //div {{data}}
-    BandInstruments(:band="data" @update-band="loadSaved")
+    BandInstruments(:band="data" @update-band="loadSaved" :key="Math.random()")
 </template>
 
 <style scoped lang="sass">

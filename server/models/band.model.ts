@@ -11,7 +11,9 @@ export interface IBand extends mongoose.Document {
     shortcut: string
     enabled: boolean
     instruments:[IInstrument]
-    user: IUser
+    user: IUser,
+    logoRnd:string
+    posterRnd:string
 }
 
 
