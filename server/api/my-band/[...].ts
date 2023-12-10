@@ -6,6 +6,7 @@ import {Types} from "mongoose"
 
 const router = createRouter()
 
+
 //Create mongo collection
 Artist.find()
 Place.find()
@@ -28,7 +29,8 @@ router.put('/create', defineEventHandler(async (event) => {
 router.get('/my-view/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     const {_id} = event.context.params as Record<string, string>
-    if (Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
+    console.log(Types.ObjectId.isValid(_id))
+    if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     // @ts-ignore
     return Band.findOne({_id, user}).populate(Band.getPopulation())
@@ -37,7 +39,7 @@ router.get('/my-view/:_id', defineEventHandler(async (event) => {
 const findInstrument = async (event: H3Event) => {
     const user = event.context.user
     const {_id} = event.context.params as Record<string, string>
-    if (Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
+    if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён'})
     // @ts-ignore
     const instrument = await Instrument.findById(_id).populate('band') as unknown as IInstrument
@@ -62,12 +64,13 @@ router.post('/instrument/:_id/icon', defineEventHandler(async (event) => {
 router.put('/:_id/instrument', defineEventHandler(async (event) => {
     const user = event.context.user
     const {_id} = event.context.params as Record<string, string>
-    if (Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
+    if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     // @ts-ignore
     const band = await Band.findOne({_id, user}).populate(Band.getPopulation()) as unknown as IBand
     if (!band) throw createError({statusCode: 404, message: 'Группа не найдена'})
     let {artist} = await readBody(event)
+    if (!artist) throw createError({statusCode: 406, message: 'Необходимо ввести имя или выбрать артиста'})
     if (typeof artist === 'object') {
         artist = await Artist.findById(artist.id)
         if (!artist) throw createError({statusCode: 406, message: 'Артист не найден'})
@@ -86,7 +89,7 @@ router.put('/:_id/instrument', defineEventHandler(async (event) => {
 
 router.post('/my-update', defineEventHandler(async (event) => {
     const {_id, ...data} = await readBody(event)
-    if (Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
+    if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     // @ts-ignore

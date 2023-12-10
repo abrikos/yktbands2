@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import type {IBand} from "~/server/models/band.model";
-import type {UnwrapRef} from "vue";
-
 
 definePageMeta({
     middleware: 'auth-middleware' // this should match the name of the file inside the middleware directory
@@ -19,10 +17,6 @@ const {data, refresh, pending} = await useNuxtApp().$GET('/my-band/my-view/' + r
 const edited = ref(false)
 function submit() {
     useNuxtApp().$POST('/my-band/update/' + route.params.id, data)
-}
-
-async function bandRequest(){
-    return
 }
 
 async function loadSaved(){

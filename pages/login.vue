@@ -16,7 +16,7 @@ v-card
         v-text-field(v-model="user.password" label="Пароль" type="password" )
     v-card-actions
         v-btn(@click="submit") Send
-        TelegramLogin
+        LoginTelegram
 </template>
 
 <style scoped>

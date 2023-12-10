@@ -70,7 +70,7 @@ async function removeInstrument(instrument:IInstrument, icon: string) {
 v-card
     v-card-title Состав коллектива
     v-card-text
-        v-combobox(@change="" item-title="name" item-value="id" :items="artists" v-model="newArtist" label="Новый артист"  density="compact" append-inner-icon="mdi-account-multiple-check-outline" )
+        v-combobox(item-title="name" item-value="id" :items="artists" v-model="newArtist" label="Выбрать или создать артиста"  density="compact")
             template(v-slot:append)
                 v-btn(@click="addInstrument" small) Добавить
         v-container
@@ -79,7 +79,7 @@ v-card
                 v-col(cols="5")
                     span.instrument(v-for="icon of instrument.icons" :key="icon" :style="instrumentPosition[icon]" @click="removeInstrument(instrument, icon)")
                 v-col(cols="2")
-                    v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" ) Добавить инструмент
+                    v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" ) Назначить инструменты
                 v-col(cols="1")
                     v-btn(@click.prevent="deleteInstrument(instrument.id)" icon="mdi-delete" size="x-small" )
         v-dialog(v-model="showDialog" width="500" v-if="instrumentForDialog")
