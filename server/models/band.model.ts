@@ -2,13 +2,15 @@ import {defineMongooseModel} from '#nuxt/mongoose'
 import mongoose from 'mongoose';
 import {IUser} from "~/server/models/user.model";
 import moment from "moment";
+import {IInstrument} from "~/server/models/instrument.model";
 
 const Schema = mongoose.Schema;
 
 export interface IBand extends mongoose.Document {
-    name: string;
-    shortcut: string;
-    enabled: boolean;
+    name: string
+    shortcut: string
+    enabled: boolean
+    instruments:[IInstrument]
     user: IUser
 }
 
