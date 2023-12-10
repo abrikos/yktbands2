@@ -9,7 +9,7 @@ export interface IInstrument extends mongoose.Document {
     band: IBand
     artist: IArtist
     icon: string,
-
+    id:string
 }
 
 

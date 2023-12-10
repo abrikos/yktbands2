@@ -22,6 +22,7 @@ function toggleTheme () {
 </script>
 <template lang="pug">
 v-app
+    NuxtLoadingIndicator
     v-app-bar(density="compact" )
         v-app-bar-title Ykt Bands
         v-btn(to="/cabinet" v-if="user") {{user.name}}

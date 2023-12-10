@@ -51,14 +51,6 @@ div
 </template>
 
 <style scoped lang="sass">
-.instrument
-    cursor: pointer
-    //border: 1px solid red
-    display: inline-block
-    width: 50px
-    height: 50px
-    background-image: url('/instruments.png')
-    //background-position: -20px -20px
-    background-size: 150px
-
+.wtf
+    display: block
 </style>

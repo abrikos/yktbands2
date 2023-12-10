@@ -7,15 +7,7 @@ export default defineNuxtPlugin((_nuxtApp) => {
     const snackbar = useSnackbar();
 
     function useCustomFetch<T>(url: string | (() => string), options: UseFetchOptions<T> = {}) {
-        const userAuth = useCookie('token')
-        const config = useRuntimeConfig()
-
         const defaults: UseFetchOptions<T> = {
-            // set user token if connected
-            headers: userAuth.value
-                ? {Authorization: `Bearer ${userAuth.value}`}
-                : {},
-
             onRequest(_ctx) {
                 console.log('REQ', options.method, url, _ctx.options.body)
                 // _ctx.response._data = new myBusinessResponse(_ctx.response._data)
