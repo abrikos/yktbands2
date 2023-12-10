@@ -8,7 +8,7 @@ const Schema = mongoose.Schema;
 export interface IInstrument extends mongoose.Document {
     band: IBand
     artist: IArtist
-    icon: string,
+    icons: [string],
     id:string
 }
 
@@ -16,7 +16,7 @@ export interface IInstrument extends mongoose.Document {
 const schema = new Schema({
         band: {type: mongoose.Schema.Types.ObjectId, ref: 'band'},
         artist: {type: mongoose.Schema.Types.ObjectId, ref: 'artist'},
-        icon: String,
+        icons: [String],
     },
     {
         toObject: {virtuals: true},

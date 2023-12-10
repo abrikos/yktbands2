@@ -1,6 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: ['@invictus.codes/nuxt-vuetify', 'nuxt-mongoose', 'nuxt-snackbar','@pinia/nuxt'],
+  plugins: [
+  ],
   snackbar: {
     bottom: true,
     right: true,
@@ -11,7 +13,7 @@ export default defineNuxtConfig({
     options: {},
     modelsDir: 'models',
   },
-  css: ['vuetify/lib/styles/main.sass'],
+  css: ['vuetify/lib/styles/main.sass', '~/assets/vuetify.sass'],
   vuetify: {
     /* vuetify options */
     vuetifyOptions: {
@@ -22,8 +24,9 @@ export default defineNuxtConfig({
     },
 
     moduleOptions: {
+      //customVariables: ['~/assets/variables.scss'],
       /* nuxt-vuetify module options */
-      //treeshaking: true,
+      treeshaking: true,
       useIconCDN: true,
 
       /* vite-plugin-vuetify options */

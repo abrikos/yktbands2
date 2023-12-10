@@ -31,7 +31,9 @@ div
                 v-text-field(v-model="user.email" label="Email" disabled v-if="!user.strategy")
                 v-text-field(v-model="user.name" label="Имя")
                 v-text-field(v-model="user.photo" label="Фото")
-                img.avatar(:src="user.photo" onerror="this.src='/avatar.png'")
+                    template(v-slot:append-inner)
+                        //v-fade-transition
+                        img.avatar(:src="user.photo" onerror="this.src='/avatar.png'")
             v-card-actions
                 v-btn(@click="submit") Сохранить
         br
@@ -47,5 +49,5 @@ div
 
 <style scoped lang="sass">
 .avatar
-    width: 50px
+    width: 30px
 </style>

@@ -9,12 +9,12 @@ interface IBandArray {
     data: { value: [IBand] }
 }
 
-const {data} = await useNuxtApp().$GET('/band/my-list') as IBandArray
+const {data} = await useNuxtApp().$GET('/my-band/my-list') as IBandArray
 const list = ref(data.value)
 const router = useRouter()
 
 async function create() {
-    const {data} = await useNuxtApp().$PUT('/band/create')
+    const {data} = await useNuxtApp().$PUT('/my-band/create')
     const {id} = data.value as { id: string }
     await router.push(`/my-band-${id}`)
 }

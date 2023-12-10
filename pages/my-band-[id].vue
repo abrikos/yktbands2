@@ -15,10 +15,10 @@ interface IBandResponse {
 
 const route = useRoute()
 
-const {data, refresh, pending} = await useNuxtApp().$GET('/band/my-view/' + route.params.id) as unknown as IBandResponse
+const {data, refresh, pending} = await useNuxtApp().$GET('/my-band/my-view/' + route.params.id) as unknown as IBandResponse
 const edited = ref(false)
 function submit() {
-    useNuxtApp().$POST('/band/update/' + route.params.id, data)
+    useNuxtApp().$POST('/my-band/update/' + route.params.id, data)
 }
 
 async function bandRequest(){
@@ -26,7 +26,6 @@ async function bandRequest(){
 }
 
 async function loadSaved(){
-    console.log('SSSSSSSSSSSs')
     refresh()
     edited.value = false
 }
@@ -39,8 +38,8 @@ div
     v-card
         v-card-title Параметры
         v-card-text
-            v-text-field(v-model="data.name" label="Название" v-on:keyup="edited=true")
-            v-text-field(v-model="data.shortcut" label="Уникальный путь" hint="Используется для создания уникальной ссылки на страницу коллектива. Только цифры, английские символыи нижнее подчеркивание" persistent-hint  v-on:keyup="edited=true" )
+            v-text-field(v-model="data.name" label="Название" v-on:keyup="edited=true" density="compact" )
+            v-text-field(v-model="data.shortcut" label="Уникальный путь"  density="compact"  hint="Используется для создания уникальной ссылки на страницу коллектива. Только цифры, английские символыи нижнее подчеркивание" persistent-hint  v-on:keyup="edited=true" )
             v-switch(v-model="data.enabled" label="Отображать для всех" v-on:change="edited=true")
         v-card-actions(v-if="edited")
             v-btn(@click="submit") Сохранить

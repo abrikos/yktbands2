@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 export interface IArtist extends mongoose.Document {
+    id: string
     name: string
     instrument: string
 

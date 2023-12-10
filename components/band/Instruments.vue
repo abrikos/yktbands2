@@ -3,6 +3,7 @@ import type {PropType} from "vue";
 import type {IInstrument} from "~/server/models/instrument.model";
 import type {IBand} from "~/server/models/band.model";
 import {useTheme} from "vuetify";
+import type {IArtist} from "~/server/models/artist.model";
 
 const emit = defineEmits(['updateBand']);
 const theme = useTheme()
@@ -25,29 +26,42 @@ const instrumentPosition = {
 }
 
 const {band} = props
+
+const {data: artists} = await useNuxtApp().$GET('/artist/all')// as unknown as IArtistResponse
+
 const instrumentsFiltered = band.instruments.filter((i: IInstrument) => i.artist.name)
         .sort((a: IInstrument, b: IInstrument) => a.artist.name > b.artist.name ? -1 : a.artist.name < b.artist.name ? 1 : 0)
         .reverse()
 
-const newArtist = ref('')
+const newArtist = ref(null)
 const instrumentForDialog: Ref<IInstrument | null> = ref(null)
 const showDialog = ref(false)
 
 async function addInstrument() {
-    await useNuxtApp().$PUT(`/band/${band.id}/instrument`, {artist: newArtist})
+    await useNuxtApp().$PUT(`/my-band/${band.id}/instrument`, {artist: newArtist})
     emit('updateBand')
 }
 
 async function deleteInstrument(id: string) {
-    await useNuxtApp().$DELETE(`/band/instrument/${id}`)
+    await useNuxtApp().$DELETE(`/my-band/instrument/${id}`)
     emit('updateBand')
 }
 
 async function setInstrument(icon: string) {
-    await useNuxtApp().$POST(`/band/instrument/${instrumentForDialog.value?.id}/icon`,{icon})
-    emit('updateBand')
     showDialog.value = false
+    if (!instrumentForDialog.value?.icons?.includes(icon)) {
+        const icons = instrumentForDialog.value?.icons
+        icons?.push(icon)
+        await useNuxtApp().$POST(`/my-band/instrument/${instrumentForDialog.value?.id}/icon`, {icons}, true)
+        emit('updateBand')
+    }
     instrumentForDialog.value = null
+}
+
+async function removeInstrument(instrument:IInstrument, icon: string) {
+    const icons = instrument.icons.filter(i => i !== icon)
+    await useNuxtApp().$POST(`/my-band/instrument/${instrument.id}/icon`, {icons}, true)
+    emit('updateBand')
 }
 
 </script>
@@ -56,19 +70,23 @@ async function setInstrument(icon: string) {
 v-card
     v-card-title Состав коллектива
     v-card-text
-        v-text-field(v-model="newArtist" label="Новый артист")
-        v-btn(@click="addInstrument" small) Создать
-        v-list
-            v-list-item(v-for="(instrument,i) of instrumentsFiltered" :key="i") {{instrument.artist.name}}
-                v-btn(@click.prevent="deleteInstrument(instrument.id)" icon="mdi-delete")
-                v-btn(@click="instrumentForDialog=instrument;showDialog=true" small)
-                    span.instrument(v-if="instrument.icon" :style="instrumentPosition[instrument.icon]")
-                    span(v-if="!instrument.icon") Выбрать инструмент
+        v-combobox(@change="" item-title="name" item-value="id" :items="artists" v-model="newArtist" label="Новый артист"  density="compact" append-inner-icon="mdi-account-multiple-check-outline" )
+            template(v-slot:append)
+                v-btn(@click="addInstrument" small) Добавить
+        v-container
+            v-row(v-for="(instrument,i) of instrumentsFiltered" :key="i" align="center" no-gutters)
+                v-col(cols="3") {{instrument.artist.name}}
+                v-col(cols="5")
+                    span.instrument(v-for="icon of instrument.icons" :key="icon" :style="instrumentPosition[icon]" @click="removeInstrument(instrument, icon)")
+                v-col(cols="2")
+                    v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" ) Добавить инструмент
+                v-col(cols="1")
+                    v-btn(@click.prevent="deleteInstrument(instrument.id)" icon="mdi-delete" size="x-small" )
         v-dialog(v-model="showDialog" width="500" v-if="instrumentForDialog")
             v-card
-                v-card-title Выберите инструмент для
+                v-card-title Выберите инструменты для
                 v-card-text
-                    div.instrument(v-for="(style,key) of instrumentPosition" :key="key" @click="setInstrument(key)" :style="style")
+                    div.instrument(v-for="(key,i) of Object.keys(instrumentPosition).filter(k=>!instrumentForDialog.icons.includes(k))" :key="key" @click="setInstrument(key)" :style="instrumentPosition[key]")
 
 </template>
 
