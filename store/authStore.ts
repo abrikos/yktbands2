@@ -15,17 +15,9 @@ export const useAuthStore = defineStore('auth', {
             const {data}: any = await useNuxtApp().$GET('/user/checkAuth');
             this.loggedUser = data.value
         },
-        async authenticateTelegram(body:Object) {
-            const {data, pending}: any = await useNuxtApp().$POST('/user/telegram', body);
-            if (!data.value) return
-            this.loggedUser = data.value
-            this.loading = pending;
-            const router = useRouter();
-            await router.push('/cabinet')
-        },
-        async authenticateUser({email, password}: UserPayloadInterface) {
+        async authenticateUser(body: UserPayloadInterface, strategy:string) {
             // useFetch from nuxt 3
-            const {data, pending}: any = await useNuxtApp().$POST('/user/login', {email, password,});
+            const {data, pending}: any = await useNuxtApp().$POST(`/user/login/${strategy}`, body);
             if (!data.value) return
             this.loggedUser = data.value
             this.loading = pending;

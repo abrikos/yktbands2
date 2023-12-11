@@ -1,15 +1,14 @@
 <script setup>
 import { useAuthStore } from '~/store/authStore.ts';
-const { authenticateTelegram } = useAuthStore(); // use authenticateUser action from  auth store
+const { authenticateUser } = useAuthStore(); // use authenticateUser action from  auth store
 const holder = ref(null)
 function login(data){
-    authenticateTelegram(data)
+    authenticateUser(data, 'telegram')
 }
 
 onMounted(()=>{
     window.onTelegramAuth = async function (user) {
         login(user)
-
     }
     const tgScript = document.createElement('script')
     tgScript.async = true
@@ -18,10 +17,7 @@ onMounted(()=>{
     tgScript.setAttribute('data-onauth', 'window.onTelegramAuth(user)')
     tgScript.setAttribute('data-request-access', 'write')
     tgScript.setAttribute('data-size', 'large')
-    console.log(holder)
     document.getElementById('holder').appendChild(tgScript);
-    //holder
-
 })
 
 </script>

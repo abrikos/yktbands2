@@ -28,18 +28,18 @@ div
     div(v-if="loggedUser")
         v-card
             v-card-title Профиль
+                img.strategy(:src="`/${loggedUser.strategy}.svg`" v-if="loggedUser.strategy" )
             v-card-text
-                img.avatar(:src="`/${loggedUser.strategy}.svg`" v-if="loggedUser.strategy" )
                 v-text-field(v-model="loggedUser.email" label="Email" disabled v-if="!loggedUser.strategy")
                 v-text-field(v-model="loggedUser.name" label="Имя")
-                v-text-field(v-model="loggedUser.photo" label="Фото")
+                v-text-field(v-model="loggedUser.avatarImage" label="Фото")
                     template(v-slot:append-inner)
                         //v-fade-transition
                         UserAvatar(:user="loggedUser" )
             v-card-actions
                 v-btn(@click="submit") Сохранить
         br
-        v-card(v-if="!loggedUser.strategy")
+        //v-card(v-if="!loggedUser.strategy")
             v-card-title Пароль
             v-card-text
                 v-text-field(v-model="password" label="Пароль" type="password")
@@ -49,6 +49,8 @@ div
 
 </template>
 
-<style scoped>
-
+<style scoped lang="sass">
+img.strategy
+    transform: translate(7px, 3px)
+    height: 20px
 </style>

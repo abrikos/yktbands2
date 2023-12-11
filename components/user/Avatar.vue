@@ -6,12 +6,13 @@ const props = defineProps({
 </script>
 
 <template lang="pug">
-img.avatar(:src="user.photo" onerror="this.src='/avatar.png'")
+img.avatar(:src="user.avatarImage || '/avatar.png'" onerror="this.src='/avatar.png'")
 </template>
 
 <style scoped lang="sass">
 .avatar
     width: 30px
+    height: 30px
     border-radius: 15px
     border: 1px solid gray
     margin: 2px

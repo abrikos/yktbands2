@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 
 export interface IUser extends mongoose.Document {
     name: string;
-    photo: string;
+    avatarImage: string;
     passwordHash: string;
     password: string;
     restorePassword: string
@@ -27,7 +27,7 @@ function md5(str: string) {
 
 const schema = new Schema({
     nameStored: String,
-    photo: String,
+    avatarImage: String,
     strategy: String,
     passwordHash:  String,
     email: {

@@ -5,7 +5,7 @@ const router = useRouter()
 if(loggedUser) router.push('/cabinet')
 const user = ref({email: 'abrikoz@gmail.com', password: '1'})
 async function submit(){
-    await authenticateUser(user.value)
+    await authenticateUser(user.value,'password')
 }
 
 </script>

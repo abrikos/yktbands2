@@ -4,6 +4,7 @@ import {BinaryLike} from "node:crypto";
 import crypto from "crypto";
 import nodemailer from 'nodemailer'
 import {password} from "iron-webcrypto";
+import {strategies} from "~/server/utils/strategies";
 
 //User.deleteMany().then(console.log)
 const router = createRouter()
@@ -43,7 +44,7 @@ router.post('/process-restore-password', defineEventHandler(async (event) => {
     const {code} = await readBody(event)
     const user: IUser | null = await User.findOne({restorePassword: code}) as unknown as IUser;
     if (!user) return
-    const password = crypto.createHmac('sha256', '').update(Math.random().toString()).digest('hex').substring(1,5)
+    const password = crypto.createHmac('sha256', '').update(Math.random().toString()).digest('hex').substring(1, 5)
     user.password = password
     user.restorePassword = ''
     await user.save()
@@ -59,13 +60,13 @@ router.post('/process-restore-password', defineEventHandler(async (event) => {
 router.get('/checkAuth', defineEventHandler(async (event) => {
     return event.context.user
 }))
+
 router.get('/logout', defineEventHandler(async (event) => {
     const cookies = parseCookies(event)
     await Token.deleteOne({access_token: cookies.auth});
     deleteCookie(event, 'auth')
-    setResponseStatus(event, 200)
-
 }))
+
 router.put('/signup', defineEventHandler(async (event) => {
     const {email, password} = await readBody(event)
     const user: IUser | null = await User.create({email, password}) as unknown as IUser;
@@ -76,82 +77,36 @@ router.put('/signup', defineEventHandler(async (event) => {
     return found
 
 }))
-router.post('/login', defineEventHandler(async (event) => {
-    const {email, password} = await readBody(event)
-    const user: IUser | null = await User.findOne({email});
-    if (user?.checkPasswd(password)) {
-        const token: IToken = await Token.create({user}) as unknown as IToken
-        setCookie(event, 'auth', token.access_token, {maxAge})
-        return utils.adaptUser(user)
-    } else {
-        throw createError({
-            statusCode: 401,
-            message: '/login: Ошибка аутентификации',
-        })
-
-    }
+User.findOne().then(console.log)
+//User.updateMany({userAvatar:'https://www.gravatar.com/avatar/b1eaaaf6060e7bcb688774211ae8924b?s=64&d=identicon&r=PG'}).then(console.log)
+router.post('/login/:strategy', defineEventHandler(async (event) => {
+    const {strategy} = event.context.params as Record<string, string>
+    if(!strategies[strategy]) throw createError({statusCode: 406, message: `Ошибка в стратегии "${strategy}"`})
+    const user = await strategies[strategy](event);
+    if (!user) throw createError({statusCode: 401, message: 'login: Ошибка аутентификации',})
+    const token: IToken = await Token.create({user}) as unknown as IToken
+    setCookie(event, 'auth', token.access_token, {maxAge})
+    return utils.adaptUser(user)
 }))
+
 router.post('/update', defineEventHandler(async (event) => {
-    const {name, password, photo} = await readBody(event)
+    const {name, password, avatarImage} = await readBody(event)
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     user.name = name
-    user.photo = photo
+    user.avatarImage = avatarImage
     if (password) user.password = password
     await user.save()
-    setResponseStatus(event, 200)
 }))
+
 router.post('/password', defineEventHandler(async (event) => {
     const {password} = await readBody(event)
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     if (password) {
-        console.log(user.passwordHash, 'd57d')
         user.password = password
-        console.log(user.passwordHash)
         await user.save()
     }
-    setResponseStatus(event, 200)
 }))
-router.post('/telegram', defineEventHandler(async (event) => {
-    const body = await readBody(event)
 
-    function checkSignature(body: any) {
-        const {hash, ...data} = body
-        const TOKEN: BinaryLike = process.env.BOT_TOKEN as BinaryLike;
-        const secret = crypto.createHash('sha256')
-            .update(TOKEN)
-            .digest();
-        const {returnUrl, strategy, ...rest} = data;
-        const checkString = Object.keys(rest)
-            .sort()
-            .map(k => (`${k}=${data[k]}`))
-            .join('\n');
-        const hmac = crypto.createHmac('sha256', secret)
-            .update(checkString)
-            .digest('hex');
-        return hmac === hash
-    }
-
-    const {username, first_name, last_name, photo_url} = body
-
-    if (checkSignature(body)) {
-        const email = username + '@telegram.org'
-        let user: IUser = await User.findOne({email, strategy: 'telegram'}) as unknown as IUser;
-        if (!user) {
-            user = await User.create({
-                strategy: 'telegram',
-                name: first_name + ' ' + last_name,
-                photo: photo_url,
-                email,
-            }) as unknown as IUser;
-        }
-        const token: IToken = await Token.create({user}) as unknown as IToken
-        setCookie(event, 'auth', token.access_token, {maxAge})
-        return utils.adaptUser(user)
-    } else {
-        throw createError({statusCode: 401, message: 'Ошибка аутентификации',})
-    }
-
-}))
 export default useBase('/api/user', router.handler)
