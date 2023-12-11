@@ -16,6 +16,7 @@ const router = useRouter()
 
 const {data: band, refresh: refreshBand, pending} = await useNuxtApp().$GET('/my-band/my-view/' + route.params.id) as unknown as IBandResponse
 const {data: artists, refresh: refreshArtists} = await useNuxtApp().$GET('/artist/all')// as unknown as IArtistResponse
+const {data: places, refresh: refreshPlaces} = await useNuxtApp().$GET('/concert/all')// as unknown as IArtistResponse
 
 const tabsItems = {
     concerts: {title: 'Концерты'},
@@ -27,6 +28,7 @@ const tabsItems = {
 async function loadSaved() {
     refreshBand()
     refreshArtists()
+    refreshPlaces()
 }
 
 const tab = computed({
@@ -49,9 +51,9 @@ div
     v-tabs(v-model="tab" density="compact")
         v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}
 
-    BandConcerts(v-if="tab==='concerts'" :band="band" :places="[]" @update-band="loadSaved")
+    BandConcerts(v-if="tab==='concerts'" :band="band" :places="places||[]" @update-band="loadSaved")
     BandSettings(v-if="tab==='settings'" :band="band" @update-band="loadSaved")
-    BandInstruments(v-if="tab==='instruments'" :artists="artists" :band="band" @update-band="loadSaved" :key="Math.random()")
+    BandInstruments(v-if="tab==='instruments'" :artists="artists||[]" :band="band" @update-band="loadSaved" :key="Math.random()")
 
 </template>
 

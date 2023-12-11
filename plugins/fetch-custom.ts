@@ -18,9 +18,9 @@ export default defineNuxtPlugin((_nuxtApp) => {
 
             onResponseError(_ctx) {
                 let text = _ctx.response._data.message
-                if (_ctx.response._data.message.match('E11000')) {
-                    text = 'Такой e-mail уже зарегистрирован'
-                }
+                // if (_ctx.response._data.message.match('E11000')) {
+                //     text = 'Такой e-mail уже зарегистрирован'
+                // }
                 snackbar.add({
                     type: 'error',
                     text
