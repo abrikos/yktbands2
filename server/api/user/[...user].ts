@@ -77,8 +77,7 @@ router.put('/signup', defineEventHandler(async (event) => {
     return found
 
 }))
-User.findOne().then(console.log)
-//User.updateMany({userAvatar:'https://www.gravatar.com/avatar/b1eaaaf6060e7bcb688774211ae8924b?s=64&d=identicon&r=PG'}).then(console.log)
+
 router.post('/login/:strategy', defineEventHandler(async (event) => {
     const {strategy} = event.context.params as Record<string, string>
     if(!strategies[strategy]) throw createError({statusCode: 406, message: `Ошибка в стратегии "${strategy}"`})

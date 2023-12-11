@@ -45,7 +45,7 @@ v-app
             v-list-item(@click="logUserOut" v-if="loggedUser" append-icon="mdi-logout" ) Выйти
 
     v-main
-        v-container
+        v-container(fluid)
             NuxtPage
     NuxtSnackbar
 </template>

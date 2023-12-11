@@ -6,9 +6,10 @@ import type {IArtist} from "~/server/models/artist.model";
 
 const emit = defineEmits(['updateBand']);
 const props = defineProps({
-    band: {type: Object as PropType<IBand>, required: true}
+    band: {type: Object as PropType<IBand>, required: true},
+    artists: {type: Object as PropType<IArtist[]>, required: true}
 })
-const {band} = props
+const {band, artists} = props
 
 const instrumentPosition = {
     guitar: {backgroundPosition: '0 0'},
@@ -26,8 +27,6 @@ const instrumentPosition = {
 
 
 
-const {data: artists} = await useNuxtApp().$GET('/artist/all')// as unknown as IArtistResponse
-
 const instrumentsFiltered = band.instruments.filter((i: IInstrument) => i.artist.name)
         .sort((a: IInstrument, b: IInstrument) => a.artist.name > b.artist.name ? -1 : a.artist.name < b.artist.name ? 1 : 0)
         .reverse()
@@ -35,6 +34,7 @@ const instrumentsFiltered = band.instruments.filter((i: IInstrument) => i.artist
 const newArtist = ref(null)
 const instrumentForDialog: Ref<IInstrument | null> = ref(null)
 const showDialog = ref(false)
+
 
 async function addInstrument() {
     await useNuxtApp().$PUT(`/my-band/${band.id}/instrument`, {artist: newArtist})

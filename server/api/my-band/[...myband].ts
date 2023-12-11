@@ -29,7 +29,6 @@ router.put('/create', defineEventHandler(async (event) => {
 router.get('/my-view/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     const {_id} = event.context.params as Record<string, string>
-    console.log(Types.ObjectId.isValid(_id))
     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     // @ts-ignore
