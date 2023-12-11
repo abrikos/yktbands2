@@ -1,7 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: ['@invictus.codes/nuxt-vuetify', 'nuxt-mongoose', 'nuxt-snackbar','@pinia/nuxt'],
+  runtimeConfig:{
+
+    public:{
+      yandexMap: process.env.YMAP,
+    }
+  },
   plugins: [
+    { src: '~/plugins/ymap', mode: 'client' },
   ],
   snackbar: {
     bottom: true,

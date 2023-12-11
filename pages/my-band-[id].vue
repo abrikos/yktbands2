@@ -18,8 +18,10 @@ const {data: band, refresh: refreshBand, pending} = await useNuxtApp().$GET('/my
 const {data: artists, refresh: refreshArtists} = await useNuxtApp().$GET('/artist/all')// as unknown as IArtistResponse
 
 const tabsItems = {
+    concerts: {title: 'Концерты'},
     instruments: {title: 'Состав'},
     settings: {title: 'Параметры'},
+
 }
 
 async function loadSaved() {
@@ -47,6 +49,7 @@ div
     v-tabs(v-model="tab" density="compact")
         v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}
 
+    BandConcerts(v-if="tab==='concerts'" :band="band" :places="[]" @update-band="loadSaved")
     BandSettings(v-if="tab==='settings'" :band="band" @update-band="loadSaved")
     BandInstruments(v-if="tab==='instruments'" :artists="artists" :band="band" @update-band="loadSaved" :key="Math.random()")
 
