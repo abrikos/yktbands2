@@ -14,17 +14,12 @@ interface IBandResponse {
 const route = useRoute()
 const router = useRouter()
 
-const {data, refresh:refreshBand, pending} = await useNuxtApp().$GET('/my-band/my-view/' + route.params.id) as unknown as IBandResponse
-const {data:artists, refresh:refreshArtists} = await useNuxtApp().$GET('/artist/all')// as unknown as IArtistResponse
+const {data: band, refresh: refreshBand, pending} = await useNuxtApp().$GET('/my-band/my-view/' + route.params.id) as unknown as IBandResponse
+const {data: artists, refresh: refreshArtists} = await useNuxtApp().$GET('/artist/all')// as unknown as IArtistResponse
 
 const tabsItems = {
-    instruments: {component: resolveComponent('BandInstruments'), title: 'Состав'},
-    av: {component: resolveComponent('UserAvatar'), title: 'Av'},
-
-    settings: {component: resolveComponent('BandSettings'), title: 'Параметры'},
-
-
-
+    instruments: {title: 'Состав'},
+    settings: {title: 'Параметры'},
 }
 
 async function loadSaved() {
@@ -32,30 +27,28 @@ async function loadSaved() {
     refreshArtists()
 }
 
-const tabs = computed({
+const tab = computed({
     get() {
         return route.query.tab
     },
     async set(tab) {
-        await router.replace({query:{...route.query, tab}})
+        await router.replace({query: {...route.query, tab}})
     }
 })
 
 async function tabNavigate(tab: string) {
-    await router.replace({query:{...route.query, tab}})
+    await router.replace({query: {...route.query, tab}})
 }
-
 </script>
 
 <template lang="pug">
 div
-    h1 Группа "{{data.name || data.shortcut}}" {{tabs}}
-    v-tabs(v-model="tabs" density="compact")
+    h1 Группа "{{band.name || band.shortcut}}"
+    v-tabs(v-model="tab" density="compact")
         v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}
 
-    v-window(v-model="tabs" )
-        v-window-item(v-for="(item, key) in tabsItems" :value="key" :key="key" )
-            component(:is="item.component" :user="{}" :artists="artists" :band="data" @update-band="loadSaved" :key="Math.random()")
+    BandSettings(v-if="tab==='settings'" :band="band" @update-band="loadSaved")
+    BandInstruments(v-if="tab==='instruments'" :artists="artists" :band="band" @update-band="loadSaved" :key="Math.random()")
 
 </template>
 
