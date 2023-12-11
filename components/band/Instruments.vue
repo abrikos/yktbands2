@@ -2,14 +2,13 @@
 import type {PropType} from "vue";
 import type {IInstrument} from "~/server/models/instrument.model";
 import type {IBand} from "~/server/models/band.model";
-import {useTheme} from "vuetify";
 import type {IArtist} from "~/server/models/artist.model";
 
 const emit = defineEmits(['updateBand']);
-const theme = useTheme()
 const props = defineProps({
     band: {type: Object as PropType<IBand>, required: true}
 })
+const {band} = props
 
 const instrumentPosition = {
     guitar: {backgroundPosition: '0 0'},
@@ -25,7 +24,7 @@ const instrumentPosition = {
     mixer: {backgroundPosition: '-100px -94px'},
 }
 
-const {band} = props
+
 
 const {data: artists} = await useNuxtApp().$GET('/artist/all')// as unknown as IArtistResponse
 

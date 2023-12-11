@@ -14,14 +14,9 @@ interface IBandResponse {
 const route = useRoute()
 
 const {data, refresh, pending} = await useNuxtApp().$GET('/my-band/my-view/' + route.params.id) as unknown as IBandResponse
-const edited = ref(false)
-function submit() {
-    useNuxtApp().$POST('/my-band/update/' + route.params.id, data)
-}
-
+const tabs = ref()
 async function loadSaved(){
     refresh()
-    edited.value = false
 }
 
 </script>
@@ -29,18 +24,14 @@ async function loadSaved(){
 <template lang="pug">
 div
     h1 Группа "{{data.name || data.shortcut}}"
-    v-card
-        v-card-title Параметры
-        v-card-text
-            v-text-field(v-model="data.name" label="Название" v-on:keyup="edited=true" density="compact" )
-            v-text-field(v-model="data.shortcut" label="Уникальный путь"  density="compact"  hint="Используется для создания уникальной ссылки на страницу коллектива. Только цифры, английские символыи нижнее подчеркивание" persistent-hint  v-on:keyup="edited=true" )
-            v-switch(v-model="data.enabled" label="Отображать для всех" v-on:change="edited=true")
-        v-card-actions(v-if="edited")
-            v-btn(@click="submit") Сохранить
-            v-spacer
-            v-btn(@click="loadSaved") Сбросить
-    br
-    BandInstruments(:band="data" @update-band="loadSaved" :key="Math.random()")
+    v-tabs(v-model="tabs" )
+        v-tab(value="instruments") Состав
+        v-tab(value="settings") Настройки
+    v-window(v-model="tabs" )
+        v-window-item(value="settings" )
+            BandSettings(:band="data" @update-band="loadSaved" :key="Math.random()")
+        v-window-item(value="instruments" )
+            BandInstruments(:band="data" @update-band="loadSaved" :key="Math.random()")
 </template>
 
 <style scoped lang="sass">
