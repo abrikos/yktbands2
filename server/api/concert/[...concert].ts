@@ -23,28 +23,25 @@ router.put('/create', defineEventHandler(async (event) => {
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён'})
     const {
         bandId,
-        placeId,
-        coordinate,
-        address,
-        name,
+        place,
         begin
     } = await readBody(event)
+    const {name, address, coordinate} = place
     if (!bandId) throw createError({statusCode: 406, message: 'Ошибка группы'})
     if (!Types.ObjectId.isValid(bandId)) throw createError({statusCode: 406, message: 'Ошибка группы'})
     const band = await Band.findOne({_id: bandId, user})//.populate(Band.getPopulation()) as unknown as IBand
     if (!band) throw createError({statusCode: 403, message: 'Группа не найдена'})
-    let place
-    if (placeId && Types.ObjectId.isValid(placeId)) {
-        place = await Place.findById(placeId)
+    let found
+    if (place.id && Types.ObjectId.isValid(place.id)) {
+        found = await Place.findById(place.id)
     }
-    if (!place) {
-        place = await Place.findOne({name, address})
+    if (!found) {
+        found = await Place.findOne({name, address})
     }
-    if (!place) {
-        //if(coordinate)
-        place = await Place.create({name, address, coordinate})
+    if (!found) {
+        found = await Place.create({name, address, coordinate})
     }
-    return Concert.create({place, begin, band, user})
+    return Concert.create({place: found, begin, band})
 }))
 
 export default useBase('/api/concert', router.handler)

@@ -70,7 +70,7 @@ div
 
                 v-card-text
                     ul
-                        li(v-for="(concert,i) of band.concerts" :key="i") {{i}} {{concert.place?.name}} {{concert.place?.address}}
+                        li(v-for="(concert,i) of band.concerts" :key="i") {{i}} {{concert.place?.name}} {{concert.place?.address}} {{concert.date}}
         v-col
             v-dialog(fullscreen            :scrim="false"                transition="dialog-bottom-transition")
                 template(v-slot:activator="{props}")
