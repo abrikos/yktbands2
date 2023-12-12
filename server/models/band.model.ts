@@ -10,12 +10,13 @@ const Schema = mongoose.Schema;
 export interface IBand extends mongoose.Document {
     name: string
     shortcut: string
+    nameOrShortcut: string
     enabled: boolean
-    instruments:[IInstrument]
-    concerts:[IConcert]
+    instruments: [IInstrument]
+    concerts: [IConcert]
     user: IUser,
-    logoRnd:string
-    posterRnd:string
+    logoRnd: string
+    posterRnd: string
 }
 
 
@@ -42,6 +43,10 @@ schema.statics.getPopulation = () => [
 schema.virtual('date')
     .get(function (this: { createdAt: Date }) {
         return moment(this.createdAt).format('YYYY-MM-DD HH:mm')
+    })
+schema.virtual('nameOrShortcut')
+    .get(function () {
+        return this.name || this.shortcut || this.id
     })
 schema.virtual('logo')
     .get(function () {
