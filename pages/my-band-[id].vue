@@ -16,7 +16,7 @@ const router = useRouter()
 
 const {data: band, refresh: refreshBand, pending: pendingBand} = await useNuxtApp().$GET('/my-band/view/' + route.params.id) as unknown as IBandResponse
 const {data: artists, refresh: refreshArtists, pending: pA} = await useNuxtApp().$GET('/artist/all')// as unknown as IArtistResponse
-const {data: places, refresh: refreshPlaces, pending: pP} = await useNuxtApp().$GET('/place/all', true)// as unknown as IArtistResponse
+const {data: places, refresh: refreshPlaces, pending: pP} = await useNuxtApp().$GET('/place/all')// as unknown as IArtistResponse
 
 const tabsItems = {
     concerts: {title: 'Концерты'},
