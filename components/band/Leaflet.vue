@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import type {IPlace} from "~/server/models/place.model";
 
-const props = defineProps<{ places: IPlace[], selectedPlace: IPlace, placeMarkerClick: (place: IPlace) => void, mapClick: (e: any) => Promise<void>, cancel: (e: any) => void, newConcert: {} }>()
+const props = defineProps<{
+    places: IPlace[],
+    placeMarkerClick: (place: IPlace) => void,
+    mapClick: (e: any) => Promise<void>,
+    cancel: (e: any) => void,
+    newConcert: {place:Object}
+}>()
 
 const center = ref([62.02722510699265, 129.73493946155247])
 const hoveredPlace = ref<IPlace>()
@@ -40,12 +46,12 @@ client-only
         l-control(position="bottomright")
             v-btn(icon="mdi-cancel" @click="cancel")
         l-marker(v-for="(place,i) of places.filter(p=>p.coordinateValid)" :lat-lng="place.coordinate" :key="i" @click="placeMarkerClickHandler(place)" @mouseover="(e)=>mouseOverHandle(e,place)" @mouseout="mouseLeaveHandle")
-            l-icon(v-if="selectedPlace?.id!==place.id" icon-url="/marker-blue.svg" :icon-anchor="[20,40]" )
-            l-icon(v-if="selectedPlace?.id===place.id" icon-url="/marker-red.svg" :icon-anchor="[20,40]" )
+            l-icon(v-if="newConcert.place?.id!==place.id" icon-url="/marker-blue.svg" :icon-anchor="[20,40]" )
+            l-icon(v-if="newConcert.place?.id===place.id" icon-url="/marker-red.svg" :icon-anchor="[20,40]" )
 
-        l-marker(v-if="newConcert.coordinate && !selectedPlace" :lat-lng="newConcert.coordinate")
+        l-marker(v-if="newConcert.place.coordinate && !newConcert.place.id" :lat-lng="newConcert.place.coordinate")
             l-icon(icon-url="/marker-red.svg" :icon-anchor="[20,40]" )
-
+    //small {{newConcert.place}}
 
 </template>
 
