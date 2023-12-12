@@ -8,7 +8,7 @@ import moment from 'moment'
 const emit = defineEmits(['updateBand']);
 const snackbar = useSnackbar();
 
-const props = defineProps<{band:IBand, places:IPlace[]}>()
+const props = defineProps<{ band: IBand, places: IPlace[] }>()
 const {band, places} = props
 
 const defaultConcert = {bandId: band.id, placeId: null, coordinate: null as [number, number] | unknown, address: null as unknown, name: null as unknown, begin: 0}
@@ -27,7 +27,7 @@ watch(newHour, (v) => {
 
 async function mapClick(e: any) {
     selectedPlace.value = undefined
-    const coordinate = e.get('coords')
+    const coordinate = [e.latlng.lat, e.latlng.lng]
     const {data} = await useNuxtApp().$POST('/concert/address', coordinate)
     newConcert.value.name = null
     newConcert.value.address = data.value
@@ -57,24 +57,32 @@ async function addConcert() {
 }
 
 function placeMarkerClick(place: IPlace) {
+    if (selectedPlace.value?.id === place.id) {
+        selectedPlace.value = undefined
+        return
+    }
     selectedPlace.value = place
     newConcert.value.name = place.name
     newConcert.value.address = place.address
 }
 
+const errorsRef = ref({coordinate: 'Укажите ресторан на карте', name: 'Укажите название ресторана', address: 'Укажите адрес ресторана', begin: 'Укажите дату концерта'})
 const errors = computed(() => {
-    const errors = {coordinate: '', name: '', address: '', begin:''}
     const body = newConcert.value
-    if (!selectedPlace.value) {
-        if (!body.coordinate) errors.coordinate = ('Укажите ресторан на карте')
-        if (!body.name) errors.name = ('Укажите название ресторана')
-        if (!body.address) errors.address = ('Укажите адрес ресторана')
-        if (!body.begin) errors.begin = ('Укажите дату концерта')
+    if (selectedPlace.value) {
+        errorsRef.value.coordinate = ''
+        errorsRef.value.name = ''
+        errorsRef.value.address = ''
+    }else{
+        if (body.coordinate) errorsRef.value.coordinate = ''
+        if (body.name) errorsRef.value.name = ''
+        if (body.address) errorsRef.value.address = ''
     }
-    return errors
+    if (body.begin) errorsRef.value.begin = ''
+    return errorsRef.value
 })
 
-const isNameSet = computed(()=>!!newConcert.value.name)
+const isNameSet = computed(() => !!newConcert.value.name)
 
 </script>
 
@@ -85,7 +93,7 @@ v-row
 
             v-card-text
                 ul
-                    li(v-for="(concert,i) of band.concerts" :key="i") {{i}} {{concert.place?.name}}
+                    li(v-for="(concert,i) of band.concerts" :key="i") {{i}} {{concert.place?.name}} {{concert.place?.address}}
     v-col
         v-card
             v-card-title Создание концерта
@@ -100,11 +108,11 @@ v-row
                     template(v-slot:append)
                         v-btn(v-if="selectedPlace" @click="selectedPlace = undefined" icon="mdi-cancel")
 
-                v-text-field(v-if="!selectedPlace && !!newConcert.coordinate" v-model="newConcert.name" label="Название ресторана" :messages="errors.name" :error="!!errors.name")
+                v-text-field(v-if="!selectedPlace && !!newConcert.coordinate" v-model="newConcert.name" label="Введите название нового ресторана" :messages="errors.name" :error="!!errors.name")
                     template(v-slot:append-inner)
                         v-btn(v-if="newConcert.name" @click="newConcert.name = undefined" icon="mdi-cancel")
                 span Для выбора существующего кликните по маркеру. Для создания нового кликните по дому когда курсор отображает руку раскрывшую 5 пальцев
-                BandYandexMap(:map-click="mapClick" :new-concert="newConcert" :place-marker-click="placeMarkerClick" :places="places")
+                BandLeaflet(:map-click="mapClick" :new-concert="newConcert" :selected-place="selectedPlace" :place-marker-click="placeMarkerClick" :places="places")
                 div.text-red {{errors.coordinate}}
             v-row
                 v-col Дата
@@ -114,7 +122,6 @@ v-row
                     div.d-flex.flex-wrap
                         div.ma-2(v-for="hour of hours" :key="hour")
                             v-btn(@click="setHour(hour)" small :color="hour===newHour ? `secondary` : ''") {{hour}}
-
 
 
 </template>

@@ -6,4 +6,7 @@ router.get('/all', defineEventHandler(async (event) => {
     //return   Place.find({coordinateX:{$gt:0},coordinateY:{$gt:0},}).populate(Place.getPopulation())
 }))
 
+//Place.deleteMany().then(console.log)
+//Place.find().then(res=>{    console.log(res.length)})
+
 export default useBase('/api/place', router.handler)
