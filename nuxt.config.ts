@@ -1,6 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: ['@invictus.codes/nuxt-vuetify', 'nuxt-mongoose', 'nuxt-snackbar','@pinia/nuxt'],
+  app:{
+    head:{
+      script:[
+        {src:`https://api-maps.yandex.ru/v3/?apikey=${process.env.YMAP}&lang=ru_RU`}
+      ]
+    }
+  },
   runtimeConfig:{
 
     public:{

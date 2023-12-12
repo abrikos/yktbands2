@@ -5,7 +5,8 @@ const {loggedUser} = storeToRefs(useAuthStore()); // make authenticated state re
 
 const password = ref()
 const password2 = ref()
-const canSubmit = ()=> {
+const tab = ref()
+const canSubmit = () => {
     return password.value && password.value === password2.value
 }
 
@@ -14,10 +15,14 @@ definePageMeta({
 })
 
 async function submit() {
-    await useNuxtApp().$POST('/user/update', loggedUser)
+    const user = loggedUser.value
+    if (user) {
+        await useNuxtApp().$POST('/user/update', user)
+    }
 }
+
 async function changePassword() {
-    await useNuxtApp().$POST('/user/password', {password})
+    await useNuxtApp().$POST('/user/password', {password: password.value})
     password2.value = undefined
     password.value = undefined
 }
@@ -25,27 +30,34 @@ async function changePassword() {
 
 <template lang="pug">
 div
-    div(v-if="loggedUser")
-        v-card
-            v-card-title Профиль
-                img.strategy(:src="`/${loggedUser.strategy}.svg`" v-if="loggedUser.strategy" )
-            v-card-text
-                v-text-field(v-model="loggedUser.email" label="Email" disabled v-if="!loggedUser.strategy")
-                v-text-field(v-model="loggedUser.name" label="Имя")
-                v-text-field(v-model="loggedUser.avatarImage" label="Фото")
-                    template(v-slot:append-inner)
-                        //v-fade-transition
-                        UserAvatar(:user="loggedUser" )
-            v-card-actions
-                v-btn(@click="submit") Сохранить
-        br
-        //v-card(v-if="!loggedUser.strategy")
-            v-card-title Пароль
-            v-card-text
-                v-text-field(v-model="password" label="Пароль" type="password")
-                v-text-field(v-model="password2" label="Подтверждение пароля" type="password" :rules="[() => password === password2 || 'Пароль и подтверждение должны совпадать']")
-            v-card-actions
-                v-btn(@click="changePassword" v-if="canSubmit()") Сохранить
+    v-row(v-if="loggedUser")
+        v-col(cols="2")
+            v-tabs(v-model="tab" direction="vertical" )
+                v-tab(value="1" ) Профиль
+                v-tab(value="2" ) Смена пароля
+        v-col
+            v-window(v-model="tab" )
+                v-window-item(value="1" )
+                    v-card
+                        v-card-title Профиль
+                            img.strategy(:src="`/${loggedUser.strategy}.svg`" v-if="loggedUser.strategy" )
+                        v-card-text
+                            v-text-field(v-model="loggedUser.email" label="Email" disabled v-if="!loggedUser.strategy")
+                            v-text-field(v-model="loggedUser.name" label="Имя")
+                            v-text-field(v-model="loggedUser.avatarImage" label="Фото")
+                                template(v-slot:append-inner)
+                                    //v-fade-transition
+                                    UserAvatar(:user="loggedUser" )
+                        v-card-actions
+                            v-btn(@click="submit") Сохранить
+                v-window-item(value="2" )
+                    v-card(v-if="!loggedUser.strategy")
+                        v-card-title Смена пароля
+                        v-card-text
+                            v-text-field(v-model="password" label="Новый пароль" type="password")
+                            v-text-field(v-model="password2" label="Подтверждение пароля" type="password" :rules="[() => password === password2 || 'Пароль и подтверждение должны совпадать']")
+                        v-card-actions
+                            v-btn(@click="changePassword" v-if="canSubmit()") Сохранить
 
 </template>
 

@@ -6,136 +6,118 @@ import {YandexMap, YandexMarker} from 'vue-yandex-maps';
 import moment from 'moment'
 
 const emit = defineEmits(['updateBand']);
-const props = defineProps({
-    band: {type: Object as PropType<IBand>, required: true},
-    places: {type: Array as PropType<Array<IPlace>>, required: true},
-})
+const snackbar = useSnackbar();
+
+const props = defineProps<{band:IBand, places:IPlace[]}>()
 const {band, places} = props
-const defaultConcert = {band, begin: 0, place: {id: null, name: null, coordinate: null, address: null}}
+
+const defaultConcert = {bandId: band.id, placeId: null, coordinate: null as [number, number] | unknown, address: null as unknown, name: null as unknown, begin: 0}
 const newConcert = ref(defaultConcert)
-const newDate = ref()
-const newHour = ref()
-const step = ref('place')
-const steps = [
-    {title: '', key: 'start'},
-    {title: 'Место проведения', key: 'place'},
-    {title: 'Дата', key: 'date'},
-    {title: 'Время', key: 'hour'},
-    {title: 'Всё готово', key: 'fin'}
-]
-const center = [62.02722510699265, 129.73493946155247]
+const newDate = ref<Date>()
+const newHour = ref<number>(20)
+const selectedPlace = ref<IPlace>()
 const hours = Array.from(Array(25).keys())
 
 watch(newDate, (v) => {
-    newConcert.value.begin = moment(v).unix()
+    newConcert.value.begin = moment(v).unix() + newHour.value * 3600
 })
 watch(newHour, (v) => {
     newConcert.value.begin = moment(newDate.value).unix() + v * 3600
 })
 
 async function mapClick(e: any) {
+    selectedPlace.value = undefined
     const coordinate = e.get('coords')
     const {data} = await useNuxtApp().$POST('/concert/address', coordinate)
-    newConcert.value.place.address = data.value
-    newConcert.value.place.coordinate = coordinate
-}
-
-function markerClick(place: IPlace) {
-    newConcert.value.place = place
+    newConcert.value.name = null
+    newConcert.value.address = data.value
+    newConcert.value.coordinate = coordinate
 }
 
 function setHour(hour: number) {
     newHour.value = hour
 }
 
-function stepsResult() {
-    return 'Ваш выбор:'
-}
-
-function nextStep() {
-    const stepObject = steps.find(s => s.key === step.value)
-    const stepIdx = stepObject ? steps.indexOf(stepObject) : 0
-    const nextStepObject = steps[stepIdx + 1]
-    step.value = nextStepObject ? nextStepObject.key : steps[0].key
-}
-
-function prevStep() {
-    const stepObject = steps.find(s => s.key === step.value)
-    const stepIdx = stepObject ? steps.indexOf(stepObject) : 0
-    const prevStepObject = steps[stepIdx - 1]
-    step.value = prevStepObject ? prevStepObject.key : steps[0].key
-}
-
 async function addConcert() {
-    await useNuxtApp().$PUT('/concert/create', newConcert.value, true)
+    const type = 'warning'
+    const errors: string[] = []
+    const body = newConcert.value
+    body.placeId = selectedPlace.value?.id
+    if (!body.placeId) {
+        if (!body.coordinate) errors.push('Укажите ресторан на карте')
+        if (!body.name) errors.push('Укажите название ресторана')
+        if (!body.address) errors.push('Укажите адрес ресторана')
+    }
+    if (errors.length) {
+        errors.forEach((text: string) => snackbar.add({type, text}))
+        return
+    }
+    await useNuxtApp().$PUT('/concert/create', body)
     emit('updateBand')
-    newConcert.value = defaultConcert
-    nextStep()
 }
 
-async function choosePlace() {
-    emit('updateBand')
+function placeMarkerClick(place: IPlace) {
+    selectedPlace.value = place
+    newConcert.value.name = place.name
+    newConcert.value.address = place.address
 }
 
-function stepTitle() {
-    const stepObject = steps.find(s => s.key === step.value)
-    return stepObject ? stepObject.title : 'Step NF'
-}
+const errors = computed(() => {
+    const errors = {coordinate: '', name: '', address: '', begin:''}
+    const body = newConcert.value
+    if (!selectedPlace.value) {
+        if (!body.coordinate) errors.coordinate = ('Укажите ресторан на карте')
+        if (!body.name) errors.name = ('Укажите название ресторана')
+        if (!body.address) errors.address = ('Укажите адрес ресторана')
+        if (!body.begin) errors.begin = ('Укажите дату концерта')
+    }
+    return errors
+})
+
+const isNameSet = computed(()=>!!newConcert.value.name)
 
 </script>
 
 <template lang="pug">
-v-card
-    v-card-title Концерты
-    v-card-text
-        v-row
-            v-col(cols="4") LIST
-            v-col
-                h2 {{stepTitle()}}
-                v-window(v-model="step")
-                    div.window-iem(value="start")
-                        v-btn(color="primary" @click="nextStep") Начать создание концерта
-                        v-btn(color="error" @click="addConcert") Создать концерт
-                    div.window-iem(value="place")
-                        v-combobox(item-title="name" item-value="id" :items="places" v-model="newConcert.place.id" label="Выбрите существующий ресторан"  density="compact" @change="choosePlace")
-                        v-text-field(v-model="newConcert.place.name" label="Введите название нового ресторана" :disabled="!!newConcert.place.id")
-                        v-text-field(v-model="newConcert.place.address" label="Адрес" :disabled="!!newConcert.place.id")
+v-row
+    v-col(cols="4")
+        v-card
 
-                        client-only
-                            span Для выбора существующего кликните по маркеру. Для создания нового - по дому когда курсор отображает руку раскрывшую 5 пальцев
-                            YandexMap#map(:coordinates="center" :zoom="16"   map-type="map" @click="mapClick")
-                                YandexMarker(v-if="newConcert.place.coordinate" :coordinates="newConcert.place.coordinate" marker-id="new-marker")
-                                YandexMarker(v-for="(place,i) of places" :coordinates="place.coordinate" :marker-id="`m${i}`" :key="i" @click="markerClick(place)")
-                        div(v-if="newConcert.place.name")
-                            v-btn(@click="nextStep" color="primary") Далее
+            v-card-text
+                ul
+                    li(v-for="(concert,i) of band.concerts" :key="i") {{i}} {{concert.place?.name}}
+    v-col
+        v-card
+            v-card-title Создание концерта
+                small.text-blue.px-2
+                    span.px-1(v-if="newConcert.name") Ресторан "{{newConcert.name}}",
+                    span.px-1(v-if="newConcert.address") {{newConcert.address}},
+                    span.px-1(v-if="newConcert.begin") в {{moment.unix(newConcert.begin).format('YYYY-MM-DD HH:00')}}
+                br
+                v-btn(v-if="!Object.values(errors).filter(e=>!!e).length" @click="addConcert" color="primary") Создать концерт
+            v-card-text
+                v-combobox(v-if="!newConcert.coordinate" item-title="fullName" item-value="id" :items="places" v-model="selectedPlace" label="Выбрите существующий ресторан")
+                    template(v-slot:append)
+                        v-btn(v-if="selectedPlace" @click="selectedPlace = undefined" icon="mdi-cancel")
 
-                    div.window-iem(value="date")
-                        v-date-picker(v-model="newDate" hide-header show-adjacent-months title="zzz" )
-                        div(v-if="newDate")
-                            h1 Вы выбрали {{moment(newDate).format('YYYY-MM-DD')}}
-                            v-btn(@click="nextStep" color="primary") Далее
+                v-text-field(v-if="!selectedPlace && !!newConcert.coordinate" v-model="newConcert.name" label="Название ресторана" :messages="errors.name" :error="!!errors.name")
+                    template(v-slot:append-inner)
+                        v-btn(v-if="newConcert.name" @click="newConcert.name = undefined" icon="mdi-cancel")
+                span Для выбора существующего кликните по маркеру. Для создания нового кликните по дому когда курсор отображает руку раскрывшую 5 пальцев
+                BandYandexMap(:map-click="mapClick" :new-concert="newConcert" :place-marker-click="placeMarkerClick" :places="places")
+                div.text-red {{errors.coordinate}}
+            v-row
+                v-col Дата
+                    span.text-red.px-1 {{errors.begin}}
+                    v-date-picker.picker(v-model="newDate" hide-header show-adjacent-months title="zzz")
+                v-col Время
+                    div.d-flex.flex-wrap
+                        div.ma-2(v-for="hour of hours" :key="hour")
+                            v-btn(@click="setHour(hour)" small :color="hour===newHour ? `secondary` : ''") {{hour}}
 
-                    div.window-iem(value="hour")
-                        div.d-flex.flex-wrap
-                            div.ma-2(v-for="hour of hours" :key="hour")
-                                v-btn(@click="setHour(hour)" small :color="hour===newHour ? `primary` : ''") {{hour}}
-                        h1 Вы выбрали {{moment.unix(newConcert.begin).format('YYYY-MM-DD HH:mm')}}
-                        v-btn(v-if="newHour >= 0" @click="nextStep" color="primary") Далее
-
-                    div.window-iem(value="fin")
-                        div.d-flex.justify-center
-                            v-btn(color="danger" @click="addConcert") Создать концерт
-                h1 {{stepsResult()}}
-                hr.my-3
-                v-btn(v-if="step !=='start'" @click="prevStep") Вернуться
-                v-btn(@click="nextStep" color="primary") Далее
 
 
 </template>
 
 <style scoped lang="sass">
-#map
-    width: 100%
-    height: 300px
-    border: 1px solid red
 </style>

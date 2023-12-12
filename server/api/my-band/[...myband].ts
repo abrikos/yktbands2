@@ -13,7 +13,7 @@ Place.find()
 Concert.find()
 Instrument.find()
 
-router.get('/my-list', defineEventHandler(async (event) => {
+router.get('/all', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     // @ts-ignore
@@ -26,7 +26,7 @@ router.put('/create', defineEventHandler(async (event) => {
     return Band.create({user})
 }))
 
-router.get('/my-view/:_id', defineEventHandler(async (event) => {
+router.get('/view/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     const {_id} = event.context.params as Record<string, string>
     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})

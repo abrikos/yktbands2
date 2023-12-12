@@ -7,9 +7,10 @@ const Schema = mongoose.Schema;
 
 export interface IPlace extends mongoose.Document {
     name: string,
+    fullName: string,
     address: string,
     coordinate: [number, number],
-    enabled: boolean
+    coordinateValid: boolean
 }
 
 
@@ -18,7 +19,6 @@ const schema = new Schema({
         address: {type: String},
         coordinateX: Number,
         coordinateY: Number,
-        enabled: {type: Boolean, default: true}
     },
     {
         toObject: {virtuals: true},
@@ -31,6 +31,15 @@ schema.statics.getPopulation = () => [
     {path: 'concerts', populate: {path: 'band', select: {logo: 1, name: 1}}},
 ]
 
+schema.virtual('fullName')
+    .get(function () {
+        return `${this.name}, ${this.address}`;
+    })
+
+schema.virtual('coordinateValid')
+    .get(function () {
+        return this.coordinateX && this.coordinateY;
+    })
 schema.virtual('coordinate')
     .get(function () {
         return [this.coordinateX, this.coordinateY];

@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import {IUser} from "~/server/models/user.model";
 import moment from "moment";
 import {IInstrument} from "~/server/models/instrument.model";
+import {IConcert} from "~/server/models/concert.model";
 
 const Schema = mongoose.Schema;
 
@@ -11,6 +12,7 @@ export interface IBand extends mongoose.Document {
     shortcut: string
     enabled: boolean
     instruments:[IInstrument]
+    concerts:[IConcert]
     user: IUser,
     logoRnd:string
     posterRnd:string
