@@ -4,8 +4,8 @@ import type {IPlace} from "~/server/models/place.model";
 import moment from 'moment'
 
 const {$event} = useNuxtApp()
-const props = defineProps<{ band: IBand}>()
-const {data: places, refresh: refreshPlaces, pending: pP} = await useNuxtApp().$GET('/place/all')// as unknown as IArtistResponse
+const props = defineProps<{ band: IBand, place?:IPlace}>()
+const {data: places, refresh: refreshPlaces, pending: pendingPlaces} = await useNuxtApp().$GET('/place/all')// as unknown as IArtistResponse
 
 const snackbar = useSnackbar();
 
@@ -36,6 +36,7 @@ function setHour(hour: number) {
 
 async function addConcert() {
     await useNuxtApp().$PUT('/concert/create', newConcert.value)
+    await refreshPlaces()
     $event('band:refresh')
     $event('dialog:close')
 }
@@ -71,13 +72,14 @@ v-row
         h3 Ресторан
         v-divider
         small Для выбора существующего ресторана кликните по маркеру. Для создания нового - кликните по карте
-        BandLeaflet(:cancel="placeCancel" :map-click="mapClick" :new-concert="newConcert" :place-marker-click="placeMarkerClick" :places="places")
+        div(v-if="!pendingPlaces")
+            BandLeaflet(:cancel="placeCancel" :map-click="mapClick" :new-concert="newConcert" :place-marker-click="placeMarkerClick" :places="places")
 
-        v-combobox(placeholder="Поиск ресторана" item-title="fullName" item-value="id" :items="places" v-model="placeSearch" density="compact" variant="outlined" )
-            template(v-slot:prepend-inner)
-                v-icon mdi-magnify
-            //template(v-slot:append-inner)
-                v-btn(v-if="newConcert.place?.id" @click="newConcert.place = {}" icon="mdi-cancel")
+            v-combobox(placeholder="Поиск ресторана" item-title="fullName" item-value="id" :items="places" v-model="placeSearch" density="compact" variant="outlined" )
+                template(v-slot:prepend-inner)
+                    v-icon mdi-magnify
+                //template(v-slot:append-inner)
+                    v-btn(v-if="newConcert.place?.id" @click="newConcert.place = {}" icon="mdi-cancel")
         div(v-if="!newConcert.place.id && newConcert.place.coordinate")
             div {{newConcert.place?.address}}
             v-text-field(placeholder="Введите название нового ресторана" v-model="newConcert.place.name" variant="outlined" density="compact")
