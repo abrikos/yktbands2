@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type {IPlace} from "~/server/models/place.model";
 import type {UnwrapRef} from "vue";
+import type {IConcert} from "~/server/models/concert.model";
 
 
 const props = defineProps<{
@@ -8,7 +9,7 @@ const props = defineProps<{
     placeMarkerClick: (place: IPlace) => void,
     mapClick: (e: any) => Promise<void>,
     cancel: (e: any) => void,
-    newConcert: UnwrapRef<{bandId:any, place:IPlace, begin:number }>
+    newConcert: UnwrapRef<IConcert | undefined>
 }>()
 
 const center = ref([62.02722510699265, 129.73493946155247])
@@ -46,12 +47,12 @@ client-only
     l-map#leaflet(ref="map" :zoom="16" :center="center" @click="mapClickHandler")
         l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="" layer-type="base" name="OpenStreetMap")
         l-control(position="bottomright")
-            v-btn(v-if="newConcert.place.coordinate" icon="mdi-cancel" @click.stop="cancel")
+            v-btn(v-if="newConcert?.place.coordinate" icon="mdi-cancel" @click.stop="cancel")
         l-marker(v-for="(place,i) of places.filter(p=>p.coordinateValid)" :lat-lng="place.coordinate" :key="i" @click="placeMarkerClickHandler(place)" @mouseover="(e)=>mouseOverHandle(e,place)" @mouseout="mouseLeaveHandle")
-            l-icon(v-if="newConcert.place?.id!==place.id" icon-url="/marker-blue.svg" :icon-anchor="[20,40]" )
-            l-icon(v-if="newConcert.place?.id===place.id" icon-url="/marker-red.svg" :icon-anchor="[20,40]" )
+            l-icon(v-if="newConcert?.place?.id!==place.id" icon-url="/marker-blue.svg" :icon-anchor="[20,40]" )
+            l-icon(v-if="newConcert?.place?.id===place.id" icon-url="/marker-red.svg" :icon-anchor="[20,40]" )
 
-        l-marker(v-if="newConcert.place.coordinate && !newConcert.place.id" :lat-lng="newConcert.place.coordinate")
+        l-marker(v-if="newConcert?.place.coordinate && !newConcert?.place.id" :lat-lng="newConcert?.place.coordinate")
             l-icon(icon-url="/marker-red.svg" :icon-anchor="[20,40]" )
     //small {{newConcert.place}}
 

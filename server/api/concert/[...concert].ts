@@ -1,4 +1,5 @@
 import {Types} from "mongoose";
+import {IConcert} from "~/server/models/concert.model";
 
 const router = createRouter()
 
@@ -16,21 +17,39 @@ router.post('/address', defineEventHandler(async (event) => {
     return data?.response?.GeoObjectCollection.featureMember[0]?.GeoObject?.name
 }))
 
-//Place.find().then(console.log)
-
-router.put('/create', defineEventHandler(async (event) => {
+router.delete('/delete/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён'})
-    const {
-        bandId,
-        place,
-        begin
-    } = await readBody(event)
-    const {name, address, coordinate} = place
-    if (!bandId) throw createError({statusCode: 406, message: 'Ошибка группы'})
-    if (!Types.ObjectId.isValid(bandId)) throw createError({statusCode: 406, message: 'Ошибка группы'})
-    const band = await Band.findOne({_id: bandId, user})//.populate(Band.getPopulation()) as unknown as IBand
+    const {_id} = event.context.params as Record<string, string>
+    if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 404, message: 'Концерт не найден'})
+    const concert = await Concert.findById(_id) as unknown as IConcert
+    if (!concert) throw createError({statusCode: 404, message: 'Концерт не найден'})
+    const band = await Band.findOne({_id: concert.band, user})//.populate(Band.getPopulation()) as unknown as IBand
     if (!band) throw createError({statusCode: 403, message: 'Группа не найдена'})
+    await Concert.deleteOne({_id})
+    //await Concert.updateMany({test:Math.random().toString()})
+}))
+
+//Concert.find().then(console.log)
+//Concert.deleteMany().then(console.log)
+
+router.put('/upsert', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён'})
+    const body = await readBody(event)
+    const {
+        id,
+        enabled,
+        band,
+        place,
+        date,
+        hour
+    } = body
+    const {name, address, coordinate} = place
+    if (!band) throw createError({statusCode: 406, message: 'Ошибка группы: no band'})
+    if (!Types.ObjectId.isValid(band.id||band)) throw createError({statusCode: 406, message: `Ошибка группы: wrong id:"${band}"`})
+    const bandFound = await Band.findOne({_id: band.id||band, user})//.populate(Band.getPopulation()) as unknown as IBand
+    if (!bandFound) throw createError({statusCode: 403, message: 'Группа не найдена'})
     let found
     if (place.id && Types.ObjectId.isValid(place.id)) {
         found = await Place.findById(place.id)
@@ -41,7 +60,12 @@ router.put('/create', defineEventHandler(async (event) => {
     if (!found) {
         found = await Place.create({name, address, coordinate})
     }
-    return Concert.create({place: found, begin, band})
+    if(id) {
+        await Concert.updateOne({_id: id}, {place: found, date, hour, band, enabled})
+    }else{
+        await Concert.create({place: found, date, hour, band, enabled})
+    }
+
 }))
 
 export default useBase('/api/concert', router.handler)

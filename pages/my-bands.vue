@@ -22,9 +22,12 @@ async function create() {
 
 <template lang="pug">
 v-card
-    v-card-title Мои группы
-    v-card-text
+    v-toolbar
+        v-toolbar-title Мои группы
+        v-divider(vertical inset)
         v-btn(@click="create" color="primary") Создать
+    v-card-text
+
         v-list
             v-list-item(v-for="(item, i) of list" :key="i" @click="()=>router.push(`/my-band-${item.id}`)") {{item.nameOrShortcut}}
 </template>

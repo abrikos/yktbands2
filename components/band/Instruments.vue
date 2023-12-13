@@ -70,7 +70,8 @@ async function removeInstrument(instrument:IInstrument, icon: string) {
 
 <template lang="pug">
 v-card
-    v-card-title Состав коллектива
+    v-toolbar
+        v-toolbar-title Состав коллектива
     v-card-text
         v-combobox(item-title="name" item-value="id" :items="artists" v-model="newArtist" label="Выбрать или создать артиста"  density="compact")
             template(v-slot:append)

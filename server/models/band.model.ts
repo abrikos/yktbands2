@@ -76,7 +76,7 @@ schema.virtual('concerts', {
     ref: 'concert',
     localField: '_id',
     foreignField: 'band',
-    options: {sort: {begin: -1}}
+    options: {sort: {date: -1}}
 })
 schema.virtual('instruments', {
     ref: 'instrument',

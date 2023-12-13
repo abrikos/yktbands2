@@ -9,19 +9,21 @@ const Schema = mongoose.Schema;
 
 export interface IConcert extends mongoose.Document {
     place: IPlace
-    begin: number
+    date: Date
+    hour: number
     band: IBand,
     enabled: boolean
-    date: string
+    dateHuman: string
 }
 
 
 const schema = new Schema({
         place: {type: mongoose.Schema.Types.ObjectId, ref: 'place'},
-        begin: {type: Number, require: true},
+        date: {type: Date, require: true},
         band: {type: mongoose.Schema.Types.ObjectId, ref: 'band'},
-        enabled: {type: Boolean, default: true}
-
+        enabled: {type: Boolean, default: true},
+        hour: {type: Number, default: 20},
+        test: String
     },
     {
         toObject: {virtuals: true},
@@ -30,9 +32,9 @@ const schema = new Schema({
         toJSON: {virtuals: true}
     });
 
-schema.virtual('date')
-    .get(function (this: { begin: number }) {
-        return moment.unix(this.begin).format('YYYY-MM-DD HH:mm')
+schema.virtual('dateHuman')
+    .get(function (this: { date: Date, hour:number }) {
+        return moment(this.date).add(this.hour, 'hours').format('YYYY-MM-DD HH:mm')
     })
 
 

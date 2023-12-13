@@ -21,7 +21,8 @@ function reset(){
 
 <template lang="pug">
 v-card
-    v-card-title Параметры
+    v-toolbar
+        v-toolbar-title Параметры
     v-card-text
         v-text-field(v-model="band.name" label="Название" v-on:keyup="edited=true" density="compact" )
         v-text-field(v-model="band.shortcut" label="Уникальный путь"  density="compact"  hint="Используется для создания уникальной ссылки на страницу коллектива. Только цифры, английские символыи нижнее подчеркивание" persistent-hint  v-on:keyup="edited=true" )

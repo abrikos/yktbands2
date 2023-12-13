@@ -1,41 +1,52 @@
 <script setup lang="ts">
 import type {IBand} from "~/server/models/band.model";
-import type {IPlace} from "~/server/models/place.model";
+import type {IConcert} from "~/server/models/concert.model";
 
-const props = defineProps<{ band: IBand}>()
-const {$event, $listen} = useNuxtApp()
-$listen('dialog:close', () => showDialog.value = false)
+const props = defineProps<{ band: IBand }>()
+const {$event} = useNuxtApp()
 
-const showDialog = ref()
+const concertEdit = ref()
 
-async function deleteConcert() {
+
+const listHeaders = [
+     {title: 'Ресторан', key: 'place.name'},
+    {title: 'Адрес', key: 'place.address'},
+    {title: 'Дата', key: 'dateHuman'},
+    {title: 'Показывать всем', key: 'enabled'},
+    {title: '', key: 'actions'},
+]
+
+async function updateConcert(concert: IConcert) {
+    console.log('zzzzzzz', concert)
+    await useNuxtApp().$PUT('/concert/upsert', concert)
+}
+
+async function deleteConcert(concert: IConcert) {
+    await useNuxtApp().$DELETE('/concert/delete/' + concert.id)
     $event('band:refresh')
 }
 
+function editConcert(concert: IConcert) {
+    $event('concertDialog:show', concert)
+}
 </script>
 
 <template lang="pug">
-div
-    v-row
-        v-col(cols="4")
-            v-card
+v-card
+    v-toolbar
+        v-toolbar-title Концерты
+        v-divider.mx-4(vertical inset)
+        v-spacer
+        BandConcertEdit(:band="band" :concert="concertEdit")
 
-                v-card-text
-                    ul
-                        li(v-for="(concert,i) of band.concerts" :key="i") {{i}} {{concert.place?.name}} {{concert.place?.address}} {{concert.date}}
-                            v-btn(@click="deleteConcert") del
-        v-col
-            v-btn(@click="showDialog=true" color="primary" ) Добавить новый концерт
-            v-dialog(v-model="showDialog" xfullscreen  transition="dialog-bottom-transition")
-                v-card
-                    v-toolbar(color="primary")
-                        v-btn(icon="mdi-close" @click="showDialog=false")
-                        v-toolbar-title Добавление концера
-                    v-card-text
-                            BandPlace(:band="band")
-                    v-card-actions
-                        v-spacer
-                        v-btn(@click="showDialog=false") Закрыть
+    v-card-text
+        v-data-table(:items="band.concerts" :headers="listHeaders" density="compact" )
+            template(v-slot:item.actions="{item}")
+                v-btn(@click="editConcert(item)" icon="mdi-pencil" size="x-small" color="primary")
+                v-btn(@click="async()=>await deleteConcert(item)" icon="mdi-delete" size="x-small" color="red")
+            template(v-slot:item.enabled="{item}")
+                v-checkbox(v-model="item.enabled" @change="()=>updateConcert(item)")
+
 
 </template>
 

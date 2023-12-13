@@ -52,10 +52,9 @@ div
     h1 Группа "{{band.nameOrShortcut}}"
     v-tabs(v-model="tab" density="compact")
         v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}
-    div(v-if="!pendingBand" )
-        BandConcerts(v-if="tab==='concerts'" :band="band" Xplaces="places||[]" @update-band="loadSaved")
-        BandSettings(v-if="tab==='settings'" :band="band" @update-band="loadSaved")
-        BandInstruments(v-if="tab==='instruments'" Xartists="artists||[]" :band="band" @update-band="loadSaved")
+    BandConcerts(v-if="tab==='concerts'" :band="band" Xplaces="places||[]" @update-band="loadSaved")
+    BandSettings(v-if="tab==='settings'" :band="band" @update-band="loadSaved")
+    BandInstruments(v-if="tab==='instruments'" Xartists="artists||[]" :band="band" @update-band="loadSaved" :key="Math.random()")
 
 </template>
 
