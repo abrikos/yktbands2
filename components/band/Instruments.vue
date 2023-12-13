@@ -4,12 +4,15 @@ import type {IInstrument} from "~/server/models/instrument.model";
 import type {IBand} from "~/server/models/band.model";
 import type {IArtist} from "~/server/models/artist.model";
 
-const emit = defineEmits(['updateBand']);
 const props = defineProps({
     band: {type: Object as PropType<IBand>, required: true},
     artists: {type: Object as PropType<IArtist[]>, required: true}
 })
-const {band, artists} = props
+
+const {data: artists, refresh: refreshArtists, pending: pA} = await useNuxtApp().$GET('/artist/all')// as unknown as IArtistResponse
+const { $event } = useNuxtApp()
+
+const {band} = props
 
 const instrumentPosition = {
     guitar: {backgroundPosition: '0 0'},
@@ -38,12 +41,12 @@ const showDialog = ref(false)
 
 async function addInstrument() {
     await useNuxtApp().$PUT(`/my-band/${band.id}/instrument`, {artist: newArtist})
-    emit('updateBand')
+    $event('band:refresh')
 }
 
 async function deleteInstrument(id: string) {
     await useNuxtApp().$DELETE(`/my-band/instrument/${id}`)
-    emit('updateBand')
+    $event('band:refresh')
 }
 
 async function setInstrument(icon: string) {
@@ -52,7 +55,7 @@ async function setInstrument(icon: string) {
         const icons = instrumentForDialog.value?.icons
         icons?.push(icon)
         await useNuxtApp().$POST(`/my-band/instrument/${instrumentForDialog.value?.id}/icon`, {icons}, true)
-        emit('updateBand')
+        $event('band:refresh')
     }
     instrumentForDialog.value = null
 }
@@ -60,7 +63,7 @@ async function setInstrument(icon: string) {
 async function removeInstrument(instrument:IInstrument, icon: string) {
     const icons = instrument.icons.filter(i => i !== icon)
     await useNuxtApp().$POST(`/my-band/instrument/${instrument.id}/icon`, {icons}, true)
-    emit('updateBand')
+    $event('band:refresh')
 }
 
 </script>

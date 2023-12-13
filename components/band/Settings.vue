@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type {PropType} from "vue";
 import type {IBand} from "~/server/models/band.model";
-
-const emit = defineEmits(['updateBand']);
+const { $event } = useNuxtApp()
 const props = defineProps({
     band: {type: Object as PropType<IBand>, required: true}
 })
@@ -11,6 +10,11 @@ const edited = ref(false)
 
 function submit() {
     useNuxtApp().$POST('/my-band/update/' + band.id, band)
+}
+
+function reset(){
+    $event('band:refresh');
+    edited.value=false
 }
 
 </script>
@@ -25,7 +29,7 @@ v-card
     v-card-actions(v-if="edited")
         v-btn(@click="submit") Сохранить
         v-spacer
-        v-btn(@click="emit('updateBand'); edited=false") Сбросить
+        v-btn(@click="reset") Сбросить
 
 </template>
 

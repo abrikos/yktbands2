@@ -5,18 +5,20 @@ definePageMeta({
     middleware: 'auth-middleware' // this should match the name of the file inside the middleware directory
 })
 
+const route = useRoute()
+const router = useRouter()
+
 interface IBandResponse {
     data: IBand
     refresh: any
     pending: any
 }
 
-const route = useRoute()
-const router = useRouter()
 
 const {data: band, refresh: refreshBand, pending: pendingBand} = await useNuxtApp().$GET('/my-band/view/' + route.params.id) as unknown as IBandResponse
-const {data: artists, refresh: refreshArtists, pending: pA} = await useNuxtApp().$GET('/artist/all')// as unknown as IArtistResponse
-const {data: places, refresh: refreshPlaces, pending: pP} = await useNuxtApp().$GET('/place/all')// as unknown as IArtistResponse
+const { $listen } = useNuxtApp()
+$listen('band:refresh',()=>refreshBand())
+
 
 const tabsItems = {
     concerts: {title: 'Концерты'},
@@ -27,8 +29,8 @@ const tabsItems = {
 
 async function loadSaved() {
     refreshBand()
-    refreshArtists()
-    refreshPlaces()
+    //refreshArtists()
+    //refreshPlaces()
 }
 
 const tab = computed({
@@ -51,9 +53,9 @@ div
     v-tabs(v-model="tab" density="compact")
         v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}
     div(v-if="!pendingBand" )
-        BandConcerts(v-if="tab==='concerts'" :band="band" :places="places||[]" @update-band="loadSaved")
+        BandConcerts(v-if="tab==='concerts'" :band="band" Xplaces="places||[]" @update-band="loadSaved")
         BandSettings(v-if="tab==='settings'" :band="band" @update-band="loadSaved")
-        BandInstruments(v-if="tab==='instruments'" :artists="artists||[]" :band="band" @update-band="loadSaved")
+        BandInstruments(v-if="tab==='instruments'" Xartists="artists||[]" :band="band" @update-band="loadSaved")
 
 </template>
 
