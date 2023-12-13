@@ -2,7 +2,7 @@
 import type {IBand} from "~/server/models/band.model";
 import type {IPlace} from "~/server/models/place.model";
 
-const props = defineProps<{ band: IBand, places: IPlace[] }>()
+const props = defineProps<{ band: IBand}>()
 const {$event, $listen} = useNuxtApp()
 $listen('dialog:close', () => showDialog.value = false)
 
