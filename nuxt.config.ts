@@ -7,6 +7,11 @@ export default defineNuxtConfig({
         '@pinia/nuxt',
         'nuxt3-leaflet',
     ],
+    runtimeConfig: {
+        authExpiration: 3600,
+        authRefreshBeforeExpiration: 3000,
+        authTokenName: 'auth_token'
+    },
     app: {
         head: {
             script: [

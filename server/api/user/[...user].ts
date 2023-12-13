@@ -1,14 +1,11 @@
-import {Token, IToken} from "~/server/models/token.model";
-import {User, IUser} from "~/server/models/user.model";
-import {BinaryLike} from "node:crypto";
+import {Token} from "~/server/models/token.model";
+import {IUser, User} from "~/server/models/user.model";
 import crypto from "crypto";
 import nodemailer from 'nodemailer'
-import {password} from "iron-webcrypto";
 import {strategies} from "~/server/utils/strategies";
 
 //User.deleteMany().then(console.log)
 const router = createRouter()
-const maxAge = utils.maxAge
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.mail.ru',
@@ -63,18 +60,17 @@ router.get('/checkAuth', defineEventHandler(async (event) => {
 
 router.get('/logout', defineEventHandler(async (event) => {
     const cookies = parseCookies(event)
-    await Token.deleteOne({access_token: cookies.auth});
+    await Token.deleteOne({access: cookies.auth});
     deleteCookie(event, 'auth')
 }))
 
+
 router.put('/signup', defineEventHandler(async (event) => {
     const {email, password} = await readBody(event)
-    const user: IUser | null = await User.create({email, password}) as unknown as IUser;
-    const token: IToken = await Token.create({user}) as unknown as IToken
-    setCookie(event, 'auth', token.access_token, {maxAge})
-    const found: IUser | null = await User.findById(user.id, '-passwordHash') as unknown as IUser;
-    //const {passwordHash, ...rest} = found._doc
-    return found
+    let user: IUser | null = await User.create({email, password}) as unknown as IUser;
+    user = await User.findById(user.id, '-passwordHash') as unknown as IUser;
+    await  utils.setAuthToken(event, user)
+    return utils.adaptUser(user)
 
 }))
 
@@ -83,8 +79,7 @@ router.post('/login/:strategy', defineEventHandler(async (event) => {
     if(!strategies[strategy]) throw createError({statusCode: 406, message: `Ошибка в стратегии "${strategy}"`})
     const user = await strategies[strategy](event);
     if (!user) throw createError({statusCode: 401, message: 'login: Ошибка аутентификации',})
-    const token: IToken = await Token.create({user}) as unknown as IToken
-    setCookie(event, 'auth', token.access_token, {maxAge})
+    await  utils.setAuthToken(event, user)
     return utils.adaptUser(user)
 }))
 
