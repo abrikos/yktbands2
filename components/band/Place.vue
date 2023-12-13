@@ -4,7 +4,7 @@ import type {IPlace} from "~/server/models/place.model";
 import moment from 'moment'
 
 const {$event} = useNuxtApp()
-const props = defineProps<{ band: IBand, places: IPlace[] }>()
+const props = defineProps<{ band: IBand}>()
 const {data: places, refresh: refreshPlaces, pending: pP} = await useNuxtApp().$GET('/place/all')// as unknown as IArtistResponse
 
 const snackbar = useSnackbar();
