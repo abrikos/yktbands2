@@ -6,7 +6,7 @@ import type {IArtist} from "~/server/models/artist.model";
 
 const props = defineProps({
     band: {type: Object as PropType<IBand>, required: true},
-    artists: {type: Object as PropType<IArtist[]>, required: true}
+    //artists: {type: Object as PropType<IArtist[]>, required: true}
 })
 
 const {data: artists, refresh: refreshArtists, pending: pA} = await useNuxtApp().$GET('/artist/all')// as unknown as IArtistResponse
