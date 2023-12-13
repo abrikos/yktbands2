@@ -27,7 +27,6 @@ function placeMarkerClickHandler(place: IPlace) {
 function mouseOverHandle(e:any, place: IPlace) {
     hoveredPlace.value = place
     hoveredPosition.value =[e.originalEvent.layerX, e.originalEvent.layerY]
-    console.log(hoveredPosition.value, e.originalEvent)
 }
 
 function mouseLeaveHandle(){
@@ -36,7 +35,7 @@ function mouseLeaveHandle(){
 
 const popupStyle = computed(()=>{
     const [left, top] = hoveredPosition.value ? hoveredPosition.value : [0,0]
-    return `top:${top}px;left:${left}px`
+    return `top:${top-20}px;left:${left+20}px`
     //return `top:${100}px;left:${100}px`
 })
 </script>
@@ -47,7 +46,7 @@ client-only
     l-map#leaflet(ref="map" :zoom="16" :center="center" @click="mapClickHandler")
         l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="" layer-type="base" name="OpenStreetMap")
         l-control(position="bottomright")
-            v-btn(v-if="newConcert.place.coordinate" icon="mdi-cancel" @click="cancel")
+            v-btn(v-if="newConcert.place.coordinate" icon="mdi-cancel" @click.stop="cancel")
         l-marker(v-for="(place,i) of places.filter(p=>p.coordinateValid)" :lat-lng="place.coordinate" :key="i" @click="placeMarkerClickHandler(place)" @mouseover="(e)=>mouseOverHandle(e,place)" @mouseout="mouseLeaveHandle")
             l-icon(v-if="newConcert.place?.id!==place.id" icon-url="/marker-blue.svg" :icon-anchor="[20,40]" )
             l-icon(v-if="newConcert.place?.id===place.id" icon-url="/marker-red.svg" :icon-anchor="[20,40]" )
@@ -69,7 +68,7 @@ client-only
     position: absolute
     background-color: white
     color: black
-//#leaflet
+#leaflet
     width: 100%
-    height: 200px
+    height: 400px !important
 </style>

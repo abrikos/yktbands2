@@ -59,9 +59,9 @@ watch(placeSearch, (v) => {
     newConcert.value.place = v
 })
 
-function canCreate() {
-    return newConcert.value.place.id || (newConcert.value.place.name && newConcert.value.place.address && newConcert.value.place.coordinate)
-}
+const canCreate = computed(()=>{
+    return newConcert.value.begin &&( newConcert.value.place.id || (newConcert.value.place.name && newConcert.value.place.address && newConcert.value.place.coordinate))
+})
 
 </script>
 
@@ -105,7 +105,9 @@ v-row
             span.text-blue.px-1(v-if="newConcert.begin") {{moment.unix(newConcert.begin).format('YYYY-MM-DD HH:00')}}
             span.text-red.px-1(v-if="!newConcert.begin" ) Укажите дату концерта.
         v-divider
-        v-btn(v-if="canCreate" @click="addConcert()" color="primary") Сохранить
+        v-card-actions
+            v-spacer
+            v-btn(v-if="canCreate" @click="addConcert()" color="primary") Сохранить
 
 
 </template>
