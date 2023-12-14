@@ -1,9 +1,9 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 
 </script>
+
 <template lang="pug">
-NuxtLayout
-    NuxtPage
+    BandView
 </template>
 
 <style scoped lang="sass">

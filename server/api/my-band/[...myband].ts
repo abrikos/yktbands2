@@ -1,9 +1,10 @@
 import {IInstrument} from "~/server/models/instrument.model";
-import {Instrument, Band, Artist, Place, Concert} from "#imports";
+import {Artist, Band, Concert, Instrument, Place} from "#imports";
 import {H3Event} from "h3";
 import {IBand} from "~/server/models/band.model";
 import {Types} from "mongoose"
 import * as fs from "fs";
+import band from "~/server/api/band/[...band]";
 
 const router = createRouter()
 
@@ -28,21 +29,22 @@ router.put('/create', defineEventHandler(async (event) => {
     return Band.create({user})
 }))
 
-router.post('/:_id/upload', defineEventHandler(async (event) => {
-    const user = event.context.user
-    if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
-    const {_id} = event.context.params as Record<string, string>
-    if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
-    const band = await Band.findOne({_id, user})
-    if (!band) throw createError({statusCode: 404, message: 'Группа не найдена'})
-    let bodyBuffer = await readMultipartFormData(event)
-    if(bodyBuffer) {
-        const file = bodyBuffer[0].data
-        const type = bodyBuffer[1].data.toString()
-        fs.writeFile(`./public/upload/${type}_${band.id}.png`, file, res=>console.log(res))
-    }
-    //if (!file) throw createError({statusCode: 406, message: 'Необходимо отправить файл'})
-}))
+// router.post('/:_id/upload', defineEventHandler(async (event) => {
+//     const user = event.context.user
+//     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+//     const {_id} = event.context.params as Record<string, string>
+//     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
+//     const band = await Band.findOne({_id, user})
+//     if (!band) throw createError({statusCode: 404, message: 'Группа не найдена'})
+//     let formData = await readMultipartFormData(event)
+//     if (formData) {
+//         const file = formData[0].data
+//         const type = formData[1].data.toString()
+//         const [width, height] = type==='logo' ? [100, 100] : [400,400]
+//         fs.writeFile(`./public/upload/${type}_${band.id}.png`, file, res => console.log(res))
+//     }
+//     //if (!file) throw createError({statusCode: 406, message: 'Необходимо отправить файл'})
+// }))
 
 router.get('/:_id/view', defineEventHandler(async (event) => {
     const user = event.context.user
@@ -104,11 +106,12 @@ router.put('/:_id/instrument', defineEventHandler(async (event) => {
     await Instrument.create({artist, band})
 }))
 
-router.post('/my-update', defineEventHandler(async (event) => {
-    const {_id, ...data} = await readBody(event)
+router.post('/update', defineEventHandler(async (event) => {
+    const {_id, id, ...data} = await readBody(event)
     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    //data.shortcut = data.shortcut.replace(/\s+/g,'_')
     // @ts-ignore
     await Band.updateOne({_id, user}, data).populate(Band.getPopulation())
 }))

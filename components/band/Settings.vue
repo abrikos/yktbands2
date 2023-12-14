@@ -2,14 +2,12 @@
 import type {PropType} from "vue";
 import type {IBand} from "~/server/models/band.model";
 const { $event } = useNuxtApp()
-const props = defineProps({
-    band: {type: Object as PropType<IBand>, required: true}
-})
+const props = defineProps<{ band: IBand }>()
 const {band} = props
 const edited = ref(false)
-
-function submit() {
-    useNuxtApp().$POST('/my-band/update/' + band.id, band)
+async function submit() {
+    await useNuxtApp().$POST(`/my-band/update`, {...band})
+    $event('band:refresh')
 }
 
 function reset(){
@@ -23,17 +21,25 @@ function reset(){
 v-card
     v-toolbar
         v-toolbar-title Параметры
-    v-card-text
-        v-text-field(v-model="band.name" label="Название" v-on:keyup="edited=true" density="compact" )
-        v-text-field(v-model="band.shortcut" label="Уникальный путь"  density="compact"  hint="Используется для создания уникальной ссылки на страницу коллектива. Только цифры, английские символыи нижнее подчеркивание" persistent-hint  v-on:keyup="edited=true" )
-        v-switch(v-model="band.enabled" label="Отображать для всех" v-on:change="edited=true")
-    v-card-actions(v-if="edited")
-        v-btn(@click="submit") Сохранить
-        v-spacer
+        v-divider(vertical inset)
+        v-btn(@click="submit" color="primary" ) Сохранить
         v-btn(@click="reset") Сбросить
+    v-card-text
+        v-row
+            v-col(cols="3")
+                v-text-field(v-model="band.name" label="Название")
+                v-text-field(v-model="band.logo" label="Логотип")
+                v-text-field(v-model="band.poster" label="Постер")
+                v-switch(v-model="band.enabled" label="Отображать для всех")
+            v-col
+                h2 Превью:
+                    v-card
+                        BandView#preview
 
 </template>
 
-<style scoped>
-
+<style scoped lang="sass">
+//#preview
+    transform: scale(.5)
+    transform-origin: top left
 </style>

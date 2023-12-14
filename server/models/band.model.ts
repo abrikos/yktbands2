@@ -15,14 +15,16 @@ export interface IBand extends mongoose.Document {
     instruments: [IInstrument]
     concerts: [IConcert]
     user: IUser,
-    logoRnd: string
-    posterRnd: string
+    logo: string
+    poster: string
 }
 
 
 const schema = new Schema({
         name: {type: String},
         shortcut: {type: String, unique: true},
+        logo: {type: String},
+        poster: {type: String},
         user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
         enabled: {type: Boolean, default: false}
     },
@@ -48,29 +50,11 @@ schema.virtual('nameOrShortcut')
     .get(function () {
         return this.name || this.shortcut || this.id
     })
-schema.virtual('logo')
-    .get(function () {
-        return `/${this.id}_logo.jpg`
-    })
-schema.virtual('poster')
-    .get(function () {
-        return `/${this.id}_poster.jpg`
-    })
-schema.virtual('logoRnd')
-    .get(function (this: { logo: string }) {
-        return `${this.logo}?${Math.random()}`
-    })
-schema.virtual('posterRnd')
-    .get(function (this: { poster: string }) {
-        return `${this.poster}?${Math.random()}`
-    })
 
 schema.pre('save', function (next) {
-    // do stuff
     this.shortcut = moment().valueOf().toString()
     next();
 })
-
 
 schema.virtual('concerts', {
     ref: 'concert',

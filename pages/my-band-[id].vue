@@ -23,7 +23,6 @@ $listen('band:refresh',()=>refreshBand())
 const tabsItems = {
     concerts: {title: 'Концерты'},
     instruments: {title: 'Состав'},
-    decor: {title: 'оформление'},
     settings: {title: 'Параметры'},
 
 }
@@ -51,13 +50,13 @@ async function tabNavigate(tab: string) {
 <template lang="pug">
 div
     h1 Группа "{{band.nameOrShortcut}}"
+        small
+            a(:href="`/band-short-${band.shortcut}`" target="_blank") Перейти
     v-tabs(v-model="tab" density="compact")
         v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}
-    BandConcerts(v-if="tab==='concerts'" :band="band" Xplaces="places||[]" @update-band="loadSaved")
-    BandSettings(v-if="tab==='settings'" :band="band" @update-band="loadSaved")
-    BandInstruments(v-if="tab==='instruments'" Xartists="artists||[]" :band="band" @update-band="loadSaved"
-        :key="Math.random()")
-    BandDecor(:band="band")
+    BandConcerts(v-if="tab==='concerts'" :band="band")
+    BandSettings(v-if="tab==='settings'" :band="band")
+    BandInstruments(v-if="tab==='instruments'" :band="band" :key="Math.random()")
 
 </template>
 
