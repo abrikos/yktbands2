@@ -14,8 +14,8 @@ interface IBandResponse {
     pending: any
 }
 
-const {data: band, refresh: refreshBand, pending: pendingBand} = await useNuxtApp().$GET('/my-band/view/' +
-        route.params.id) as unknown as IBandResponse
+const {data: band, refresh: refreshBand, pending: pendingBand} = await useNuxtApp().$GET(`/my-band/${route.params.id}/view/`) as
+        unknown as IBandResponse
 const { $listen } = useNuxtApp()
 $listen('band:refresh',()=>refreshBand())
 
@@ -57,7 +57,7 @@ div
     BandSettings(v-if="tab==='settings'" :band="band" @update-band="loadSaved")
     BandInstruments(v-if="tab==='instruments'" Xartists="artists||[]" :band="band" @update-band="loadSaved"
         :key="Math.random()")
-    BandDecor
+    BandDecor(:band="band")
 
 </template>
 

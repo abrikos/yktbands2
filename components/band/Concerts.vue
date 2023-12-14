@@ -17,7 +17,6 @@ const listHeaders = [
 ]
 
 async function updateConcert(concert: IConcert) {
-    console.log('zzzzzzz', concert)
     await useNuxtApp().$PUT('/concert/upsert', concert)
 }
 
