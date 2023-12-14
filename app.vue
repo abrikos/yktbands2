@@ -4,8 +4,8 @@ import { useAuthStore } from '~/store/authStore'; // import the auth store we ju
 import { useTheme } from 'vuetify'
 const theme = useTheme()
 
-const { getUser } = useAuthStore();
-await getUser()
+//const { getUser } = useAuthStore();
+//await getUser()
 
 const { logUserOut } = useAuthStore(); // use authenticateUser action from  auth store
 const { loggedUser } = storeToRefs(useAuthStore()); // make authenticated state reactive with storeToRefs

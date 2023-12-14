@@ -14,8 +14,8 @@ interface IBandResponse {
     pending: any
 }
 
-
-const {data: band, refresh: refreshBand, pending: pendingBand} = await useNuxtApp().$GET('/my-band/view/' + route.params.id) as unknown as IBandResponse
+const {data: band, refresh: refreshBand, pending: pendingBand} = await useNuxtApp().$GET('/my-band/view/' +
+        route.params.id) as unknown as IBandResponse
 const { $listen } = useNuxtApp()
 $listen('band:refresh',()=>refreshBand())
 
@@ -23,6 +23,7 @@ $listen('band:refresh',()=>refreshBand())
 const tabsItems = {
     concerts: {title: 'Концерты'},
     instruments: {title: 'Состав'},
+    decor: {title: 'оформление'},
     settings: {title: 'Параметры'},
 
 }
@@ -54,7 +55,9 @@ div
         v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}
     BandConcerts(v-if="tab==='concerts'" :band="band" Xplaces="places||[]" @update-band="loadSaved")
     BandSettings(v-if="tab==='settings'" :band="band" @update-band="loadSaved")
-    BandInstruments(v-if="tab==='instruments'" Xartists="artists||[]" :band="band" @update-band="loadSaved" :key="Math.random()")
+    BandInstruments(v-if="tab==='instruments'" Xartists="artists||[]" :band="band" @update-band="loadSaved"
+        :key="Math.random()")
+    BandDecor
 
 </template>
 
