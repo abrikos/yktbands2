@@ -60,8 +60,9 @@ router.get('/checkAuth', defineEventHandler(async (event) => {
 
 router.get('/logout', defineEventHandler(async (event) => {
     const cookies = parseCookies(event)
-    await Token.deleteOne({access: cookies.auth});
-    deleteCookie(event, 'auth')
+    const { authTokenName} = useRuntimeConfig(event)
+    await Token.deleteOne({access: cookies[authTokenName]});
+    deleteCookie(event, authTokenName)
 }))
 
 
