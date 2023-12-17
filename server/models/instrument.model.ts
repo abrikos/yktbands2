@@ -8,7 +8,7 @@ const Schema = mongoose.Schema;
 export interface IInstrument extends mongoose.Document {
     band: IBand
     artist: IArtist
-    icons: [string],
+    icons: string[],
     id:string
 }
 

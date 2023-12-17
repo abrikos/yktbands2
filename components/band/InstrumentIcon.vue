@@ -1,25 +1,10 @@
 <script setup lang="ts">
-
-const instrumentPosition = {
-    guitar: {backgroundPosition: '0 0'},
-    piano: {backgroundPosition: '0 -46px'},
-    drum: {backgroundPosition: '0 -94px'},
-
-    bass: {backgroundPosition: '-50px 0'},
-    vocal: {backgroundPosition: '-50px -46px'},
-    keyboard: {backgroundPosition: '-50px -94px'},
-
-    violin: {backgroundPosition: '-100px 0'},
-    trump: {backgroundPosition: '-100px -48px'},
-    mixer: {backgroundPosition: '-100px -94px'},
-}
-
-
+const {instrumentPosition} = useAppConfig()
 const props = defineProps<{ icon: string }>()
 </script>
 
 <template lang="pug">
-span.instrument(:style="instrumentPosition[icon]")
+span.instrument(:style="instrumentPosition.find(o=>o.key===icon)")
 </template>
 
 <style scoped lang="sass">

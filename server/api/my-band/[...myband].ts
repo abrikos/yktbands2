@@ -75,8 +75,7 @@ router.delete('/instrument/:_id', defineEventHandler(async (event) => {
 
 router.post('/instrument/:_id/icon', defineEventHandler(async (event) => {
     const instrument = await findInstrument(event)
-    let {icons} = await readBody(event)
-    instrument.icons = icons
+    instrument.icons = await readBody(event)
     await instrument.save()
 }))
 

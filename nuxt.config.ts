@@ -10,7 +10,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         authExpiration: 3600,
         authRefreshBeforeExpiration: 3000,
-        authTokenName: 'auth_token'
+        authTokenName: 'auth_token',
     },
     app: {
         head: {
