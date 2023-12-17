@@ -87,17 +87,20 @@ router.put('/:_id/instrument', defineEventHandler(async (event) => {
     // @ts-ignore
     const band = await Band.findOne({_id, user}).populate(Band.getPopulation()) as unknown as IBand
     if (!band) throw createError({statusCode: 404, message: 'Группа не найдена'})
-    let {artist} = await readBody(event)
-    if (!artist) throw createError({statusCode: 406, message: 'Необходимо ввести имя или выбрать артиста'})
-    if (typeof artist === 'object') {
-        artist = await Artist.findById(artist.id)
+    let body = await readBody(event)
+    if (!body.artist) throw createError({statusCode: 406, message: 'Необходимо ввести имя или выбрать артиста'})
+    let artist
+    if (typeof body.artist === 'object') {
+        artist = await Artist.findById(body.artist.id)
         if (!artist) throw createError({statusCode: 406, message: 'Артист не найден'})
     } else {
-        if (!artist) throw createError({statusCode: 406, message: 'Имя артиста не указано'})
-        artist = await Artist.findOne({name: artist})
+        artist = await Artist.findOne({name: body.artist})
+        console.log('found', artist)
         if (!artist) {
-            artist = await Artist.create({name: artist})
+            artist = await Artist.create({name: body.artist})
+            console.log('CReated', artist)
         }
+
     }
     if (band.instruments.map(i => i.artist.id).includes(artist.id)) {
         throw createError({statusCode: 406, message: 'Артист уже добавлен'})

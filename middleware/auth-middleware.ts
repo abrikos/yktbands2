@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const loggedUser = await getUser()
     if (!loggedUser && to?.name !== 'login') {
         setRedirect(to.fullPath)
-        //abortNavigation();
+        abortNavigation();
         return navigateTo('/login');
     }
 });

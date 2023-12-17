@@ -40,7 +40,7 @@ const schema = new Schema({
 
 schema.statics.getPopulation = () => [
     {path: 'user', select: {email: 1, fullName: 1, photo: 1}},
-    {path: 'instruments', populate: 'artist'},
+    {path: 'instruments', populate: 'artist', options: {sort: {'artist.name': -1}}},
     {path: 'concerts', populate: 'place'},
 ]
 
@@ -50,11 +50,11 @@ schema.virtual('date')
     })
 schema.virtual('posterRnd')
     .get(function (this: { poster: string }) {
-        return this.poster+'?'+Math.random()
+        return this.poster + '?' + Math.random()
     })
 schema.virtual('logoRnd')
     .get(function (this: { logo: string }) {
-        return this.logo+'?'+Math.random()
+        return this.logo + '?' + Math.random()
     })
 schema.virtual('nameOrShortcut')
     .get(function () {
@@ -76,7 +76,7 @@ schema.virtual('instruments', {
     ref: 'instrument',
     localField: '_id',
     foreignField: 'band',
-    options: {sort: {icon: -1}}
+    //options: {sort: {'artist.name': 1}}
 })
 
 export const Band = defineMongooseModel('band', schema)

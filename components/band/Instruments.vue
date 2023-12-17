@@ -10,9 +10,10 @@ const {$event} = useNuxtApp()
 
 const {band} = props
 const {instrumentPosition} = useAppConfig()
-const instrumentsFiltered = band.instruments.filter((i: IInstrument) => i.artist.name)
-        .sort((a: IInstrument, b: IInstrument) => a.artist.name > b.artist.name ? -1 : a.artist.name < b.artist.name ? 1 : 0)
-        .reverse()
+const instrumentsFiltered = band.instruments
+        //.filter((i: IInstrument) => i.artist.name)
+        //.sort((a: IInstrument, b: IInstrument) => a.artist.name > b.artist.name ? -1 : a.artist.name < b.artist.name ? 1 : 0)
+        //.reverse()
 
 const newArtist = ref(null)
 const instrumentForDialog: Ref<IInstrument | null> = ref(null)
@@ -20,7 +21,7 @@ const showDialog = ref(false)
 
 
 async function addInstrument() {
-    await useNuxtApp().$PUT(`/my-band/${band.id}/instrument`, {artist: newArtist})
+    await useNuxtApp().$PUT(`/my-band/${band.id}/instrument`, {artist: newArtist.value})
     $event('band:refresh')
 }
 
@@ -38,7 +39,7 @@ function setInstrument(icon: string) {
 }
 
 async function saveIcons(){
-    await useNuxtApp().$POST(`/my-band/instrument/${instrumentForDialog.value?.id}/icon`, instrumentForDialog.value?.icons, true)
+    await useNuxtApp().$POST(`/my-band/instrument/${instrumentForDialog.value?.id}/icon`, instrumentForDialog.value?.icons)
     $event('band:refresh')
 
 }
