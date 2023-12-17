@@ -18,7 +18,7 @@ const {data: places, refresh: refreshPlaces, pending: pendingPlaces} = await use
 
 const hours = Array.from(Array(25).keys())
 const showDialog = ref()
-const concertProto = {band, place: {id: '', name:'', address:'', coordinate:null}, hour: 20}
+const concertProto = {band, place: {id: '', name: '', address: '', coordinate: null}, hour: 20}
 const newConcert = ref<IConcert>(concertProto as unknown as IConcert)
 
 async function mapClick(e: any) {
@@ -122,7 +122,7 @@ div
                             v-btn(v-if="canCreate" @click="upsertConcert();showDialog=false" color="primary") Сохранить
             v-card-actions
                 v-spacer
-                v-btn(@click="showDialog=false") Закрыть
+                v-btn(@click="()=>{$event('band:refresh');showDialog=false}") Закрыть
 
 </template>
 

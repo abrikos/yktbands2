@@ -81,6 +81,7 @@ v-card
                 v-col(cols="3") {{instrument.artist.name}}
                 v-col(cols="5")
                     span.instrument(v-for="icon of instrument.icons" :key="icon" :style="instrumentPosition[icon]" @click="removeInstrument(instrument, icon)")
+                        BandInstrumentIcon(:icon="icon")
                 v-col(cols="2")
                     v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" ) Назначить инструменты
                 v-col(cols="1")
@@ -89,23 +90,10 @@ v-card
             v-card
                 v-card-title Выберите инструменты для
                 v-card-text
-                    div.instrument(v-for="(key,i) of Object.keys(instrumentPosition).filter(k=>!instrumentForDialog.icons.includes(k))" :key="key" @click="setInstrument(key)" :style="instrumentPosition[key]")
+                    span.instrument(v-for="(icon,i) of Object.keys(instrumentPosition).filter(k=>!instrumentForDialog.icons.includes(k))" :key="icon" @click="setInstrument(icon)")
+                        BandInstrumentIcon(:icon="icon")
 
 </template>
 
 <style scoped lang="sass">
-.v-theme--dark
-    .instrument
-        filter: invert(1)
-
-.instrument
-    cursor: pointer
-    //border: 1px solid red
-    display: inline-block
-    width: 50px
-    height: 50px
-    background-image: url('/instruments.png')
-    //background-position: -20px -20px
-    background-size: 150px
-
 </style>

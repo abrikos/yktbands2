@@ -55,7 +55,7 @@ div
     v-tabs(v-model="tab" density="compact")
         v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}
     BandConcerts(v-if="tab==='concerts'" :band="band")
-    BandSettings(v-if="tab==='settings'" :band="band")
+    BandSettings(v-if="tab==='settings'" :band="band" :key="Math.random()")
     BandInstruments(v-if="tab==='instruments'" :band="band" :key="Math.random()")
 
 </template>

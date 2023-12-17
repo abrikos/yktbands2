@@ -11,15 +11,16 @@ async function submit(){
 </script>
 
 <template lang="pug">
-v-card
-    v-card-text
-        v-text-field(v-model="user.email" label="Email" )
-        v-text-field(v-model="user.password" label="Пароль" type="password" )
-    v-card-actions
-        v-btn(@click="submit") Войти
-        LoginTelegram
-        v-spacer
-        v-btn(@click="router.push('/password-restore')") Восстановить пароль
+div.d-flex.align-center.flex-column
+    v-card(width="600" )
+        v-card-text
+            v-text-field(v-model="user.email" label="Email" )
+            v-text-field(v-model="user.password" label="Пароль" type="password" )
+        v-card-actions
+            v-btn(@click="submit") Войти
+            LoginTelegram
+            v-spacer
+            v-btn(@click="router.push('/password-restore')") Восстановить пароль
 
 </template>
 
