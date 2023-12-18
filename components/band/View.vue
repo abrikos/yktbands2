@@ -10,7 +10,7 @@ interface IBandResponse {
 }
 
 const {data: band, refresh: refreshBand, pending: pendingBand} = await
-        useNuxtApp().$GET(`/band/${route.params.id}/view/`) as unknown as IBandResponse
+        useNuxtApp().$GET(`/band/${route.params.id}/view/`, true) as unknown as IBandResponse
 
 const {$listen} = useNuxtApp()
 $listen('band-view:refresh', () => refreshBand())
@@ -31,7 +31,7 @@ div(v-if="band")
                     v-toolbar(density="compact" )
                         v-toolbar-title Концерты
                     v-card-text
-                        v-row(v-for="concert of band.concerts" :key="concert.id")
+                        v-row(v-for="concert of band.concerts.filter(c=>c.enabled)" :key="concert.id")
                                 v-col {{concert.place.fullName}}
                                 v-col {{concert.dateHuman}}
             v-col
@@ -39,14 +39,23 @@ div(v-if="band")
                     v-toolbar(density="compact" )
                         v-toolbar-title Состав группы
                     v-card-text
-                        v-row(v-for="instrument of band.instruments" :key="instrument.id")
-                            v-col {{instrument.artist.name}}
-                            v-col
-                                BandInstrumentIcon(v-for="icon of instrument.icons" :icon="icon" :key="icon")
+                        table.instruments
+                            tr(v-for="instrument of band.instruments" :key="instrument.id" align="center"
+                                no-gutters)
+                                td {{instrument.artist.name}}
+                                td
+                                    BandInstrumentIcon(v-for="icon of instrument.icons" :icon="icon" :key="icon")
 
 </template>
 
 <style scoped lang="sass">
+.instruments
+    width: 100%
+    border-collapse: collapse
+    tr
+        border-bottom: 1px solid silver
+        td
+            padding: 5px 0
 #images
     .logo
         max-width: 100px

@@ -16,8 +16,11 @@ interface IBandResponse {
 
 const {data: band, refresh: refreshBand, pending: pendingBand} = await useNuxtApp().$GET(`/my-band/${route.params.id}/view/`) as
         unknown as IBandResponse
-const { $listen } = useNuxtApp()
-$listen('band:refresh',()=>refreshBand())
+const { $listen, $event } = useNuxtApp()
+$listen('band:refresh',()=> {
+    refreshBand()
+    $event('band-view:refresh');
+})
 
 
 const tabsItems = {
@@ -50,14 +53,16 @@ async function tabNavigate(tab: string) {
 <template lang="pug">
 div
     h1 Группа "{{band.nameOrShortcut}}"
-        small
-            a(:href="`/band-short-${band.shortcut}`" target="_blank") Перейти
     v-tabs(v-model="tab" density="compact")
         v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}
-    BandConcerts(v-if="tab==='concerts'" :band="band")
-    BandSettings(v-if="tab==='settings'" :band="band" :key="Math.random()")
-    BandInstruments(v-if="tab==='instruments'" :band="band" :key="Math.random()")
-
+    v-row
+        v-col(cols="4")
+            BandConcerts(v-if="tab==='concerts'" :band="band")
+            BandSettings(v-if="tab==='settings'" :band="band" :key="Math.random()")
+            BandInstruments(v-if="tab==='instruments'" :band="band" :key="Math.random()")
+        v-col
+            //a(:href="`/band-short-${band.shortcut}`" target="_blank") Перейти
+            BandView#preview(:key="Math.random()")
 </template>
 
 <style scoped lang="sass">

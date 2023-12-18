@@ -15,9 +15,9 @@ const instrumentsFiltered = band.instruments
         //.sort((a: IInstrument, b: IInstrument) => a.artist.name > b.artist.name ? -1 : a.artist.name < b.artist.name ? 1 : 0)
         //.reverse()
 
-const newArtist = ref(null)
-const instrumentForDialog: Ref<IInstrument | null> = ref(null)
-const showDialog = ref(false)
+const newArtist = ref()
+const instrumentForDialog = ref<IInstrument>()
+const showDialog = ref()
 
 
 async function addInstrument() {
@@ -25,8 +25,9 @@ async function addInstrument() {
     $event('band:refresh')
 }
 
-async function deleteInstrument(id: string) {
-    await useNuxtApp().$DELETE(`/my-band/instrument/${id}`)
+async function deleteInstrument(instrument: IInstrument) {
+    if(!confirm(`Удалить артиста ${instrument.artist.name}`)) return
+    await useNuxtApp().$DELETE(`/my-band/instrument/${instrument.id}`)
     $event('band:refresh')
 }
 
@@ -41,7 +42,6 @@ function setInstrument(icon: string) {
 async function saveIcons(){
     await useNuxtApp().$POST(`/my-band/instrument/${instrumentForDialog.value?.id}/icon`, instrumentForDialog.value?.icons)
     $event('band:refresh')
-
 }
 </script>
 
@@ -54,14 +54,14 @@ v-card
             template(v-slot:append)
                 v-btn(@click="addInstrument" small) Добавить
         v-container
-            v-row(v-for="(instrument,i) of instrumentsFiltered" :key="i" align="center" no-gutters)
-                v-col(cols="3") {{instrument.artist.name}}
-                v-col(cols="5")
-                    BandInstrumentIcon(v-for="icon of instrument.icons" :key="icon" :icon="icon")
-                v-col(cols="2")
-                    v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" ) Назначить инструменты
-                v-col(cols="1")
-                    v-btn(@click.prevent="deleteInstrument(instrument.id)" icon="mdi-delete" size="x-small" )
+            table.instruments
+                tr(v-for="(instrument,i) of instrumentsFiltered" :key="i" align="center" no-gutters)
+                    td {{instrument.artist.name}}
+                    td
+                        BandInstrumentIcon(v-for="icon of instrument.icons" :key="icon" :icon="icon")
+                    td
+                        v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" icon="mdi-music" color="primary")
+                        v-btn(@click.prevent="deleteInstrument(instrument)" icon="mdi-delete" size="x-small" color="red")
         v-dialog(v-model="showDialog" width="500" v-if="instrumentForDialog")
             v-card
                 v-toolbar
@@ -70,12 +70,20 @@ v-card
                     v-btn(@click="showDialog=false" icon="mdi-close")
                 v-card-text
                     span(v-for="(obj,i) of instrumentPosition" :key="i" @click="setInstrument(obj.key)")
-                        BandInstrumentIcon(:icon="obj.key" :class="instrumentForDialog.icons.includes(obj.key) ? 'selected':''")
+                        BandInstrumentIcon(:icon="obj.key" :class="instrumentForDialog?.icons.includes(obj.key) ? 'selected':''")
                 v-card-actions
                     v-btn(@click="saveIcons") Сохранить
 </template>
 
 <style scoped lang="sass">
+.instruments
+    width: 100%
+    border-collapse: collapse
+    tr
+        border-bottom: 1px solid silver
+        td
+            padding: 5px 0
+
 .selected
     border: 1px solid red
 </style>

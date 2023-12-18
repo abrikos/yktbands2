@@ -21,5 +21,4 @@ span.instrument(:style="instrumentPosition.find(o=>o.key===icon)")
     background-image: url('/instruments.png')
     //background-position: -20px -20px
     background-size: 150px
-
 </style>

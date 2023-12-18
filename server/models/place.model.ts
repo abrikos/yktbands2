@@ -33,7 +33,7 @@ schema.statics.getPopulation = () => [
 
 schema.virtual('fullName')
     .get(function () {
-        return `${this.name?.toUpperCase()}, ${this.address}`;
+        return `"${this.name?.toUpperCase()}", ${this.address}`;
     })
 
 schema.virtual('coordinateValid')

@@ -10,34 +10,33 @@ const edited = ref(false)
 async function submit() {
     await useNuxtApp().$POST(`/my-band/update`, {...band})
     $event('band:refresh')
-    //$event('band-view:refresh');
 }
 
 function reset() {
-    $event('band-view:refresh');
+    $event('band:refresh');
     edited.value = false
 }
+
+const fullUrl = computed(()=>{
+    return `${window.location.origin}/band-${band.id}`
+})
 
 </script>
 
 <template lang="pug">
-v-row
-    v-col(cols="4")
-        v-card
-            v-toolbar
-                v-toolbar-title Параметры
-                v-divider(vertical inset)
-                v-btn(@click="submit" color="primary" ) Сохранить
-                v-btn(@click="reset") Сбросить
-            v-card-text
-                v-text-field(v-model="band.name" label="Название")
-                v-text-field(v-model="band.logo" label="Логотип")
-                v-text-field(v-model="band.poster" label="Постер")
-                v-switch(v-model="band.enabled" label="Отображать для всех")
-    v-col
-        h2 Превью:
-            v-card
-                BandView#preview(:key="Math.random()")
+v-card
+    v-toolbar
+        v-toolbar-title Параметры
+        v-divider(vertical inset)
+        v-btn(@click="submit" color="primary" ) Сохранить
+        v-btn(@click="reset") Сбросить
+    v-card-text
+        v-text-field(v-model="band.name" label="Название")
+        v-text-field(v-model="band.logo" label="Логотип")
+        v-text-field(v-model="band.poster" label="Постер")
+        v-switch(v-model="band.enabled" label="Отображать для всех")
+        a(:href="fullUrl" target="_blank") Перейти
+        CopyBtn(:str="fullUrl")
 
 </template>
 

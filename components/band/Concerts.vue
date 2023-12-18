@@ -9,15 +9,15 @@ const concertEdit = ref()
 
 
 const listHeaders = [
-     {title: 'Ресторан', key: 'place.name'},
-    {title: 'Адрес', key: 'place.address'},
-    {title: 'Дата', key: 'dateHuman'},
-    {title: 'Показывать всем', key: 'enabled'},
+     {title: 'Ресторан', key: 'place.fullName', width:200},
+    {title: 'Дата', key: 'dateHuman', width:200},
+    {title: 'Показывать', key: 'enabled'},
     {title: '', key: 'actions'},
 ]
 
 async function updateConcert(concert: IConcert) {
     await useNuxtApp().$PUT('/concert/upsert', concert)
+    $event('band:refresh')
 }
 
 async function deleteConcert(concert: IConcert) {
