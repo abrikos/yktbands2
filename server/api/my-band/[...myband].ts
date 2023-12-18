@@ -95,10 +95,8 @@ router.put('/:_id/instrument', defineEventHandler(async (event) => {
         if (!artist) throw createError({statusCode: 406, message: 'Артист не найден'})
     } else {
         artist = await Artist.findOne({name: body.artist})
-        console.log('found', artist)
         if (!artist) {
             artist = await Artist.create({name: body.artist})
-            console.log('CReated', artist)
         }
 
     }
