@@ -55,6 +55,7 @@ div
     h1 Группа "{{band.nameOrShortcut}}"
     v-tabs(v-model="tab" density="compact")
         v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}
+
     v-row
         v-col(cols="4")
             BandConcerts(v-if="tab==='concerts'" :band="band")

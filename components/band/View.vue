@@ -25,21 +25,23 @@ div(v-if="band")
         img.logo(:src="band.logoRnd" onerror="this.src='/logo.svg'")
         //img.poster(:src="band.posterRnd" onerror="this.src='/logo.svg'")
         div.poster(:style="`background-image:url(${band.posterRnd})`")
-        v-row
-            v-col
-                v-card
-                    v-toolbar(density="compact" )
-                        v-toolbar-title Концерты
-                    v-card-text
-                        v-row(v-for="concert of band.concerts.filter(c=>c.enabled)" :key="concert.id")
-                                v-col {{concert.place.fullName}}
-                                v-col {{concert.dateHuman}}
-            v-col
-                v-card
-                    v-toolbar(density="compact" )
-                        v-toolbar-title Состав группы
-                    v-card-text
-                        table.instruments
+    br
+    v-row
+        v-col
+            v-card
+                v-toolbar(density="compact" )
+                    v-toolbar-title Концерты
+                v-card-text
+                    v-row(v-for="concert of band.concerts.filter(c=>c.enabled)" :key="concert.id")
+                            v-col {{concert.place.fullName}}
+                            v-col {{concert.dateHuman}}
+        v-col
+            v-card
+                v-toolbar(density="compact" )
+                    v-toolbar-title Состав группы
+                v-card-text
+                    table.instruments
+                        tbody
                             tr(v-for="instrument of band.instruments" :key="instrument.id" align="center"
                                 no-gutters)
                                 td {{instrument.artist.name}}
@@ -53,8 +55,9 @@ div(v-if="band")
     width: 100%
     border-collapse: collapse
     tr
-        border-bottom: 1px solid silver
+        //border-bottom: 1px solid silver
         td
+            border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity))
             padding: 5px 0
 #images
     .logo

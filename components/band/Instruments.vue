@@ -55,13 +55,14 @@ v-card
                 v-btn(@click="addInstrument" small) Добавить
         v-container
             table.instruments
-                tr(v-for="(instrument,i) of instrumentsFiltered" :key="i" align="center" no-gutters)
-                    td {{instrument.artist.name}}
-                    td
-                        BandInstrumentIcon(v-for="icon of instrument.icons" :key="icon" :icon="icon")
-                    td
-                        v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" icon="mdi-music" color="primary")
-                        v-btn(@click.prevent="deleteInstrument(instrument)" icon="mdi-delete" size="x-small" color="red")
+                tbody
+                    tr(v-for="(instrument,i) of instrumentsFiltered" :key="i" align="center" no-gutters)
+                        td {{instrument.artist.name}}
+                        td
+                            BandInstrumentIcon(v-for="icon of instrument.icons" :key="icon" :icon="icon")
+                        td
+                            v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" icon="mdi-music" color="primary")
+                            v-btn(@click.prevent="deleteInstrument(instrument)" icon="mdi-delete" size="x-small" color="red")
         v-dialog(v-model="showDialog" width="500" v-if="instrumentForDialog")
             v-card
                 v-toolbar
@@ -80,8 +81,8 @@ v-card
     width: 100%
     border-collapse: collapse
     tr
-        border-bottom: 1px solid silver
         td
+            border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity))
             padding: 5px 0
 
 .selected

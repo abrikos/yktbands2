@@ -17,8 +17,11 @@ function reset() {
     edited.value = false
 }
 
+const url = useRequestURL().origin
+console.log('zzzzzzz', url)
+
 const fullUrl = computed(()=>{
-    return `${window.location.origin}/band-${band.id}`
+    return `${url}/band-${band.id}`
 })
 
 </script>
