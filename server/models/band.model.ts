@@ -12,10 +12,11 @@ export interface IBand extends mongoose.Document {
     shortcut: string
     nameOrShortcut: string
     enabled: boolean
-    instruments: [IInstrument]
-    concerts: [IConcert]
+    instruments: IInstrument[]
+    concerts: IConcert[]
     user: IUser,
     logo: string
+    youtube: string[]
     poster: string
     logoRnd: string
     posterRnd: string
@@ -27,6 +28,7 @@ const schema = new Schema({
         shortcut: {type: String, unique: true},
         logo: {type: String},
         poster: {type: String},
+        youtube: [{type: String}],
         user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
         enabled: {type: Boolean, default: false}
     },

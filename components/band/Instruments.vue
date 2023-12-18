@@ -57,11 +57,12 @@ v-card
             table.instruments
                 tbody
                     tr(v-for="(instrument,i) of instrumentsFiltered" :key="i" align="center" no-gutters)
-                        td {{instrument.artist.name}}
-                        td
+                        td.text-left {{instrument.artist.name}}
+                        td.text-left
                             BandInstrumentIcon(v-for="icon of instrument.icons" :key="icon" :icon="icon")
                         td
                             v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" icon="mdi-music" color="primary")
+                        td
                             v-btn(@click.prevent="deleteInstrument(instrument)" icon="mdi-delete" size="x-small" color="red")
         v-dialog(v-model="showDialog" width="500" v-if="instrumentForDialog")
             v-card
@@ -73,7 +74,7 @@ v-card
                     span(v-for="(obj,i) of instrumentPosition" :key="i" @click="setInstrument(obj.key)")
                         BandInstrumentIcon(:icon="obj.key" :class="instrumentForDialog?.icons.includes(obj.key) ? 'selected':''")
                 v-card-actions
-                    v-btn(@click="saveIcons") Сохранить
+                    v-btn(@click="saveIcons" color="primary" ) Сохранить
 </template>
 
 <style scoped lang="sass">

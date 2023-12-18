@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type {IBand} from "~/server/models/band.model";
+import YoutubePlayer from "~/components/band/YoutubePlayer.vue";
 
 const route = useRoute()
 
@@ -10,7 +11,7 @@ interface IBandResponse {
 }
 
 const {data: band, refresh: refreshBand, pending: pendingBand} = await
-        useNuxtApp().$GET(`/band/${route.params.id}/view/`, true) as unknown as IBandResponse
+        useNuxtApp().$GET(`/band/${route.params.id}/view/`) as unknown as IBandResponse
 
 const {$listen} = useNuxtApp()
 $listen('band-view:refresh', () => refreshBand())
@@ -33,8 +34,8 @@ div(v-if="band")
                     v-toolbar-title Концерты
                 v-card-text
                     v-row(v-for="concert of band.concerts.filter(c=>c.enabled)" :key="concert.id")
-                            v-col {{concert.place.fullName}}
-                            v-col {{concert.dateHuman}}
+                        v-col {{concert.place.fullName}}
+                        v-col {{concert.dateHuman}}
         v-col
             v-card
                 v-toolbar(density="compact" )
@@ -42,11 +43,17 @@ div(v-if="band")
                 v-card-text
                     table.instruments
                         tbody
-                            tr(v-for="instrument of band.instruments" :key="instrument.id" align="center"
-                                no-gutters)
-                                td {{instrument.artist.name}}
-                                td
+                            tr(v-for="instrument of band.instruments" :key="instrument.id" align="center" no-gutters)
+                                td.text-left {{instrument.artist.name}}
+                                td.text-left
                                     BandInstrumentIcon(v-for="icon of instrument.icons" :icon="icon" :key="icon")
+            br
+            v-card
+                v-toolbar(density="compact" )
+                    v-toolbar-title Ролики на youtube
+                v-card-text
+                    div(v-for="(link,i) of band.youtube" :key="i" )
+                        YoutubePlayer(:link="link")
 
 </template>
 
@@ -54,11 +61,13 @@ div(v-if="band")
 .instruments
     width: 100%
     border-collapse: collapse
+
     tr
         //border-bottom: 1px solid silver
         td
             border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity))
             padding: 5px 0
+
 #images
     .logo
         max-width: 100px

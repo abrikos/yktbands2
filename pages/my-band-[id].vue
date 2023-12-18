@@ -26,6 +26,7 @@ $listen('band:refresh',()=> {
 const tabsItems = {
     concerts: {title: 'Концерты'},
     instruments: {title: 'Состав'},
+    youtube: {title: 'Youtube'},
     settings: {title: 'Параметры'},
 
 }
@@ -61,6 +62,7 @@ div
             BandConcerts(v-if="tab==='concerts'" :band="band")
             BandSettings(v-if="tab==='settings'" :band="band" :key="Math.random()")
             BandInstruments(v-if="tab==='instruments'" :band="band" :key="Math.random()")
+            BandYoutube(v-if="tab==='youtube'" :band="band" :key="Math.random()")
         v-col
             //a(:href="`/band-short-${band.shortcut}`" target="_blank") Перейти
             BandView#preview(:key="Math.random()")

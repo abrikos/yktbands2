@@ -67,6 +67,9 @@ const findInstrument = async (event: H3Event) => {
     return instrument
 }
 
+//Band.updateMany({},{youtube:['zzz']}).then(console.log)
+//Band.find({}).select('youtube logo').then(console.log)
+
 router.delete('/instrument/:_id', defineEventHandler(async (event) => {
     const instrument = await findInstrument(event)
     const {_id} = instrument
@@ -113,7 +116,7 @@ router.post('/update', defineEventHandler(async (event) => {
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     //data.shortcut = data.shortcut.replace(/\s+/g,'_')
     // @ts-ignore
-    await Band.updateOne({_id, user}, data).populate(Band.getPopulation())
+    await Band.updateOne({_id, user}, data)
 }))
 
 export default useBase('/api/my-band', router.handler)
