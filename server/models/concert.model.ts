@@ -1,9 +1,8 @@
 import {defineMongooseModel} from '#nuxt/mongoose'
 import mongoose from 'mongoose';
-import {IUser} from "~/server/models/user.model";
 import {IPlace} from "~/server/models/place.model";
 import {IBand} from "~/server/models/band.model";
-import moment from "moment/moment";
+import moment from "moment";
 
 const Schema = mongoose.Schema;
 

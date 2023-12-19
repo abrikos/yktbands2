@@ -2,6 +2,7 @@ import {defineMongooseModel} from '#nuxt/mongoose'
 import mongoose from 'mongoose';
 import {IUser} from "~/server/models/user.model";
 import moment from "moment";
+import {IConcert} from "~/server/models/concert.model";
 
 const Schema = mongoose.Schema;
 
@@ -11,6 +12,7 @@ export interface IPlace extends mongoose.Document {
     address: string,
     coordinate: [number, number],
     coordinateValid: boolean
+    concerts: IConcert[]
 }
 
 
@@ -28,7 +30,7 @@ const schema = new Schema({
     });
 
 schema.statics.getPopulation = () => [
-    {path: 'concerts', populate: {path: 'band', select: {logo: 1, name: 1}}},
+    {path: 'concerts', populate: [{path: 'band', select: {logo: 1, name: 1}}, 'place']},
 ]
 
 schema.virtual('fullName')

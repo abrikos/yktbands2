@@ -5,7 +5,7 @@ const router = createRouter()
 
 router.get('/all', defineEventHandler(async (event) => {
     // @ts-ignore
-    return Concert.find().populate(Concert.getPopulation())
+    return Concert.find({date:{$gt: new Date()}}).sort({date:-1}).populate(Concert.getPopulation())
 }))
 
 router.post('/address', defineEventHandler(async (event) => {
