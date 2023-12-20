@@ -1,4 +1,4 @@
-import pkginfo from './package.json';
+import pkginfo = require('./package.json');
 const execSync = require('child_process').execSync;
 
 const log_date_format = 'DD.MM.YYYY HH:mm:ss';
@@ -28,7 +28,7 @@ module.exports = {
             //DEBUG: '*',
         },
         output: 'logs/backend.log',
-        error: 'logs/backend-error.log',
+        error: 'logs/backend.log',
         //log_date_format,
         //combine_logs,
         //error_file: `${__dirname}/logs/server.err.log`,
