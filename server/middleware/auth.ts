@@ -1,5 +1,4 @@
 import {IToken, Token} from "~/server/models/token.model";
-import {User} from "~/server/models/user.model";
 export default defineEventHandler(async (event) => {
     const {authExpiration, authTokenName, authRefreshBeforeExpiration} = useRuntimeConfig(event)
     const cookies = parseCookies(event)
