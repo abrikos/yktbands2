@@ -1,3 +1,4 @@
+require('dotenv').config();
 const pkginfo = require('./package.json');
 const execSync = require('child_process').execSync;
 
