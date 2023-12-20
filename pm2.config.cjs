@@ -24,7 +24,7 @@ module.exports = {
             NODE_ENV: 'production',
             SOURCE_MAP: 'source-map',
             HOST: '127.0.0.1',
-            PORT: 3005
+            PORT: process.env.APP_PORT
             //DEBUG: '*',
         },
         output: 'logs/backend.log',
