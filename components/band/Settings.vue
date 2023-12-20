@@ -18,7 +18,6 @@ function reset() {
 }
 
 const url = useRequestURL().origin
-console.log('zzzzzzz', url)
 
 const fullUrl = computed(()=>{
     return `${url}/band-${band.id}`

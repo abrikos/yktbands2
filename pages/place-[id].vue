@@ -11,7 +11,7 @@ interface IPlaceResponse {
 }
 
 const {data: place, refresh: refreshBand, pending: pendingBand} = await
-        useNuxtApp().$GET(`/place/${route.params.id}/view`, true) as unknown as IPlaceResponse
+        useNuxtApp().$GET(`/place/${route.params.id}/view`) as unknown as IPlaceResponse
 
 </script>
 

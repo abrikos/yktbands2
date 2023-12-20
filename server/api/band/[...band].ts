@@ -4,7 +4,7 @@ const router = createRouter()
 
 router.get('/all', defineEventHandler(async (event) => {
     // @ts-ignore
-    return Band.find().populate(Band.getPopulation())
+    return Band.find({enabled:true})//.populate(Band.getPopulation())
 }))
 
 router.get('/:_id/view', defineEventHandler(async (event) => {
