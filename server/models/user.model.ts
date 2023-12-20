@@ -72,11 +72,4 @@ schema.virtual('tokens', {
     foreignField: 'user'
 })
 
-console.log(1111111)
 export const User = defineMongooseModel('user', schema)
-console.log(2222222)
-User.find().then(res=>{
-    console.log('Init user')
-}).catch(e=>{
-  console.error('ZZZZZZZZZ', e)
-})

@@ -1,19 +1,10 @@
 import {IInstrument} from "~/server/models/instrument.model";
-import {Artist, Band, Concert, Instrument, Place} from "#imports";
 import {H3Event} from "h3";
 import {IBand} from "~/server/models/band.model";
 import {Types} from "mongoose"
-import * as fs from "fs";
-import band from "~/server/api/band/[...band]";
 
 const router = createRouter()
 
-
-//Create mongo collection
-Artist.find()
-Place.find()
-Concert.find()
-Instrument.find()
 
 router.get('/all', defineEventHandler(async (event) => {
     const user = event.context.user
