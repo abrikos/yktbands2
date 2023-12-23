@@ -1,7 +1,8 @@
 #!/bin/bash
-GIT=`git pull`
-  yarn
-  #yarn run build
-  pm2 delete ykt-bands
-  pm2 start pm2.config.cjs
+NAME=`node pm2.config.cjs`
+yarn
+yarn run build
+pm2 delete
+$NAME
+pm2 start pm2.config.cjs
 

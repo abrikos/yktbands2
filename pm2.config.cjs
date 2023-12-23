@@ -2,13 +2,14 @@ require('dotenv').config();
 
 
 const {PORT, BOT_NAME, BOT_TOKEN, MAIL_PASSWORD, MAIL_USER} = process.env
-
+const name = `ykt-bands`
+console.log(name)
 /**
  * Конфигурация для деплоя
  */
 module.exports = {
     apps: [{
-        name: `ykt-bands`,
+        name,
         script: './.output/server/index.mjs',
         env: {
             NODE_ENV: 'production',
