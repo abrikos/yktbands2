@@ -6,7 +6,6 @@ import {EventHandlerRequest, H3Event} from "h3";
 interface IStrategy{
     [key: string]: (event: H3Event<EventHandlerRequest>) => Promise<IUser | undefined>
 }
-
 export const strategies:IStrategy = {
     async password(event: H3Event) {
         const {email, password} = await readBody(event)
@@ -20,7 +19,7 @@ export const strategies:IStrategy = {
         const {username, first_name, last_name, photo_url} = body
         const email = username + '@telegram.org'
         const TOKEN: BinaryLike = process.env.BOT_TOKEN as BinaryLike;
-        console.log(TOKEN)
+        //console.log(TOKEN)
         const secret = crypto.createHash('sha256')
             .update(TOKEN)
             .digest();
