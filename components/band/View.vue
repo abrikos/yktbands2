@@ -6,14 +6,13 @@ const route = useRoute()
 
 const {data: band, refresh: refreshBand, pending: pendingBand} = await
         useNuxtApp().$GET(`/band/${route.params.id}/view/`) as unknown as IBandResponse
-
 const {$listen} = useNuxtApp()
 $listen('band-view:refresh', () => refreshBand())
 
 </script>
 
 <template lang="pug">
-div(vif="band")
+div(v-if="band")
     v-toolbar(color="primary" )
         v-toolbar-title {{band.nameOrShortcut}}
     div#images

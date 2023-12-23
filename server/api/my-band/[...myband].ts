@@ -42,15 +42,20 @@ router.get('/:_id/view', defineEventHandler(async (event) => {
     const {_id} = event.context.params as Record<string, string>
     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
-    // @ts-ignore
-    return Band.findOne({_id, user}).populate(Band.getPopulation())
+    try {
+        // @ts-ignore
+        return Band.findOne({_id, $or: [{user}, {share: {$in: user}}]}).populate(Band.getPopulation())
+    }catch (e: any) {
+        throw createError({statusCode: 403, message: e.message})
+    }
 }))
 
 const findInstrument = async (event: H3Event) => {
     const user = event.context.user
+    if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён'})
     const {_id} = event.context.params as Record<string, string>
     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
-    if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён'})
+
     // @ts-ignore
     const instrument = await Instrument.findById(_id).populate('band') as unknown as IInstrument
     if (!instrument) throw createError({statusCode: 404, message: 'Инструмент не найден'})
@@ -71,6 +76,17 @@ router.post('/instrument/:_id/icon', defineEventHandler(async (event) => {
     const instrument = await findInstrument(event)
     instrument.icons = await readBody(event)
     await instrument.save()
+}))
+router.post('/:_id/share', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён'})
+    const {_id} = event.context.params as Record<string, string>
+    if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
+    // @ts-ignore
+    const band = Band.findOne({_id, user}).populate(Band.getPopulation()) as unknown as IBand
+    if(!band) throw createError({statusCode: 406, message: 'Группа не найдена'})
+    const shareCode = Math.random().toString()
+    await Band.updateOne({_id, user}, {shareCode})
 }))
 
 router.put('/:_id/instrument', defineEventHandler(async (event) => {
