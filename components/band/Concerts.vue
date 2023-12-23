@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import type {IBand} from "~/server/models/band.model";
+import type {IBand, IBandResponse} from "~/server/models/band.model";
 import type {IConcert} from "~/server/models/concert.model";
 
-const props = defineProps<{ band: IBand }>()
-const {$event} = useNuxtApp()
+const route = useRoute()
+const {data: band, refresh: refreshBand, pending: pendingBand} = await
+        useNuxtApp().$GET(`/my-band/${route.params.id}/view/`) as unknown as IBandResponse
+
+
+const {$event, $listen} = useNuxtApp()
+$listen('concert:refresh',()=> {
+    refreshBand()
+    $event('band-view:refresh');
+})
 
 const concertEdit = ref()
 
@@ -17,12 +25,12 @@ const listHeaders = [
 
 async function updateConcert(concert: IConcert) {
     await useNuxtApp().$PUT('/concert/upsert', concert)
-    $event('band:refresh')
+    $event('band-view:refresh');
 }
 
 async function deleteConcert(concert: IConcert) {
     await useNuxtApp().$DELETE('/concert/delete/' + concert.id)
-    $event('band:refresh')
+    $event('band-view:refresh');
 }
 
 function editConcert(concert: IConcert) {
