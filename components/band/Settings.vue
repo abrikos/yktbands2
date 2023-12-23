@@ -25,11 +25,11 @@ const fullUrl = computed(()=>{
     return `${url}/band-${band.value.id}`
 })
 const shareUrl = computed(()=>{
-    return `${url}/share-${band.value.id}`
+    return `${url}/share-${band.value.id}-${band.value.shareCode}`
 })
 
-async function createShare(){
-    await useNuxtApp().$POST(`/my-band/${band.value.id}/share`)
+async function createShare(cancel:boolean){
+    await useNuxtApp().$POST(`/my-band/${band.value.id}/share`,{cancel})
     $event('band:refresh');
 }
 
@@ -50,9 +50,12 @@ v-card
         a(:href="fullUrl" target="_blank") Перейти
         CopyBtn(:str="fullUrl")
         div
-            v-btn(@click="createShare") Дать доступ к группе
-            div {{shareUrl}}
-                CopyBtn(:str="shareUrl")
+            div(v-if="band.shareCode" )
+                div Ссылка доступна только для подключения одного юзера
+                div {{shareUrl}}
+                    CopyBtn(:str="shareUrl")
+                v-btn(@click="createShare(true)") Отменить доступ
+            v-btn(v-else @click="createShare") Дать доступ к группе
 
 
 </template>

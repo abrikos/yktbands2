@@ -16,7 +16,7 @@ export interface IBand extends mongoose.Document {
     instruments: IInstrument[]
     concerts: IConcert[]
     user: IUser,
-    share: IUser[],
+    shares: IUser[],
     logo: string
     shareCode: string
     youtube: string[]
@@ -40,7 +40,7 @@ const schema = new Schema({
         shareCode: {type: String},
         youtube: [{type: String}],
         user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
-        share: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
+        shares: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
         enabled: {type: Boolean, default: false}
     },
     {

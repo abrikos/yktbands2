@@ -24,7 +24,7 @@ router.delete('/delete/:_id', defineEventHandler(async (event) => {
     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 404, message: 'Концерт не найден'})
     const concert = await Concert.findById(_id) as unknown as IConcert
     if (!concert) throw createError({statusCode: 404, message: 'Концерт не найден'})
-    const band = await Band.findOne({_id: concert.band, user})//.populate(Band.getPopulation()) as unknown as IBand
+    const band = await Band.findOne({_id:concert.band, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]})//.populate(Band.getPopulation()) as unknown as IBand
     if (!band) throw createError({statusCode: 403, message: 'Группа не найдена'})
     await Concert.deleteOne({_id})
     //await Concert.updateMany({test:Math.random().toString()})
@@ -48,7 +48,7 @@ router.put('/upsert', defineEventHandler(async (event) => {
     const {name, address, coordinate} = place
     if (!band) throw createError({statusCode: 406, message: 'Ошибка группы: no band'})
     if (!Types.ObjectId.isValid(band.id||band)) throw createError({statusCode: 406, message: `Ошибка группы: wrong id:"${band}"`})
-    const bandFound = await Band.findOne({_id: band.id||band, user})//.populate(Band.getPopulation()) as unknown as IBand
+    const bandFound = await Band.findOne({_id:band.id||band, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]})//.populate(Band.getPopulation()) as unknown as IBand
     if (!bandFound) throw createError({statusCode: 403, message: 'Группа не найдена'})
     let found
     if (place.id && Types.ObjectId.isValid(place.id)) {

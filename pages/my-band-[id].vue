@@ -55,8 +55,8 @@ div(v-if="band")
         v-col(cols="4")
             BandConcerts(v-if="tab==='concerts'")
             BandSettings(v-if="tab==='settings'")
-            //BandInstruments(v-if="tab==='instruments'")
-            //BandYoutube(v-if="tab==='youtube'")
+            BandInstruments(v-if="tab==='instruments'")
+            BandYoutube(v-if="tab==='youtube'")
         v-col
             //a(:href="`/band-short-${band.shortcut}`" target="_blank") Перейти
             BandView#preview
