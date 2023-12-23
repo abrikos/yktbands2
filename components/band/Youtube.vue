@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import type {IBand} from "~/server/models/band.model";
+import type {IBand, IBandResponse} from "~/server/models/band.model";
 import YoutubePlayer from "~/components/band/YoutubePlayer.vue";
 
 const {$event} = useNuxtApp()
-const props = defineProps<{ band: IBand }>()
-const {band} = props
+const route = useRoute()
+const {data: band, refresh: refreshBand} = await
+        useNuxtApp().$GET(`/my-band/${route.params.id}/view/`) as unknown as IBandResponse
 const newLink = ref()
 
 async function addLink(){
     if(!newLink.value) return
-    band.youtube.push(newLink.value)
-    await useNuxtApp().$POST(`/my-band/update`, {...band})
+    band.value.youtube.push(newLink.value)
+    await useNuxtApp().$POST(`/my-band/update`, {...band.value})
     $event('band:refresh')
 }
 async function deleteLink(i:number){
-    band.youtube.splice(i,1)
-    console.log(band.youtube)
-    await useNuxtApp().$POST(`/my-band/update`, {...band})
+    band.value.youtube.splice(i,1)
+    await useNuxtApp().$POST(`/my-band/update`, {...band.value})
     $event('band:refresh')
 }
 </script>
@@ -30,6 +30,7 @@ v-card
             template(v-slot:append-inner)
                 v-btn(@click="addLink") Добавить
         div(v-for="(link,i) of band.youtube" :key="i" )
+            div {{link}}
             YoutubePlayer(:link="link")
             v-btn(@click="deleteLink(i)" icon="mdi-delete" color="red")
 </template>
