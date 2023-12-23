@@ -49,7 +49,7 @@ async function tabNavigate(tab: string) {
 
 <template lang="pug">
 div(v-if="band")
-    h1 Группа "{{band.nameOrShortcut}}"
+    h1 Группа "{{band.nameOrShortcut}}" {{band.photos.length}}
     v-tabs(v-model="tab" density="compact")
         v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}
 
@@ -58,11 +58,11 @@ div(v-if="band")
             BandConcerts(v-if="tab==='concerts'")
             BandSettings(v-if="tab==='settings'")
             BandInstruments(v-if="tab==='instruments'")
-            BandYoutube(v-if="tab==='youtube'")
-            BandPhotoEdit(v-if="tab==='photo'")
+            BandYoutube(v-if="tab==='youtube'" :band="band")
+            BandPhotoEdit(v-if="tab==='photo'" :band="band")
         v-col
             //a(:href="`/band-short-${band.shortcut}`" target="_blank") Перейти
-            BandView#preview
+            BandView#preview(:band="band" :key="Math.random()")
 </template>
 
 <style scoped lang="sass">

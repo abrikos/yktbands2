@@ -1,22 +1,19 @@
 <script setup lang="ts">
-import type {IBandResponse} from "~/server/models/band.model";
+import type {IBand, IBandResponse} from "~/server/models/band.model";
 
 const {$event} = useNuxtApp()
-const route = useRoute()
-const {data: band, refresh: refreshBand} = await
-        useNuxtApp().$GET(`/my-band/${route.params.id}/view/`) as unknown as IBandResponse
+const props = defineProps<{ band: IBand }>()
+const {band} = props
 const newLink = ref()
 
 async function addLink(){
     if(!newLink.value) return
-    band.value.photos.push(newLink.value)
-    await useNuxtApp().$POST(`/my-band/update`, {...band.value}, true)
-    $event('band:refresh')
+    band.photos.push(newLink.value)
+    await useNuxtApp().$POST(`/my-band/update`, {...band}, true)
 }
 async function deleteLink(i:number){
-    band.value.photos.splice(i,1)
-    await useNuxtApp().$POST(`/my-band/update`, {...band.value})
-    $event('band:refresh')
+    band.photos.splice(i,1)
+    await useNuxtApp().$POST(`/my-band/update`, {...band})
 }
 </script>
 

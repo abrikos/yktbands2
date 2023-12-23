@@ -2,13 +2,16 @@
 import type {IBand, IBandResponse} from "~/server/models/band.model";
 import YoutubePlayer from "~/components/band/YoutubePlayer.vue";
 
+const props = defineProps<{ band: IBand }>()
 const route = useRoute()
-
-const {data: band, refresh: refreshBand, pending: pendingBand} = await
-        useNuxtApp().$GET(`/band/${route.params.id}/view/`) as unknown as IBandResponse
 const {$listen} = useNuxtApp()
-$listen('band-view:refresh', () => refreshBand())
-
+//$listen('band-view:refresh', () => refreshBand())
+let {band} = props
+if(!band){
+    const {data: bandData, refresh: refreshBand, pending: pendingBand} = await
+            useNuxtApp().$GET(`/band/${route.params.id}/view/`, true) as unknown as IBandResponse
+    band = bandData.value
+}
 
 </script>
 
