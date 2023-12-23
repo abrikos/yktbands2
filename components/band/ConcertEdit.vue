@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import type {IBand} from "~/server/models/band.model";
+import type {IBand, IBandResponse} from "~/server/models/band.model";
 import type {IPlace} from "~/server/models/place.model";
 import moment from 'moment'
 import type {IConcert} from "~/server/models/concert.model";
 
+const route = useRoute()
 const {$event, $listen} = useNuxtApp()
 $listen('concertDialog:show', (concert) => {
     newConcert.value = concert as IConcert
@@ -12,9 +13,10 @@ $listen('concertDialog:show', (concert) => {
 })
 
 
-const props = defineProps<{ band: IBand, concert?: IConcert }>()
-const {band, concert} = props
 const {data: places, refresh: refreshPlaces, pending: pendingPlaces} = await useNuxtApp().$GET('/place/all')// as unknown as IArtistResponse
+const {data: bandData, refresh: refreshBand, pending: pendingBand} = await
+        useNuxtApp().$GET(`/my-band/${route.params.id}/view/`)
+const band = ref(bandData.value)
 
 const hours = Array.from(Array(25).keys())
 const showDialog = ref()
@@ -31,7 +33,8 @@ async function mapClick(e: any) {
 async function upsertConcert() {
     await useNuxtApp().$PUT('/concert/upsert', newConcert.value)
     await refreshPlaces()
-    $event('band:refresh')
+    refreshBand()
+    $event('band-view:refresh')
 }
 
 function placeMarkerClick(place: IPlace) {

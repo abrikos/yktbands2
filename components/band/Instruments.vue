@@ -1,14 +1,13 @@
 <script setup lang="ts">
 
 import type {IInstrument} from "~/server/models/instrument.model";
-import type {IBand, IBandResponse} from "~/server/models/band.model";
+import type {IBandResponse} from "~/server/models/band.model";
 
 const route = useRoute()
 
-const {data: artists, refresh: refreshArtists, pending: pA} = await useNuxtApp().$GET('/artist/all')// as unknown as IArtistResponse
-const {data: band, refresh: refreshBand, pending: pendingBand} = await
+const {data: artists, refresh: refreshArtists} = await useNuxtApp().$GET('/artist/all')
+const {data: band, refresh: refreshBand} = await
         useNuxtApp().$GET(`/my-band/${route.params.id}/view/`) as unknown as IBandResponse
-// as unknown as IArtistResponse
 const {$event} = useNuxtApp()
 
 
