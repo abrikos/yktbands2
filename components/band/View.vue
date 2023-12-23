@@ -9,6 +9,7 @@ const {data: band, refresh: refreshBand, pending: pendingBand} = await
 const {$listen} = useNuxtApp()
 $listen('band-view:refresh', () => refreshBand())
 
+
 </script>
 
 <template lang="pug">
@@ -40,6 +41,8 @@ div(vif="band")
                                 td.text-left {{instrument.artist.name}}
                                 td.text-left
                                     BandInstrumentIcon(v-for="icon of instrument.icons" :icon="icon" :key="icon")
+            br
+            BandPhotoView(:photos="band.photos")
             br
             v-card
                 v-toolbar(density="compact" )

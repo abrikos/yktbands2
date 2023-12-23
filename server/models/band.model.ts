@@ -20,6 +20,7 @@ export interface IBand extends mongoose.Document {
     logo: string
     shareCode: string
     youtube: string[]
+    photos: string[]
     poster: string
     logoRnd: string
     posterRnd: string
@@ -39,6 +40,7 @@ const schema = new Schema({
         poster: {type: String},
         shareCode: {type: String},
         youtube: [{type: String}],
+        photos: [{type: String}],
         user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
         shares: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
         enabled: {type: Boolean, default: false}

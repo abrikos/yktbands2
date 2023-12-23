@@ -18,10 +18,12 @@ $listen('band:refresh',()=> {
 
 
 const tabsItems = {
+    settings: {title: 'Параметры'},
     concerts: {title: 'Концерты'},
     instruments: {title: 'Состав'},
+    photo: {title: 'Фото'},
     youtube: {title: 'Youtube'},
-    settings: {title: 'Параметры'},
+
 
 }
 
@@ -57,6 +59,7 @@ div(v-if="band")
             BandSettings(v-if="tab==='settings'")
             BandInstruments(v-if="tab==='instruments'")
             BandYoutube(v-if="tab==='youtube'")
+            BandPhotoEdit(v-if="tab==='photo'")
         v-col
             //a(:href="`/band-short-${band.shortcut}`" target="_blank") Перейти
             BandView#preview

@@ -9,7 +9,7 @@ export default defineNuxtPlugin((_nuxtApp) => {
     function useCustomFetch<T>(url: string | (() => string), options: UseFetchOptions<T> = {}, debug?:boolean) {
         const defaults: UseFetchOptions<T> = {
             onRequest(_ctx) {
-                debug && console.log('REQ', options.method, url, (_ctx.options.body))
+                debug && console.log('REQ', options.method, url, _ctx.options.body)
                 // _ctx.response._data = new myBusinessResponse(_ctx.response._data)
             },
             onResponse(_ctx) {
