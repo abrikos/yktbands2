@@ -30,6 +30,7 @@ async function updateConcert(concert: IConcert) {
 
 async function deleteConcert(concert: IConcert) {
     await useNuxtApp().$DELETE('/concert/delete/' + concert.id)
+    refreshBand()
     $event('band-view:refresh');
 }
 
