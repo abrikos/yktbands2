@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {IBandResponse} from "~/server/models/band.model";
+import type {IBand, IBandResponse} from "~/server/models/band.model";
 
 definePageMeta({
     middleware: 'auth-middleware' // this should match the name of the file inside the middleware directory
@@ -8,8 +8,8 @@ definePageMeta({
 const route = useRoute()
 const router = useRouter()
 
-const {data: band, refresh: refreshBand, pending: pendingBand} = await useNuxtApp().$GET(`/my-band/${route.params.id}/view/`) as
-        unknown as IBandResponse
+const {data, refresh: refreshBand, pending: pendingBand} = await useNuxtApp().$GET(`/my-band/${route.params.id}/view/`)
+const band = data.value as IBand
 const { $listen, $event } = useNuxtApp()
 $listen('band:refresh',()=> {
     refreshBand()
@@ -57,7 +57,7 @@ div(v-if="band")
         v-col(cols="4")
             BandConcerts(v-if="tab==='concerts'")
             BandSettings(v-if="tab==='settings'")
-            BandInstruments(v-if="tab==='instruments'")
+            BandInstruments(v-if="tab==='instruments'" :band="band" :key="Math.random()")
             BandYoutube(v-if="tab==='youtube'" :band="band")
             BandPhotoEdit(v-if="tab==='photo'" :band="band")
         v-col

@@ -12,8 +12,7 @@ export interface IArtist extends mongoose.Document {
 
 
 const schema = new Schema({
-        name: {type: String, require: true},
-        instrument: {type: String},
+        name: {type: String, require: true, unique: true},
     },
     {
         toObject: {virtuals: true},
@@ -21,17 +20,5 @@ const schema = new Schema({
         // see http://stackoverflow.com/q/13133911/488666
         toJSON: {virtuals: true}
     });
-
-schema.statics.getPopulation = () => [
-    {path: 'instruments', populate: 'band'},
-]
-
-schema.virtual('instruments', {
-    ref: 'instrument',
-    localField: '_id',
-    foreignField: 'artist',
-    options: {sort: {name: 1}}
-})
-
 
 export const Artist = defineMongooseModel('artist', schema)

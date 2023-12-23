@@ -1,99 +1,98 @@
 <script setup lang="ts">
-
-import type {IInstrument} from "~/server/models/instrument.model";
-import type {IBandResponse} from "~/server/models/band.model";
-
+import type {IInstrument, IBand, IBandResponse} from "~/server/models/band.model";
+import type {IArtist} from "~/server/models/artist.model";
 
 
 const {data: artists, refresh: refreshArtists} = await useNuxtApp().$GET('/artist/all')
-const route = useRoute()
-const {data: band, refresh: refreshBand} = await
-        useNuxtApp().$GET(`/my-band/${route.params.id}/view/`) as unknown as IBandResponse
+const props = defineProps<{ band: IBand }>()
+const {band} = props
 const {$event} = useNuxtApp()
 
 
 const {instrumentPosition} = useAppConfig()
-const instrumentsFiltered = computed(() => band.value.instruments
+const instrumentsFiltered = computed(() => band.instruments
                 .sort((a: IInstrument, b: IInstrument) => a.artist.name > b.artist.name ? -1 : a.artist.name < b.artist.name ? 1 : 0)
                 .reverse()
         //.filter((i: IInstrument) => i.artist.name)
 )
 
-const newArtist = ref()
+const selectedArtists = ref()
 const instrumentForDialog = ref<IInstrument>()
 
 
 async function addInstrument() {
-    await useNuxtApp().$PUT(`/my-band/${band.value.id}/instrument`, {artist: newArtist.value})
-    await refreshArtists()
-    await refreshBand()
-    $event('band-view:refresh')
+    for (const artist of selectedArtists.value) {
+        if (band.instruments.map(instr => instr.artist.id).includes(artist.id)) continue
+        insertArtist(artist)
+    }
+    selectedArtists.value = null
 }
 
-async function deleteInstrument(instrument: IInstrument) {
-    if (!confirm(`Удалить артиста ${instrument.artist.name}`)) return
-    await useNuxtApp().$DELETE(`/my-band/instrument/${instrument.id}`)
-    $event('band-view:refresh')
-    await refreshArtists()
-    await refreshBand()
+function insertArtist(artist:IArtist){
+    const instrument: IInstrument = {artist, icons: [] as string[]} as IInstrument
+    band.instruments.push(instrument)
 }
 
-function setInstrument(icon: string) {
-    if (instrumentForDialog.value?.icons.includes(icon)) {
-        instrumentForDialog.value.icons = instrumentForDialog.value?.icons.filter(i => i !== icon) as string[]
+async function deleteInstrument(i: number) {
+    if (!confirm(`Удалить артиста ${band.instruments[i].artist.name}`)) return
+    band.instruments.splice(i, 1)
+}
+
+function setInstrument(instrument: IInstrument, icon: string) {
+    if (instrument.icons.includes(icon)) {
+        instrument.icons = instrument.icons.filter(i => i !== icon)
     } else {
-        instrumentForDialog.value?.icons.push(icon)
+        instrument.icons.push(icon)
     }
 }
 
-async function saveIcons() {
-    await useNuxtApp().$POST(`/my-band/instrument/${instrumentForDialog.value?.id}/icon`, instrumentForDialog.value?.icons)
-    await refreshArtists()
-    await refreshBand()
-    instrumentForDialog.value = undefined
-    $event('band-view:refresh')
+async function save() {
+    await useNuxtApp().$POST(`/my-band/${band.id}/instruments`, band.instruments)
 }
 
-const showDialog = computed({
-    get(){
-        return !!instrumentForDialog.value
-    },
-    set(){
+async function createArtist() {
+    const {data} = await useNuxtApp().$PUT(`/artist/create`, {name: newArtist.value})
+    refreshArtists()
+    const artist = data.value as IArtist
+    insertArtist(artist)
+    newArtist.value = null
+}
 
-    }
-})
+const newArtist = ref()
+
 </script>
 
 <template lang="pug">
 v-card
     v-toolbar
-        v-toolbar-title Состав коллектива {{showDialog}}
+        v-toolbar-title Состав коллектива
     v-card-text
-        v-combobox(item-title="name" item-value="id" :items="artists" v-model="newArtist" label="Выбрать или создать артиста"  density="compact")
+        v-text-field(v-model="newArtist" label="Создать нового музыканта" density="compact")
             template(v-slot:append)
-                v-btn(@click="addInstrument" small) Добавить
+                v-btn(v-if="newArtist" @click="createArtist" small) Создать
+
+        v-combobox(item-title="name" item-value="id" :items="artists" v-model="selectedArtists"
+            multiple=""
+            label="Выбрать музыканта"
+            density="compact")
+            template(v-slot:append)
+                v-btn(v-if="selectedArtists" @click="addInstrument" small) Добавить
         v-container
             table.instruments
                 tbody
-                    tr(v-for="(instrument,i) of instrumentsFiltered" :key="i" align="center" no-gutters)
+                    tr(v-for="(instrument,i) of instrumentsFiltered" :key="'instr'+i" align="center" no-gutters)
                         td.text-left {{instrument.artist.name}}
-                        td.text-left
-                            BandInstrumentIcon(v-for="icon of instrument.icons" :key="icon" :icon="icon")
                         td
+                            span(v-for="(obj,i) of instrumentPosition" :key="i" @click="setInstrument(instrument, obj.key)")
+                                BandInstrumentIcon(:icon="obj.key" :class="instrument?.icons.includes(obj.key) ? 'selected':''")
+
+                        //td.text-left
+                            BandInstrumentIcon(v-for="icon of instrument.icons" :key="icon" :icon="icon")
+                        //td
                             v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" icon="mdi-music" color="primary")
                         td
-                            v-btn(@click.prevent="deleteInstrument(instrument)" icon="mdi-delete" size="x-small" color="red")
-        v-dialog(v-model="showDialog" width="500")
-            v-card
-                v-toolbar
-                    v-toolbar-title Выберите инструменты для
-                    v-divider(vertical inset)
-                    v-btn(@click="showDialog=false" icon="mdi-close")
-                v-card-text
-                    span(v-for="(obj,i) of instrumentPosition" :key="i" @click="setInstrument(obj.key)")
-                        BandInstrumentIcon(:icon="obj.key" :class="instrumentForDialog?.icons.includes(obj.key) ? 'selected':''")
-                v-card-actions
-                    v-btn(@click="saveIcons" color="primary" ) Сохранить
+                            v-btn(@click.prevent="deleteInstrument(i)" icon="mdi-delete" size="x-small" color="red")
+            v-btn(@click="save" color="primary" ) Сохранить
 </template>
 
 <style scoped lang="sass">
@@ -107,5 +106,6 @@ v-card
             padding: 5px 0
 
 .selected
-    border: 1px solid red
+    border: 1px solid green
+    border-radius: 25px
 </style>

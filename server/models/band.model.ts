@@ -2,12 +2,13 @@ import {defineMongooseModel} from '#nuxt/mongoose'
 import mongoose from 'mongoose';
 import {IUser} from "~/server/models/user.model";
 import moment from "moment";
-import {IInstrument} from "~/server/models/instrument.model";
 import {IConcert} from "~/server/models/concert.model";
 import {Ref} from "vue";
+import {IArtist} from "~/server/models/artist.model";
 
 const Schema = mongoose.Schema;
 
+export interface IInstrument{artist:IArtist, icons:string[]}
 export interface IBand extends mongoose.Document {
     name: string
     shortcut: string
@@ -43,6 +44,7 @@ const schema = new Schema({
         photos: [{type: String}],
         user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
         shares: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
+        instruments: [{artist:{type: mongoose.Schema.Types.ObjectId, ref: 'artist'}, icons:[]}],
         enabled: {type: Boolean, default: false}
     },
     {
@@ -87,12 +89,6 @@ schema.virtual('concerts', {
     localField: '_id',
     foreignField: 'band',
     options: {sort: {date: -1}}
-})
-schema.virtual('instruments', {
-    ref: 'instrument',
-    localField: '_id',
-    foreignField: 'band',
-    //options: {sort: {'artist.name': 1}}
 })
 
 export const Band = defineMongooseModel('band', schema)

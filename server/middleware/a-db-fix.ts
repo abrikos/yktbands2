@@ -1,4 +1,4 @@
-import {User, Concert, Place, Band, Token, Artist, Instrument} from "#imports";
+import {User, Concert, Place, Band, Token, Artist} from "#imports";
 export default defineEventHandler(async (event) => {
     User.findOne()
     Concert.findOne()
@@ -6,5 +6,4 @@ export default defineEventHandler(async (event) => {
     Band.findOne()
     Token.findOne()
     Artist.findOne()
-    Instrument.findOne()
 })

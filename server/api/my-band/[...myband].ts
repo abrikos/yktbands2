@@ -1,6 +1,5 @@
-import {IInstrument} from "~/server/models/instrument.model";
 import {H3Event} from "h3";
-import {IBand} from "~/server/models/band.model";
+import {IBand,IInstrument} from "~/server/models/band.model";
 import {Types} from "mongoose"
 
 const router = createRouter()
@@ -54,37 +53,9 @@ router.get('/:_id/view', defineEventHandler(async (event) => {
     }
 }))
 
-const findInstrument = async (event: H3Event) => {
-    const user = event.context.user
-    if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён'})
-    const {_id} = event.context.params as Record<string, string>
-    if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
 
-    // @ts-ignore
-    const instrument = await Instrument.findById(_id).populate('band') as unknown as IInstrument
-    if (!instrument) throw createError({statusCode: 404, message: 'Инструмент не найден'})
-    const band  = await Band.findOne({_id:instrument.band.id, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]})
-    if (!band) throw createError({statusCode: 403, message: 'Доступ запрещён'})
-    return instrument
-}
-
-//Band.updateMany({},{youtube:['zzz']}).then(console.log)
-//Band.find({_id:'6576b3a247ea26d870ea7812'}).then(console.log)
-
-router.delete('/instrument/:_id', defineEventHandler(async (event) => {
-    const instrument = await findInstrument(event)
-    const {_id} = instrument
-    await Instrument.deleteOne({_id})
-}))
-
-router.post('/instrument/:_id/icon', defineEventHandler(async (event) => {
-    const instrument = await findInstrument(event)
-    instrument.icons = await readBody(event)
-    await instrument.save()
-}))
 router.post('/:_id/share', defineEventHandler(async (event) => {
     const user = event.context.user
-    console.log(user)
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён'})
     let {cancel} = await readBody(event)
     const {_id} = event.context.params as Record<string, string>
@@ -97,31 +68,21 @@ router.post('/:_id/share', defineEventHandler(async (event) => {
     return 1
 }))
 
-router.put('/:_id/instrument', defineEventHandler(async (event) => {
+router.post('/:_id/instruments', defineEventHandler(async (event) => {
     const user = event.context.user
+    if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {_id} = event.context.params as Record<string, string>
     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
-    if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     // @ts-ignore
     const band = await Band.findOne({_id, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]}).populate(Band.getPopulation()) as unknown as IBand
     if (!band) throw createError({statusCode: 404, message: 'Группа не найдена'})
     let body = await readBody(event)
-    if (!body.artist) throw createError({statusCode: 406, message: 'Необходимо ввести имя или выбрать артиста'})
-    let artist
-    if (typeof body.artist === 'object') {
-        artist = await Artist.findById(body.artist.id)
-        if (!artist) throw createError({statusCode: 406, message: 'Артист не найден'})
-    } else {
-        artist = await Artist.findOne({name: body.artist})
-        if (!artist) {
-            artist = await Artist.create({name: body.artist})
-        }
-
+    const instruments = []
+    for(const instrument of body){
+        instruments.push(instrument)
     }
-    if (band.instruments.map(i => i.artist.id).includes(artist.id)) {
-        throw createError({statusCode: 406, message: 'Артист уже добавлен'})
-    }
-    await Instrument.create({artist, band})
+    band.instruments = instruments
+    await band.save()
 }))
 
 router.post('/update', defineEventHandler(async (event) => {
