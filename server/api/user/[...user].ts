@@ -52,7 +52,7 @@ router.post('/process-restore-password', defineEventHandler(async (event) => {
     })
     return 1
 }))
-console.log(process.env.BOT_TOKEN)
+
 router.get('/checkAuth', defineEventHandler(async (event) => {
     return event.context.user
 }))
