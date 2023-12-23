@@ -19,7 +19,7 @@ export const strategies:IStrategy = {
         const {username, first_name, last_name, photo_url} = body
         const email = username + '@telegram.org'
         const TOKEN: BinaryLike = process.env.BOT_TOKEN as BinaryLike;
-        //console.log(TOKEN)
+        console.log(TOKEN)
         const secret = crypto.createHash('sha256')
             .update(TOKEN)
             .digest();
