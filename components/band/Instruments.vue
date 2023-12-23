@@ -1,19 +1,23 @@
 <script setup lang="ts">
 
 import type {IInstrument} from "~/server/models/instrument.model";
-import type {IBand} from "~/server/models/band.model";
+import type {IBand, IBandResponse} from "~/server/models/band.model";
 
-const props = defineProps<{ band: IBand }>()
+const route = useRoute()
 
 const {data: artists, refresh: refreshArtists, pending: pA} = await useNuxtApp().$GET('/artist/all')// as unknown as IArtistResponse
+const {data: band, refresh: refreshBand, pending: pendingBand} = await
+        useNuxtApp().$GET(`/my-band/${route.params.id}/view/`) as unknown as IBandResponse
+// as unknown as IArtistResponse
 const {$event} = useNuxtApp()
 
-const {band} = props
+
 const {instrumentPosition} = useAppConfig()
-const instrumentsFiltered = band.instruments
+const instrumentsFiltered = computed(() => band.value.instruments
+                .sort((a: IInstrument, b: IInstrument) => a.artist.name > b.artist.name ? -1 : a.artist.name < b.artist.name ? 1 : 0)
+                .reverse()
         //.filter((i: IInstrument) => i.artist.name)
-        //.sort((a: IInstrument, b: IInstrument) => a.artist.name > b.artist.name ? -1 : a.artist.name < b.artist.name ? 1 : 0)
-        //.reverse()
+)
 
 const newArtist = ref()
 const instrumentForDialog = ref<IInstrument>()
@@ -21,27 +25,36 @@ const showDialog = ref()
 
 
 async function addInstrument() {
-    await useNuxtApp().$PUT(`/my-band/${band.id}/instrument`, {artist: newArtist.value})
-    $event('band:refresh')
+    await useNuxtApp().$PUT(`/my-band/${band.value.id}/instrument`, {artist: newArtist.value})
+    await refreshArtists()
+    await refreshBand()
+    $event('band-view:refresh')
 }
 
 async function deleteInstrument(instrument: IInstrument) {
-    if(!confirm(`Удалить артиста ${instrument.artist.name}`)) return
+    if (!confirm(`Удалить артиста ${instrument.artist.name}`)) return
     await useNuxtApp().$DELETE(`/my-band/instrument/${instrument.id}`)
-    $event('band:refresh')
+    $event('band-view:refresh')
+    await refreshArtists()
+    await refreshBand()
 }
 
 function setInstrument(icon: string) {
     if (instrumentForDialog.value?.icons.includes(icon)) {
-        instrumentForDialog.value.icons = instrumentForDialog.value?.icons.filter(i=>i!==icon) as string[]
+        instrumentForDialog.value.icons = instrumentForDialog.value?.icons.filter(i => i !== icon) as string[]
     } else {
         instrumentForDialog.value?.icons.push(icon)
     }
+    refreshArtists()
+    refreshBand()
 }
 
-async function saveIcons(){
+async function saveIcons() {
     await useNuxtApp().$POST(`/my-band/instrument/${instrumentForDialog.value?.id}/icon`, instrumentForDialog.value?.icons)
-    $event('band:refresh')
+    await refreshArtists()
+    await refreshBand()
+    instrumentForDialog.value = undefined
+    $event('band-view:refresh')
 }
 </script>
 
@@ -64,7 +77,7 @@ v-card
                             v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" icon="mdi-music" color="primary")
                         td
                             v-btn(@click.prevent="deleteInstrument(instrument)" icon="mdi-delete" size="x-small" color="red")
-        v-dialog(v-model="showDialog" width="500" v-if="instrumentForDialog")
+        v-dialog(v-model="instrumentForDialog" width="500")
             v-card
                 v-toolbar
                     v-toolbar-title Выберите инструменты для
@@ -81,6 +94,7 @@ v-card
 .instruments
     width: 100%
     border-collapse: collapse
+
     tr
         td
             border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity))

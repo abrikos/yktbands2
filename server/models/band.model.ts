@@ -4,6 +4,7 @@ import {IUser} from "~/server/models/user.model";
 import moment from "moment";
 import {IInstrument} from "~/server/models/instrument.model";
 import {IConcert} from "~/server/models/concert.model";
+import {Ref} from "vue";
 
 const Schema = mongoose.Schema;
 
@@ -20,6 +21,12 @@ export interface IBand extends mongoose.Document {
     poster: string
     logoRnd: string
     posterRnd: string
+}
+
+export interface IBandResponse {
+    data: Ref<IBand>
+    refresh: any
+    pending: any
 }
 
 

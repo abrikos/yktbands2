@@ -37,7 +37,7 @@ div(v-if="loggedUser")
 
     v-window(v-model="tab" )
         v-window-item(value="1" )
-            v-card
+            v-card(width="600" )
                 v-toolbar
                     v-toolbar-title Профиль
                     v-divider.mx-4(vertical inset v-if="loggedUser.strategy")
@@ -54,7 +54,7 @@ div(v-if="loggedUser")
                 v-card-actions
                     v-btn(@click="submit") Сохранить
         v-window-item(value="2" )
-            v-card(v-if="!loggedUser.strategy")
+            v-card(v-if="!loggedUser.strategy" width="600" )
                 v-toolbar
                     v-toolbar-title  Смена пароля
                 v-card-text

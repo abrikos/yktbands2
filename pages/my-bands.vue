@@ -21,7 +21,7 @@ async function create() {
 </script>
 
 <template lang="pug">
-v-card
+v-card(width="600" )
     v-toolbar
         v-toolbar-title Мои группы
         v-divider(vertical inset)
