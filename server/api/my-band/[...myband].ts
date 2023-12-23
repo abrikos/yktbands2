@@ -94,6 +94,7 @@ router.post('/:_id/share', defineEventHandler(async (event) => {
     if (!band) throw createError({statusCode: 406, message: 'Давать доступ может только владелец группы'})
     const shareCode = cancel ? '' : Math.random().toString()
     await Band.updateOne({_id, user}, {shareCode})
+    return 1
 }))
 
 router.put('/:_id/instrument', defineEventHandler(async (event) => {
@@ -126,7 +127,6 @@ router.put('/:_id/instrument', defineEventHandler(async (event) => {
 router.post('/update', defineEventHandler(async (event) => {
     //{_id, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]}
     const body = await readBody(event)
-    console.log('zzzzzzzzzzzzz', body)
     const {_id, id, ...data} = body
     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
     const user = event.context.user

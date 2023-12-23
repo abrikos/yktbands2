@@ -10,7 +10,7 @@ const {data: band, refresh: refreshBand, pending: pendingBand} = await
 const edited = ref(false)
 
 async function submit() {
-    await useNuxtApp().$POST(`/my-band/update`, {...band})
+    await useNuxtApp().$POST(`/my-band/update`, {...band.value})
     $event('band:refresh')
 }
 
@@ -21,15 +21,16 @@ function reset() {
 
 const url = useRequestURL().origin
 
-const fullUrl = computed(()=>{
+const fullUrl = computed(() => {
     return `${url}/band-${band.value.id}`
 })
-const shareUrl = computed(()=>{
+const shareUrl = computed(() => {
     return `${url}/share-${band.value.id}-${band.value.shareCode}`
 })
 
-async function createShare(cancel:boolean){
-    await useNuxtApp().$POST(`/my-band/${band.value.id}/share`,{cancel})
+async function createShare(cancel: boolean) {
+    const {data} = await useNuxtApp().$POST(`/my-band/${band.value.id}/share`, {cancel})
+    if (!data.value) return
     $event('band:refresh');
 }
 
@@ -49,13 +50,22 @@ v-card
         v-switch(v-model="band.enabled" label="Отображать для всех")
         a(:href="fullUrl" target="_blank") Перейти
         CopyBtn(:str="fullUrl")
-        div
-            div(v-if="band.shareCode" )
-                div Ссылка доступна только для подключения одного юзера
-                div {{shareUrl}}
-                    CopyBtn(:str="shareUrl")
-                v-btn(@click="createShare(true)") Отменить доступ
-            v-btn(v-else @click="createShare") Дать доступ к группе
+br
+v-card
+    v-toolbar
+        v-toolbar-title Доступ к редактированию группы
+    v-card-text
+        div(v-if="band.shareCode" )
+            div Ссылка доступна только для подключения одного юзера
+            div {{shareUrl}}
+                CopyBtn(:str="shareUrl")
+            v-btn(@click="createShare(true)") Отменить доступ
+        v-btn(v-else @click="createShare") Дать доступ к группе
+    v-card-title Имеют доступ
+    v-card-text
+        v-list(item-props :items="band.shares.map(u=>{u.prependAvatar = u.avatarImage; return u})" item-value="id"
+            item-title="name")
+        //div {{band.shares.map(u=>{u.prependAvatar = u.avatarImage; return u.avatarImage})}}
 
 
 </template>

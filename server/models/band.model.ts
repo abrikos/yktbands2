@@ -52,7 +52,8 @@ const schema = new Schema({
     });
 
 schema.statics.getPopulation = () => [
-    {path: 'user', select: {email: 1, fullName: 1, photo: 1}},
+    {path: 'user', select: {email: 1, name: 1, avatarImage: 1}},
+    {path: 'shares', select: {email: 1, name: 1, avatarImage: 1}},
     {path: 'instruments', populate: 'artist', options: {sort: {'artist.name': -1}}},
     {path: 'concerts', populate: 'place'},
 ]
