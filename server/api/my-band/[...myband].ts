@@ -69,7 +69,7 @@ const findInstrument = async (event: H3Event) => {
 }
 
 //Band.updateMany({},{youtube:['zzz']}).then(console.log)
-//Band.find({}).select('youtube logo').then(console.log)
+//Band.find({_id:'6576b3a247ea26d870ea7812'}).then(console.log)
 
 router.delete('/instrument/:_id', defineEventHandler(async (event) => {
     const instrument = await findInstrument(event)
@@ -84,13 +84,14 @@ router.post('/instrument/:_id/icon', defineEventHandler(async (event) => {
 }))
 router.post('/:_id/share', defineEventHandler(async (event) => {
     const user = event.context.user
+    console.log(user)
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён'})
     let {cancel} = await readBody(event)
     const {_id} = event.context.params as Record<string, string>
     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
     // @ts-ignore
-    const band = Band.findOne({_id, user}).populate(Band.getPopulation()) as unknown as IBand
-    if (!band) throw createError({statusCode: 406, message: 'Группа не найдена или вы не владелец группы'})
+    const band = await Band.findOne({_id, user}) as unknown as IBand
+    if (!band) throw createError({statusCode: 406, message: 'Давать доступ может только владелец группы'})
     const shareCode = cancel ? '' : Math.random().toString()
     await Band.updateOne({_id, user}, {shareCode})
 }))
