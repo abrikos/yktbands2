@@ -12,7 +12,7 @@ $listen('band-view:refresh', () => refreshBand())
 </script>
 
 <template lang="pug">
-div(v-if="band")
+div(vif="band")
     v-toolbar(color="primary" )
         v-toolbar-title {{band.nameOrShortcut}}
     div#images
