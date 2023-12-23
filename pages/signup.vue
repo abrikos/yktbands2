@@ -16,13 +16,14 @@ async function submit(){
 
 
 <template lang="pug">
-v-card(width="600" )
-    v-card-text
-        v-text-field(v-model="user.email" label="Email" :rules="[() => !!user.email || 'Это поле обязательно']")
-        v-text-field(v-model="user.password" label="Пароль" type="password")
-        v-text-field(v-model="password2" label="Подтверждение пароля" type="password" :rules="[() => user.password === password2 || 'Пароль и подтверждение должны совпадать']")
-    v-card-actions
-        v-btn(@click="submit" v-if="canSubmit()") Зарегистрировать
+div.d-flex.align-center.flex-column
+    v-card(width="600" )
+        v-card-text
+            v-text-field(v-model="user.email" label="Email" :rules="[() => !!user.email || 'Это поле обязательно']")
+            v-text-field(v-model="user.password" label="Пароль" type="password")
+            v-text-field(v-model="password2" label="Подтверждение пароля" type="password" :rules="[() => user.password === password2 || 'Пароль и подтверждение должны совпадать']")
+        v-card-actions
+            v-btn(@click="submit" v-if="canSubmit()") Зарегистрировать
 </template>
 
 <style scoped>

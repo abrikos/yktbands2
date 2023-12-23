@@ -1,14 +1,15 @@
 <script lang="ts" setup>
-import { storeToRefs } from 'pinia'; // import storeToRefs helper hook from pinia
-import { useAuthStore } from '~/store/authStore'; // import the auth store we just created
-import { useTheme } from 'vuetify'
+import {useAuthStore} from '~/store/authStore'; // import the auth store we just created
+import {useTheme} from 'vuetify'
+import type {IUser} from "~/server/models/user.model";
+
 const theme = useTheme()
 
 //const { getUser } = useAuthStore();
 //await getUser()
 
 const { logUserOut } = useAuthStore(); // use authenticateUser action from  auth store
-const { loggedUser } = storeToRefs(useAuthStore()); // make authenticated state reactive with storeToRefs
+const { loggedUser } = useAuthStore() as {loggedUser:IUser}; // make authenticated state reactive with storeToRefs
 
 const drawerLeft = ref(true)
 const drawerRight = ref(false)

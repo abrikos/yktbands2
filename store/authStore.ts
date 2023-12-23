@@ -1,4 +1,5 @@
 import {defineStore} from 'pinia';
+import type {IUser} from "~/server/models/user.model";
 
 interface UserPayloadInterface {
     email: string;
@@ -7,20 +8,20 @@ interface UserPayloadInterface {
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
-        loggedUser: null,
+        loggedUser: undefined,
         loading: false,
         redirect: ''
-    }),
+    }) as { loggedUser: IUser | undefined, loading: boolean, redirect: string },
     actions: {
         setRedirect(path: string) {
             this.redirect = path
         },
         async getUser() {
-            if(!this.loggedUser) {
+            if (!this.loggedUser) {
                 const {data}: any = await useNuxtApp().$GET('/user/checkAuth');
                 this.loggedUser = data.value
                 return data.value
-            }else{
+            } else {
                 return this.loggedUser
             }
         },
@@ -43,7 +44,7 @@ export const useAuthStore = defineStore('auth', {
         },
         async logUserOut() {
             await useNuxtApp().$GET('/user/logout')
-            this.loggedUser = null
+            this.loggedUser = undefined
             const router = useRouter();
             this.redirect = ''
             await router.push('/login')

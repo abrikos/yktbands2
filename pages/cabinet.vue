@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {storeToRefs} from 'pinia'; // import storeToRefs helper hook from pinia
-import {useAuthStore} from '~/store/authStore'; // import the auth store we just created
-const {loggedUser} = storeToRefs(useAuthStore()); // make authenticated state reactive with storeToRefs
+import {useAuthStore} from '~/store/authStore';
+import type {IUser} from "~/server/models/user.model"; // import the auth store we just created
+const {loggedUser} = useAuthStore() as { loggedUser: IUser }; // make authenticated state reactive with storeToRefs
 
 const password = ref()
 const password2 = ref()
@@ -15,10 +15,7 @@ definePageMeta({
 })
 
 async function submit() {
-    const user = loggedUser.value
-    if (user) {
-        await useNuxtApp().$POST('/user/update', user)
-    }
+    await useNuxtApp().$POST('/user/update', loggedUser)
 }
 
 async function changePassword() {
@@ -30,20 +27,17 @@ async function changePassword() {
 
 <template lang="pug">
 div(v-if="loggedUser")
-    h1 Кабинет
+    v-toolbar
+        v-toolbar-title  Кабинет
     v-tabs(v-model="tab")
         v-tab(value="1" ) Профиль
         v-tab(value="2" ) Смена пароля
-
+    div.d-flex.align-center.flex-column
     v-window(v-model="tab" )
         v-window-item(value="1" )
             v-card(width="600" )
-                v-toolbar
-                    v-toolbar-title Профиль
-                    v-divider.mx-4(vertical inset v-if="loggedUser.strategy")
-                    v-btn(v-if="loggedUser.strategy")
-                        //img.strategy(src="/telegram.svg")
-                        img.strategy(:src="`/${loggedUser.strategy}.svg`")
+                v-card-title  Профиль
+                    img.strategy(v-if="loggedUser.strategy" :src="`/${loggedUser.strategy}.svg`")
                 v-card-text
                     v-text-field(v-model="loggedUser.email" label="Email" disabled v-if="!loggedUser.strategy")
                     v-text-field(v-model="loggedUser.name" label="Имя")

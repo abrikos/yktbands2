@@ -59,7 +59,7 @@ div
             BandYoutube(v-if="tab==='youtube'" :band="band")
         v-col
             //a(:href="`/band-short-${band.shortcut}`" target="_blank") Перейти
-            BandView#preview(:key="Math.random()")
+            BandView#preview
 </template>
 
 <style scoped lang="sass">

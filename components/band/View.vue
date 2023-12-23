@@ -1,14 +1,8 @@
 <script setup lang="ts">
-import type {IBand} from "~/server/models/band.model";
+import type {IBand, IBandResponse} from "~/server/models/band.model";
 import YoutubePlayer from "~/components/band/YoutubePlayer.vue";
 
 const route = useRoute()
-
-interface IBandResponse {
-    data: IBand
-    refresh: any
-    pending: any
-}
 
 const {data: band, refresh: refreshBand, pending: pendingBand} = await
         useNuxtApp().$GET(`/band/${route.params.id}/view/`) as unknown as IBandResponse
@@ -19,7 +13,7 @@ $listen('band-view:refresh', () => refreshBand())
 </script>
 
 <template lang="pug">
-div(v-if="band")
+div(vif="band")
     v-toolbar(color="primary" )
         v-toolbar-title {{band.nameOrShortcut}}
     div#images
