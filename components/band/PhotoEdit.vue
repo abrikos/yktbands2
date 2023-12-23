@@ -9,11 +9,11 @@ const newLink = ref()
 async function addLink(){
     if(!newLink.value) return
     band.photos.push(newLink.value)
-    await useNuxtApp().$POST(`/my-band/update`, {...band}, true)
+    await useNuxtApp().$POST(`/my-band/update`, band, true)
 }
 async function deleteLink(i:number){
     band.photos.splice(i,1)
-    await useNuxtApp().$POST(`/my-band/update`, {...band})
+    await useNuxtApp().$POST(`/my-band/update`, band)
 }
 </script>
 

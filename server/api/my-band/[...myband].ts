@@ -86,12 +86,11 @@ router.post('/:_id/instruments', defineEventHandler(async (event) => {
 }))
 
 router.post('/update', defineEventHandler(async (event) => {
-    //{_id, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]}
+    const user = event.context.user
+    if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const body = await readBody(event)
     const {_id, id, ...data} = body
     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
-    const user = event.context.user
-    if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     //data.shortcut = data.shortcut.replace(/\s+/g,'_')
     // @ts-ignore
     await Band.updateOne({_id, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]}, data)
