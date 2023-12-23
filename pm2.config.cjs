@@ -14,6 +14,8 @@ try {
 }
 ;
 
+const {PORT, BOT_NAME, BOT_TOKEN, MAIL_PASSWORD, MAIL_USER} = process.env
+
 /**
  * Конфигурация для деплоя
  */
@@ -25,8 +27,8 @@ module.exports = {
             NODE_ENV: 'production',
             SOURCE_MAP: 'source-map',
             HOST: '127.0.0.1',
-            PORT: process.env.APP_PORT
-            //DEBUG: '*',
+            PORT, BOT_NAME, BOT_TOKEN, MAIL_PASSWORD, MAIL_USER,
+            DEBUG: '*',
         },
         output: 'logs/backend.log',
         error: 'logs/backend-error.log',
