@@ -67,8 +67,10 @@ router.get('/logout', defineEventHandler(async (event) => {
 
 router.put('/signup', defineEventHandler(async (event) => {
     const {email, password} = await readBody(event)
-    let user: IUser | null = await User.create({email, password}) as unknown as IUser;
-    user = await User.findById(user.id, '-passwordHash') as unknown as IUser;
+    let user = await User.create({email, password}) as unknown as IUser | null;
+    if (!user) throw createError({statusCode: 403, message: 'STRANGE: create error: '})
+    user = await User.findById<IUser>(user.id, '-passwordHash')
+    if (!user) throw createError({statusCode: 403, message: 'STRANGE: user not found: '})
     await  utils.setAuthToken(event, user)
     return utils.adaptUser(user)
 
@@ -87,11 +89,14 @@ router.post('/update', defineEventHandler(async (event) => {
     const {name, password, avatarImage} = await readBody(event)
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
-    user.name = name
-    user.avatarImage = avatarImage
-    if (password) user.password = password
-    await user.save()
+    const found = await User.findById(user.id) as unknown as IUser
+    if (!found) throw createError({statusCode: 403, message: 'STRANGE: user not found: ' + user.id,})
+    found.name = name
+    found.avatarImage = avatarImage
+    await found.save()
 }))
+
+//User.updateOne({email:'abrikoz@gmail.com'},{passwordHash:'d09ae2219e185ef2cbc84e1425e6cc08959a831e0646a0d85bd1542505571098'}).then(console.log)
 
 router.post('/password', defineEventHandler(async (event) => {
     const {password} = await readBody(event)
