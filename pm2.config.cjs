@@ -15,7 +15,7 @@ module.exports = {
             SOURCE_MAP: 'source-map',
             HOST: '127.0.0.1',
             PORT, BOT_NAME, BOT_TOKEN, MAIL_PASSWORD, MAIL_USER,
-            DEBUG: '*',
+            //DEBUG: '*',
         },
         output: 'logs/backend.log',
         error: 'logs/backend-error.log',
