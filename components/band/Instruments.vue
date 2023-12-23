@@ -20,7 +20,6 @@ const instrumentsFiltered = computed(() => band.value.instruments
 
 const newArtist = ref()
 const instrumentForDialog = ref<IInstrument>()
-const showDialog = ref()
 
 
 async function addInstrument() {
@@ -44,8 +43,6 @@ function setInstrument(icon: string) {
     } else {
         instrumentForDialog.value?.icons.push(icon)
     }
-    refreshArtists()
-    refreshBand()
 }
 
 async function saveIcons() {
@@ -55,12 +52,21 @@ async function saveIcons() {
     instrumentForDialog.value = undefined
     $event('band-view:refresh')
 }
+
+const showDialog = computed({
+    get(){
+        return !!instrumentForDialog.value
+    },
+    set(){
+
+    }
+})
 </script>
 
 <template lang="pug">
 v-card
     v-toolbar
-        v-toolbar-title Состав коллектива
+        v-toolbar-title Состав коллектива {{showDialog}}
     v-card-text
         v-combobox(item-title="name" item-value="id" :items="artists" v-model="newArtist" label="Выбрать или создать артиста"  density="compact")
             template(v-slot:append)
@@ -76,7 +82,7 @@ v-card
                             v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" icon="mdi-music" color="primary")
                         td
                             v-btn(@click.prevent="deleteInstrument(instrument)" icon="mdi-delete" size="x-small" color="red")
-        v-dialog(v-model="instrumentForDialog" width="500")
+        v-dialog(v-model="showDialog" width="500")
             v-card
                 v-toolbar
                     v-toolbar-title Выберите инструменты для
