@@ -2,7 +2,6 @@ import {Token} from "~/server/models/token.model";
 import {IUser, User} from "~/server/models/user.model";
 import crypto from "crypto";
 import nodemailer from 'nodemailer'
-import {strategies} from "~/server/utils/strategies";
 
 //User.deleteMany().then(console.log)
 const router = createRouter()

@@ -19,16 +19,17 @@ export const strategies:IStrategy = {
         const body = await readBody(event)
         const {username, first_name, last_name, photo_url} = body
         const email = username + '@telegram.org'
+        const TOKEN: BinaryLike = process.env.BOT_TOKEN as BinaryLike;
+        const secret = crypto.createHash('sha256')
+            .update(TOKEN)
+            .digest();
 
         function checkSignature(body: any) {
             const {hash, ...data} = body
-            const TOKEN: BinaryLike = process.env.BOT_TOKEN as BinaryLike;
-            const secret = crypto.createHash('sha256')
-                .update(TOKEN)
-                .digest();
             const {returnUrl, strategy, ...rest} = data;
             const checkString = Object.keys(rest)
                 .sort()
+                .filter(k=>data[k])
                 .map(k => (`${k}=${data[k]}`))
                 .join('\n');
             const hmac = crypto.createHmac('sha256', secret)
