@@ -27,6 +27,7 @@ function snapshot() {
 }
 async function submit() {
     await useNuxtApp().$POST(`/my-band/update`, band.value)
+    await refreshBand()
     snapshot()
 }
 
