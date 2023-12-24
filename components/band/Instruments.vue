@@ -4,10 +4,7 @@ import type {IArtist} from "~/server/models/artist.model";
 
 
 const {data: artists, refresh: refreshArtists} = await useNuxtApp().$GET('/artist/all')
-const props = defineProps<{ band: IBand }>()
-const {band} = props
-const {$event} = useNuxtApp()
-
+const {band} = defineProps<{ band: IBand }>()
 
 const {instrumentPosition} = useAppConfig()
 const instrumentsFiltered = computed(() => band.instruments
@@ -17,8 +14,6 @@ const instrumentsFiltered = computed(() => band.instruments
 )
 
 const selectedArtists = ref()
-const instrumentForDialog = ref<IInstrument>()
-
 
 async function addInstrument() {
     for (const artist of selectedArtists.value) {
@@ -44,10 +39,6 @@ function setInstrument(instrument: IInstrument, icon: string) {
     } else {
         instrument.icons.push(icon)
     }
-}
-
-async function save() {
-    await useNuxtApp().$POST(`/my-band/${band.id}/instruments`, band.instruments)
 }
 
 async function createArtist() {
@@ -92,7 +83,6 @@ v-card
                             v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" icon="mdi-music" color="primary")
                         td
                             v-btn(@click.prevent="deleteInstrument(i)" icon="mdi-delete" size="x-small" color="red")
-            v-btn(@click="save" color="primary" ) Сохранить
 </template>
 
 <style scoped lang="sass">

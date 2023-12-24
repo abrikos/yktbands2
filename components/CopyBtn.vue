@@ -7,7 +7,7 @@ function copy(){
 </script>
 
 <template lang="pug">
-v-btn(icon="mdi-clipboard" @click="copy")
+v-btn(icon="mdi-clipboard" @click="copy" size="x-small" )
 </template>
 
 <style scoped lang="sass">

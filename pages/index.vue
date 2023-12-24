@@ -29,7 +29,7 @@ v-row
                         tr(v-for="concert of concerts" :key="concert.id")
                             td {{concert.dateHuman}}
                             td
-                                NuxtLink(:to="`/band-${concert.band.id}`") {{concert.band.nameOrShortcut}}
+                                NuxtLink(:to="`/band-${concert.band.id}`") {{concert.band.name}}
                             td
                                 NuxtLink(:to="`/place-${concert.place.id}`") {{concert.place.fullName}}
     v-col
@@ -40,7 +40,7 @@ v-row
                     tbody
                         tr(v-for="band of bands" :key="band.id")
                             td
-                                NuxtLink(:to="`/band-${band.id}`") {{band.nameOrShortcut}}
+                                NuxtLink(:to="`/band-${band.id}`") {{band.name}}
 
 </template>
 

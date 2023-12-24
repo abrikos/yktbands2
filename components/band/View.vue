@@ -18,7 +18,7 @@ if(!band){
 <template lang="pug">
 div(vif="band")
     v-toolbar(color="primary" )
-        v-toolbar-title {{band.nameOrShortcut}}
+        v-toolbar-title {{band.name}}
     div#images
         img.logo(:src="band.logoRnd" onerror="this.src='/logo.svg'")
         //img.poster(:src="band.posterRnd" onerror="this.src='/logo.svg'")

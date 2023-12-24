@@ -9,13 +9,30 @@ const route = useRoute()
 const router = useRouter()
 
 const {data, refresh: refreshBand, pending: pendingBand} = await useNuxtApp().$GET(`/my-band/${route.params.id}/view/`)
-const band = data.value as IBand
+const band = data as unknown as IBand
 const { $listen, $event } = useNuxtApp()
+const bandSnapshot = ref(JSON.parse(JSON.stringify(band.value)))
+const edited = computed(()=>{
+    return JSON.stringify(bandSnapshot.value) !== JSON.stringify(band.value)
+})
+function reset() {
+    for(const key in band.value){
+        band.value[key] = bandSnapshot.value[key]
+    }
+}
+function snapshot() {
+    for (const key in band.value) {
+        bandSnapshot.value[key] = band.value[key]
+    }
+}
+async function submit() {
+    await useNuxtApp().$POST(`/my-band/update`, band.value)
+    snapshot()
+}
+
 $listen('band:refresh',()=> {
     refreshBand()
-    $event('band-view:refresh');
 })
-
 
 const tabsItems = {
     settings: {title: 'Параметры'},
@@ -23,14 +40,7 @@ const tabsItems = {
     instruments: {title: 'Состав'},
     photo: {title: 'Фото'},
     youtube: {title: 'Youtube'},
-
-
-}
-
-async function loadSaved() {
-    refreshBand()
-    //refreshArtists()
-    //refreshPlaces()
+    share: {title: 'Доступ'},
 }
 
 const tab = computed({
@@ -41,25 +51,37 @@ const tab = computed({
         await router.replace({query: {...route.query, tab}})
     }
 })
+const url = useRequestURL().origin
 
-async function tabNavigate(tab: string) {
-    await router.replace({query: {...route.query, tab}})
-}
+const fullUrl = computed(() => {
+    return `${url}/band-${band.id}`
+})
 </script>
 
 <template lang="pug">
 div(v-if="band")
-    h1 Группа "{{band.nameOrShortcut}}" {{band.photos.length}}
+    h1.d-flex.justify-center
+        span Группа "{{band.name}}"
+        small
+            a(:href="fullUrl" target="_blank") Перейти
+            CopyBtn(:str="fullUrl")
+
     v-tabs(v-model="tab" density="compact")
         v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}
-
+    br
     v-row
         v-col(cols="4")
             BandConcerts(v-if="tab==='concerts'")
-            BandSettings(v-if="tab==='settings'")
-            BandInstruments(v-if="tab==='instruments'" :band="band" :key="Math.random()")
+            BandSettings(v-if="tab==='settings'" :band="band" )
+            BandInstruments(v-if="tab==='instruments'" :band="band")
             BandYoutube(v-if="tab==='youtube'" :band="band")
             BandPhotoEdit(v-if="tab==='photo'" :band="band")
+            BandShare(v-if="tab==='share'" :band="band")
+            v-card-actions(v-if="edited" )
+                v-btn(@click="submit" color="primary" ) Сохранить
+                v-spacer
+                v-btn(@click="reset") Сбросить
+
         v-col
             //a(:href="`/band-short-${band.shortcut}`" target="_blank") Перейти
             BandView#preview(:band="band" :key="Math.random()")

@@ -10,9 +10,9 @@ const Schema = mongoose.Schema;
 
 export interface IInstrument{artist:IArtist, icons:string[]}
 export interface IBand extends mongoose.Document {
+    [key:string]:any
     name: string
     shortcut: string
-    nameOrShortcut: string
     enabled: boolean
     instruments: IInstrument[]
     concerts: IConcert[]
@@ -73,10 +73,6 @@ schema.virtual('posterRnd')
 schema.virtual('logoRnd')
     .get(function (this: { logo: string }) {
         return this.logo + '?' + Math.random()
-    })
-schema.virtual('nameOrShortcut')
-    .get(function () {
-        return this.name || this.shortcut || this.id
     })
 
 schema.pre('save', function (next) {

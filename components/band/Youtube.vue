@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {IBand, IBandResponse} from "~/server/models/band.model";
+import type {IBand} from "~/server/models/band.model";
 import YoutubePlayer from "~/components/band/YoutubePlayer.vue";
 
 const {$event} = useNuxtApp()
@@ -10,13 +10,9 @@ const newLink = ref()
 async function addLink(){
     if(!newLink.value) return
     band.youtube.push(newLink.value)
-    await useNuxtApp().$POST(`/my-band/update`, {...band})
-    $event('band:refresh')
 }
 async function deleteLink(i:number){
     band.youtube.splice(i,1)
-    await useNuxtApp().$POST(`/my-band/update`, {...band})
-    $event('band:refresh')
 }
 </script>
 

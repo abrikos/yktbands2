@@ -2,19 +2,19 @@
 import type {IBand, IBandResponse} from "~/server/models/band.model";
 
 const {$event} = useNuxtApp()
-const props = defineProps<{ band: IBand }>()
-const {band} = props
+const {band} = defineProps<{ band: IBand }>()
+
 const newLink = ref()
 
-async function addLink(){
-    if(!newLink.value) return
+function addLink() {
+    if (!newLink.value) return
     band.photos.push(newLink.value)
-    await useNuxtApp().$POST(`/my-band/update`, band, true)
 }
-async function deleteLink(i:number){
-    band.photos.splice(i,1)
-    await useNuxtApp().$POST(`/my-band/update`, band)
+
+function deleteLink(i: number) {
+    band.photos.splice(i, 1)
 }
+
 </script>
 
 <template lang="pug">
@@ -26,8 +26,9 @@ v-card
             template(v-slot:append-inner)
                 v-btn(v-if="newLink" @click="addLink") Добавить
         div(v-for="(link,i) of band.photos" :key="i" )
-            div {{link}}
+            div
                 v-btn(@click="deleteLink(i)" icon="mdi-delete" color="red" size="x-small" )
+                span {{link}}
             img(:src="link")
 //BandPhotoView(:photos="band.photos")
 
