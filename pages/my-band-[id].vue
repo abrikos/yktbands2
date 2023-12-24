@@ -51,10 +51,10 @@ const tab = computed({
         await router.replace({query: {...route.query, tab}})
     }
 })
-const url = useRequestURL().origin
+const {origin} = useRequestURL()
 
 const fullUrl = computed(() => {
-    return `${url}/band-${band.id}`
+    return `${origin}/band-${band.id}`
 })
 </script>
 

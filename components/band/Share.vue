@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const {band} = defineProps<{ band: IBand }>()
-const url = useRequestURL().origin
+const {origin} = useRequestURL()
 const shareUrl = computed(() => {
-    return `${url}/share-${band.id}-${band.shareCode}`
+    return `${origin}/share-${band.id}-${band.shareCode}`
 })
 const shareCode = ref()
 function createShare() {
