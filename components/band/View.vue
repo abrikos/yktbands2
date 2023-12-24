@@ -30,7 +30,8 @@ div(vif="band")
                 v-toolbar(density="compact" )
                     v-toolbar-title Концерты
                 v-card-text
-                    v-row(v-for="concert of band.concerts.filter(c=>c.enabled)" :key="concert.id")
+                    v-row(v-for="concert of band.concerts.filter(c=>c.enabled)" :key="concert.id"
+                        :class="!concert.id?'new-concert':''")
                         v-col {{concert.place.fullName}}
                         v-col {{concert.dateHuman}}
         v-col
@@ -57,6 +58,8 @@ div(vif="band")
 </template>
 
 <style scoped lang="sass">
+.new-concert
+    background-color: red
 .instruments
     width: 100%
     border-collapse: collapse

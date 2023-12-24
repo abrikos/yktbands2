@@ -71,12 +71,13 @@ div(v-if="band")
     br
     v-row
         v-col(cols="4")
-            BandConcerts(v-if="tab==='concerts'")
+            BandConcerts(v-if="tab==='concerts'" :band="band" )
             BandSettings(v-if="tab==='settings'" :band="band" )
             BandInstruments(v-if="tab==='instruments'" :band="band")
             BandYoutube(v-if="tab==='youtube'" :band="band")
             BandPhotoEdit(v-if="tab==='photo'" :band="band")
             BandShare(v-if="tab==='share'" :band="band")
+            v-btn(@click="submit" color="primary" ) Сохранить
             v-card-actions(v-if="edited" )
                 v-btn(@click="submit" color="primary" ) Сохранить
                 v-spacer

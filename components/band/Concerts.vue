@@ -3,40 +3,37 @@ import type {IBand, IBandResponse} from "~/server/models/band.model";
 import type {IConcert} from "~/server/models/concert.model";
 
 const route = useRoute()
-const {data: band, refresh: refreshBand, pending: pendingBand} = await
-        useNuxtApp().$GET(`/my-band/${route.params.id}/view/`) as unknown as IBandResponse
-
-
+const {band} = defineProps<{ band: IBand }>()
 const {$event, $listen} = useNuxtApp()
-$listen('concert:refresh',()=> {
-    refreshBand()
-    $event('band-view:refresh');
+$listen('concert:update', (payload) => {
+    if (concertEditIndex.value) {
+        band.concerts[concertEditIndex.value] = payload as IConcert
+    } else {
+        band.concerts.push(payload as IConcert)
+    }
 })
 
-const concertEdit = ref()
+const concertEditIndex = ref()
 
-
-const listHeaders = [
-     {title: 'Ресторан', key: 'place.fullName', width:200},
-    {title: 'Дата', key: 'dateHuman', width:200},
-    {title: 'Показывать', key: 'enabled'},
-    {title: '', key: 'actions'},
-]
-
-async function updateConcert(concert: IConcert) {
-    await useNuxtApp().$PUT('/concert/upsert', concert)
-    $event('band-view:refresh');
+async function deleteConcert(i: number) {
+    const deleted = band.concerts.splice(i, 1) as IConcert[]
+    await useNuxtApp().$DELETE(`/concert/${deleted[0].id}`)
 }
 
-async function deleteConcert(concert: IConcert) {
-    await useNuxtApp().$DELETE('/concert/delete/' + concert.id)
-    refreshBand()
-    $event('band-view:refresh');
+function editConcert(i: number) {
+    $event('concertDialog:show', band.concerts[i])
+    concertEditIndex.value = i
 }
 
-function editConcert(concert: IConcert) {
-    $event('concertDialog:show', concert)
+function createConcert() {
+    $event('concertDialog:show', {place: {}, hour: 20, enabled: true})
 }
+
+onMounted(() => {
+    //createConcert()
+})
+
+
 </script>
 
 <template lang="pug">
@@ -45,18 +42,29 @@ v-card
         v-toolbar-title Концерты
         v-divider.mx-4(vertical inset)
         v-spacer
-        BandConcertEdit(:band="band" :concert="concertEdit")
-
+        v-btn(@click="createConcert" color="primary" ) Добавить новый концерт
     v-card-text
-        v-data-table(:items="band.concerts" :headers="listHeaders" density="compact" )
-            template(v-slot:item.actions="{item}")
-                v-btn(@click="editConcert(item)" icon="mdi-pencil" size="x-small" color="primary")
-                v-btn(@click="async()=>await deleteConcert(item)" icon="mdi-delete" size="x-small" color="red")
-            template(v-slot:item.enabled="{item}")
-                v-checkbox(v-model="item.enabled" @change="()=>updateConcert(item)")
+        table
+            tbody
+                tr
+                    th Ресторан
+                    th Дата
+                    th Показывать
+                tr(v-for="(concert,i) of band.concerts" :key="i" :class="!concert.id?'new-concert':''")
+                    td {{concert.place.name.toUpperCase()}}, {{concert.place.address}}
+                    td {{concert.dateHuman}}
+                    td.text-center
+                        v-switch(v-model="concert.enabled")
+                    td
+                        v-btn(@click="editConcert(i)" icon="mdi-pencil" size="x-small" color="primary")
+                        v-btn(@click="deleteConcert(i)" icon="mdi-delete" size="x-small" color="red")
 
-
+BandConcertDialog( :band="band")
 </template>
 
 <style scoped lang="sass">
+table
+    width: 100%
+    .new-concert
+        background-color: red
 </style>

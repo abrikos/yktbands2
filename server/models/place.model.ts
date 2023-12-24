@@ -8,7 +8,7 @@ export interface IPlace extends mongoose.Document {
     name: string,
     fullName: string,
     address: string,
-    coordinate: [number, number],
+    coordinate: number[],
     coordinateValid: boolean
     concerts: IConcert[]
 }
@@ -38,7 +38,7 @@ schema.virtual('fullName')
 
 schema.virtual('coordinateValid')
     .get(function () {
-        return this.coordinateX && this.coordinateY;
+        return !!(this.coordinateX && this.coordinateY);
     })
 schema.virtual('coordinate')
     .get(function () {

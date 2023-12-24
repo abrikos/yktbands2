@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import type {IPlace} from "~/server/models/place.model";
-import type {UnwrapRef} from "vue";
-import type {IConcert} from "~/server/models/concert.model";
 
 
 const props = defineProps<{

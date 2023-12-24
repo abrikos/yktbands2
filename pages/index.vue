@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {IConcert} from "~/server/models/concert.model";
+import type {IConcert} from "~/server/models/band.model";
 import type {IBand} from "~/server/models/band.model";
 
 interface IConcertResponse {

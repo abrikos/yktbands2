@@ -1,5 +1,5 @@
 import {H3Event} from "h3";
-import {IBand,IInstrument} from "~/server/models/band.model";
+import {IBand, IInstrument} from "~/server/models/band.model";
 import {Types} from "mongoose"
 
 const router = createRouter()
@@ -19,24 +19,6 @@ router.put('/create', defineEventHandler(async (event) => {
     return Band.create({user})
 }))
 
-// router.post('/:_id/upload', defineEventHandler(async (event) => {
-//     const user = event.context.user
-//     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
-//     const {_id} = event.context.params as Record<string, string>
-//     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
-//     const band = await Band.findOne({_id, user})
-//     if (!band) throw createError({statusCode: 404, message: 'Группа не найдена'})
-//     let formData = await readMultipartFormData(event)
-//     if (formData) {
-//         const file = formData[0].data
-//         const type = formData[1].data.toString()
-//         const [width, height] = type==='logo' ? [100, 100] : [400,400]
-//         fs.writeFile(`./public/upload/${type}_${band.id}.png`, file, res => console.log(res))
-//     }
-//     //if (!file) throw createError({statusCode: 406, message: 'Необходимо отправить файл'})
-// }))
-
-
 router.get('/:_id/view', defineEventHandler(async (event) => {
     const user = event.context.user
     const {_id} = event.context.params as Record<string, string>
@@ -53,37 +35,10 @@ router.get('/:_id/view', defineEventHandler(async (event) => {
     }
 }))
 
-
-router.post('/:_id/share', defineEventHandler(async (event) => {
-    const user = event.context.user
-    if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён'})
-    let {cancel} = await readBody(event)
-    const {_id} = event.context.params as Record<string, string>
-    if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
-    // @ts-ignore
-    const band = await Band.findOne({_id, user}) as unknown as IBand
-    if (!band) throw createError({statusCode: 406, message: 'Давать доступ может только владелец группы'})
-    const shareCode = cancel ? '' : Math.random().toString()
-    await Band.updateOne({_id, user}, {shareCode})
-    return 1
-}))
-
-router.post('/:_id/instruments', defineEventHandler(async (event) => {
-    const user = event.context.user
-    if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
-    const {_id} = event.context.params as Record<string, string>
-    if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
-    // @ts-ignore
-    const band = await Band.findOne({_id, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]}).populate(Band.getPopulation()) as unknown as IBand
-    if (!band) throw createError({statusCode: 404, message: 'Группа не найдена'})
-    let body = await readBody(event)
-    const instruments = []
-    for(const instrument of body){
-        instruments.push(instrument)
-    }
-    band.instruments = instruments
-    await band.save()
-}))
+//Band.findById('65880f6a385b78755ae5095b')    .populate(Band.getPopulation())    .then(console.log)
+//Concert.find({band:'65880f6a385b78755ae5095b'}).then(console.log)
+//Concert.find({_id:'658830d7a4bcaf8aa19d9d31'}).then(console.log)
+//Concert.deleteMany().then(console.log);
 
 router.post('/update', defineEventHandler(async (event) => {
     const user = event.context.user
@@ -91,8 +46,30 @@ router.post('/update', defineEventHandler(async (event) => {
     const body = await readBody(event)
     const {_id, id, ...data} = body
     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
-    //data.shortcut = data.shortcut.replace(/\s+/g,'_')
-    // @ts-ignore
+    for (const concert of body.concerts) {
+        concert.band = body.id
+        let {_id, id, place, ...concertData} = concert
+        if (!(concert.place.name && concert.date && concert.place.address)) continue
+        if (!place) continue
+        if (!place.coordinate) continue
+        const [x, y] = place.coordinate
+        if (typeof x !== 'number' || typeof y !== 'number') continue
+
+        if (!place.id) {
+            const {address, name} = place
+            place = await Place.findOne({address, name})
+            if (!place) {
+                place = await Place.create({address, name})
+            }
+        }
+        concertData.place = place.id
+        if(_id) {
+            const q = await Concert.updateOne({_id}, concertData)
+        }else{
+            const w = await Concert.create(concertData)
+            console.log('zzzzzzzz', w)
+        }
+    }
     await Band.updateOne({_id, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]}, data)
 }))
 
