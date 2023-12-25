@@ -18,18 +18,14 @@ function deleteLink(i: number) {
 </script>
 
 <template lang="pug">
-v-card
-    v-toolbar
-        v-toolbar-title Фото
-    v-card-text
-        v-text-field(v-model="newLink" placeholder="Вставте ссылку на фото" )
-            template(v-slot:append-inner)
-                v-btn(v-if="newLink" @click="addLink") Добавить
-        div(v-for="(link,i) of band.photos" :key="i" )
-            div
-                v-btn(@click="deleteLink(i)" icon="mdi-delete" color="red" size="x-small" )
-                span {{link}}
-            img(:src="link")
+v-text-field(v-model="newLink" placeholder="Вставте ссылку на фото" )
+    template(v-slot:append-inner)
+        v-btn(v-if="newLink" @click="addLink") Добавить
+div(v-for="(link,i) of band.photos" :key="i" )
+    div
+        v-btn(@click="deleteLink(i)" icon="mdi-delete" color="red" size="x-small" )
+        span {{link}}
+    img(:src="link")
 //BandPhotoView(:photos="band.photos")
 
 </template>

@@ -54,10 +54,6 @@ const newArtist = ref()
 </script>
 
 <template lang="pug">
-v-card
-    v-toolbar
-        v-toolbar-title Состав коллектива
-    v-card-text
         v-text-field(v-model="newArtist" label="Создать нового музыканта" density="compact")
             template(v-slot:append)
                 v-btn(v-if="newArtist" @click="createArtist" small) Создать

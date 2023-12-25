@@ -15,8 +15,7 @@ const router = useRouter()
 
 async function create() {
     const {data} = await useNuxtApp().$PUT('/my-band/create')
-    const {id} = data.value as { id: string }
-    await router.push(`/my-band-${id}`)
+    await router.push(data.value.editLink)
 }
 </script>
 
@@ -28,7 +27,7 @@ v-card(width="600" )
         v-btn(@click="create" color="primary") Создать
     v-card-text
         v-list
-            v-list-item(v-for="(item, i) of list" :key="i" @click="()=>router.push(`/my-band-${item.id}`)") {{item.name || item.id}}
+            v-list-item(v-for="(item, i) of list" :key="i" @click="()=>router.push(item.editLink)") {{item.name || item.id}}
 </template>
 
 <style scoped>

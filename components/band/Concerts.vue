@@ -37,27 +37,21 @@ onMounted(() => {
 </script>
 
 <template lang="pug">
-v-card
-    v-toolbar
-        v-toolbar-title Концерты
-        v-divider.mx-4(vertical inset)
-        v-spacer
-        v-btn(@click="createConcert" color="primary" ) Добавить новый концерт
-    v-card-text
-        table
-            tbody
-                tr
-                    th Ресторан
-                    th Дата
-                    th Показывать
-                tr(v-for="(concert,i) of band.concerts" :key="i" :class="!concert.id?'new-concert':''")
-                    td {{concert.place.name.toUpperCase()}}, {{concert.place.address}}
-                    td {{concert.dateHuman}}
-                    td.text-center
-                        v-switch(v-model="concert.enabled")
-                    td
-                        v-btn(@click="editConcert(i)" icon="mdi-pencil" size="x-small" color="primary")
-                        v-btn(@click="deleteConcert(i)" icon="mdi-delete" size="x-small" color="red")
+v-btn(@click="createConcert" color="primary" ) Добавить новый концерт
+table
+    tbody
+        tr
+            th Ресторан
+            th Дата
+            th Показывать
+        tr(v-for="(concert,i) of band.concerts" :key="i" :class="!concert.id?'new-concert':''")
+            td {{concert.place.name.toUpperCase()}}, {{concert.place.address}}
+            td {{concert.dateHuman}}
+            td.text-center
+                v-switch(v-model="concert.enabled")
+            td
+                v-btn(@click="editConcert(i)" icon="mdi-pencil" size="x-small" color="primary")
+                v-btn(@click="deleteConcert(i)" icon="mdi-delete" size="x-small" color="red")
 
 BandConcertDialog( :band="band")
 </template>

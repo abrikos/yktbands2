@@ -1,29 +1,40 @@
 <script setup lang="ts">
 import type {IBand, IBandResponse} from "~/server/models/band.model";
 import YoutubePlayer from "~/components/band/YoutubePlayer.vue";
+import {useAuthStore} from "~/store/authStore";
+import type {IUser} from "~/server/models/user.model";
 
+const {loggedUser} = useAuthStore() as { loggedUser: IUser }
 const props = defineProps<{ band: IBand }>()
 const route = useRoute()
+const router = useRouter()
 let {band} = props
 if(!band){
     const {data: bandData, refresh: refreshBand, pending: pendingBand} = await
-            useNuxtApp().$GET(`/band/${route.params.id}/view/`, true) as unknown as IBandResponse
-    band = bandData.value
+            useNuxtApp().$GET(`/band/${route.params.id}/view/`)
+    band = bandData.value as IBand
 }
+
+const canEdit = computed(()=>{
+    return loggedUser
+            && (band.shares.map(u=>u.id).includes(loggedUser.id) || band.user.id === loggedUser.id)
+})
 
 </script>
 
 <template lang="pug">
 div(vif="band")
-    v-toolbar(color="primary" )
+    v-toolbar(color="secondary" )
         v-toolbar-title {{band.name}}
+        v-divider.mx-4(vertical inset)
+        v-btn(v-if="canEdit" @click="router.push(band.editLink)") Редактировать
     div#images
         img.logo(:src="band.logoRnd" onerror="this.src='/logo.svg'")
         //img.poster(:src="band.posterRnd" onerror="this.src='/logo.svg'")
         div.poster(:style="`background-image:url(${band.posterRnd})`")
     br
     v-row
-        v-col
+        v-col(md="6")
             v-card
                 v-toolbar(density="compact" )
                     v-toolbar-title Концерты

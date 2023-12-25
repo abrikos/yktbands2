@@ -38,10 +38,10 @@ $listen('band:refresh',()=> {
 const tabsItems = {
     settings: {title: 'Параметры'},
     concerts: {title: 'Концерты'},
-    instruments: {title: 'Состав'},
+    instruments: {title: 'Состав группы'},
     photo: {title: 'Фото'},
     youtube: {title: 'Youtube'},
-    share: {title: 'Доступ'},
+    share: {title: 'Доступ для редактирования'},
 }
 
 const tab = computed({
@@ -63,26 +63,29 @@ const fullUrl = computed(() => {
 div(v-if="band")
     h1.d-flex.justify-center
         span Группа "{{band.name}}"
-        small
-            a(:href="fullUrl" target="_blank") Перейти
-            CopyBtn(:str="fullUrl")
+    div.d-flex.justify-center
+        a(:href="band.viewLink" target="_blank") Перейти
+        //CopyBtn(:str="fullUrl")
 
     v-tabs(v-model="tab" density="compact")
         v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}
     br
     v-row
-        v-col(cols="4")
-            BandConcerts(v-if="tab==='concerts'" :band="band" )
-            BandSettings(v-if="tab==='settings'" :band="band" )
-            BandInstruments(v-if="tab==='instruments'" :band="band")
-            BandYoutube(v-if="tab==='youtube'" :band="band")
-            BandPhotoEdit(v-if="tab==='photo'" :band="band")
-            BandShare(v-if="tab==='share'" :band="band")
-            //v-btn(@click="submit" color="primary" ) Сохранить
-            v-card-actions(v-if="edited" )
-                v-btn(@click="submit" color="primary" ) Сохранить
-                v-spacer
-                v-btn(@click="reset") Сбросить
+        v-col(md="4")
+            v-card
+                v-toolbar
+                    v-toolbar-title {{tabsItems[tab].title}}
+                v-card-text
+                    BandConcerts(v-if="tab==='concerts'" :band="band" )
+                    BandSettings(v-if="tab==='settings'" :band="band" )
+                    BandInstruments(v-if="tab==='instruments'" :band="band")
+                    BandYoutube(v-if="tab==='youtube'" :band="band")
+                    BandPhotoEdit(v-if="tab==='photo'" :band="band")
+                    BandShare(v-if="tab==='share'" :band="band")
+                v-card-actions(v-if="edited" )
+                    v-btn(@click="submit" color="primary" ) Сохранить
+                    v-spacer
+                    v-btn(@click="reset") Сбросить
 
         v-col
             //a(:href="`/band-short-${band.shortcut}`" target="_blank") Перейти

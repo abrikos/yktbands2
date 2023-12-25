@@ -25,6 +25,8 @@ export interface IBand extends mongoose.Document {
     poster: string
     logoRnd: string
     posterRnd: string
+    editLink: string
+    viewLink: string
 }
 
 export interface IBandResponse {
@@ -65,6 +67,14 @@ schema.statics.getPopulation = () => [
 schema.virtual('date')
     .get(function (this: { createdAt: Date }) {
         return moment(this.createdAt).format('YYYY-MM-DD HH:mm')
+    })
+schema.virtual('editLink')
+    .get(function (this: { id: string }) {
+        return `/my-band-${this.id}`
+    })
+schema.virtual('viewLink')
+    .get(function (this: { id: string }) {
+        return `/band-${this.id}`
     })
 schema.virtual('posterRnd')
     .get(function (this: { poster: string }) {
