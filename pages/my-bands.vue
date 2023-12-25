@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import type {IBand} from "~/server/models/band.model";
 
-definePageMeta({
-    middleware: 'auth-middleware' // this should match the name of the file inside the middleware directory
-})
-
 interface IBandArray {
     data: { value: [IBand] }
 }

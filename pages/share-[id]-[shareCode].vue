@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import type {IBandResponse} from "~/server/models/band.model";
-definePageMeta({
-    middleware: 'auth-middleware' // this should match the name of the file inside the middleware directory
-})
 
 const route = useRoute()
 const router = useRouter()

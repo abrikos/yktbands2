@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useAuthStore} from '~/store/authStore';
+import {useAuthStore} from '~/store/auth-store';
 import type {IUser} from "~/server/models/user.model"; // import the auth store we just created
 const {loggedUser} = useAuthStore() as { loggedUser: IUser }; // make authenticated state reactive with storeToRefs
 
@@ -9,10 +9,6 @@ const tab = ref()
 const canSubmit = () => {
     return password.value && password.value === password2.value
 }
-
-definePageMeta({
-    middleware: 'auth-middleware' // this should match the name of the file inside the middleware directory
-})
 
 async function submit() {
     await useNuxtApp().$POST('/user/update', loggedUser)

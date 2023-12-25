@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuthStore } from '~/store/authStore';
+import { useAuthStore } from '~/store/auth-store';
 const { authenticateUser, loggedUser } = useAuthStore(); // use authenticateUser action from  auth store
 const router = useRouter()
 //if(loggedUser) router.push('/cabinet')

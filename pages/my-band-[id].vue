@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import type {IBand, IBandResponse} from "~/server/models/band.model";
 
-definePageMeta({
-    middleware: 'auth-middleware' // this should match the name of the file inside the middleware directory
-})
-
 const route = useRoute()
 const router = useRouter()
 
@@ -46,7 +42,7 @@ const tabsItems = {
 
 const tab = computed({
     get() {
-        return route.query.tab
+        return route.query.tab || 'settings'
     },
     async set(tab) {
         await router.replace({query: {...route.query, tab}})

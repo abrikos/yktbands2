@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type {IBand, IBandResponse} from "~/server/models/band.model";
 import YoutubePlayer from "~/components/band/YoutubePlayer.vue";
-import {useAuthStore} from "~/store/authStore";
+import {useAuthStore} from "~/store/auth-store";
 import type {IUser} from "~/server/models/user.model";
 
 const {loggedUser} = useAuthStore() as { loggedUser: IUser }
-const props = defineProps<{ band: IBand }>()
+const props = defineProps<{ band?: IBand }>()
 const route = useRoute()
 const router = useRouter()
 let {band} = props

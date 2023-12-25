@@ -1,10 +1,10 @@
-import {useAuthStore} from '~/store/authStore';
+import {useAuthStore} from '~/store/auth-store';
 import {storeToRefs} from "pinia"; // import the auth store we just created
 export default defineNuxtRouteMiddleware(async (to) => {
     const {getUser, setRedirect} = useAuthStore();
+    const authPages = ['my-band-id', 'my-bands', 'cabinet']
     const loggedUser = await getUser()
-    console.log('zzzzz', loggedUser)
-    if (!loggedUser && to?.name !== 'login') {
+    if (authPages.includes(to.name as string) && !loggedUser) {
         setRedirect(to.fullPath)
         abortNavigation();
         return navigateTo('/login');

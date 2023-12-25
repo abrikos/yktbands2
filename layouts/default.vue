@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'; // import storeToRefs helper hook from pinia
-import { useAuthStore } from '~/store/authStore'; // import the auth store we just created
+import { useAuthStore } from '~/store/auth-store'; // import the auth store we just created
 import { useTheme } from 'vuetify'
 const theme = useTheme()
 

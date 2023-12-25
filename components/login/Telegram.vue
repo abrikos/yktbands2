@@ -1,5 +1,5 @@
 <script setup>
-import { useAuthStore } from '~/store/authStore.ts';
+import { useAuthStore } from '~/store/auth-store.ts';
 const { authenticateUser } = useAuthStore(); // use authenticateUser action from  auth store
 const config = useRuntimeConfig()
 
