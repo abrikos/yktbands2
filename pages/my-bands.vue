@@ -9,8 +9,8 @@ interface IBandArray {
     data: { value: [IBand] }
 }
 
-const {data} = await useNuxtApp().$GET('/my-band/all') as IBandArray
-const list = ref(data.value)
+const {data} = await useNuxtApp().$GET('/my-band/all')
+const list = data.value as IBand[]
 const router = useRouter()
 
 async function create() {
@@ -27,9 +27,8 @@ v-card(width="600" )
         v-divider(vertical inset)
         v-btn(@click="create" color="primary") Создать
     v-card-text
-
         v-list
-            v-list-item(v-for="(item, i) of list" :key="i" @click="()=>router.push(`/my-band-${item.id}`)") {{item.nameOrShortcut}}
+            v-list-item(v-for="(item, i) of list" :key="i" @click="()=>router.push(`/my-band-${item.id}`)") {{item.name}}
 </template>
 
 <style scoped>
