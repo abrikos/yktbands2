@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
 export default defineNuxtConfig({
     modules: [
         '@invictus.codes/nuxt-vuetify',
@@ -8,7 +9,7 @@ export default defineNuxtConfig({
         'nuxt3-leaflet',
     ],
     runtimeConfig: {
-        authExpiration: 3600,
+        authExpiration: 3600 * 24,
         authRefreshBeforeExpiration: 3000,
         authTokenName: 'auth_token',
         public:{
