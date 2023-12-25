@@ -1,7 +1,14 @@
-import {ofetch} from 'ofetch'
 import {defu} from 'defu'
 import type {UseFetchOptions} from "#app";
-//import { useAuthStore } from '~/store/auth'
+
+declare module "#app" {
+    interface NuxtApp {
+        $POST: Function;
+        $GET: Function;
+        $PUT: Function;
+        $DELETE: Function;
+    }
+}
 
 export default defineNuxtPlugin((_nuxtApp) => {
     const snackbar = useSnackbar();

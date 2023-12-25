@@ -1,5 +1,11 @@
 import mitt from 'mitt'
 
+declare module "#app" {
+    interface NuxtApp {
+        $event: Function;
+        $listen: Function;
+    }
+}
 export default defineNuxtPlugin(() => {
     const emitter = mitt()
 
