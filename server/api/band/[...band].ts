@@ -1,8 +1,8 @@
 import {Types} from "mongoose";
-import {aW} from "~/.output/public/_nuxt/entry.8e3eb3d9";
-import {User} from "~/server/models/user.model";
+import nodemailer from "nodemailer";
 
 const router = createRouter()
+const {mailUser} = useRuntimeConfig()
 
 router.get('/all', defineEventHandler(async (event) => {
     return Band.find({enabled: true})//.populate(Band.getPopulation())
@@ -10,7 +10,7 @@ router.get('/all', defineEventHandler(async (event) => {
 
 router.get('/:_id/view', defineEventHandler(async (event) => {
     const {_id} = event.context.params as Record<string, string>
-    return  Band.findById(_id).populate(Band.getPopulation())
+    return Band.findById(_id).populate(Band.getPopulation())
 }))
 
 router.post('/:_id/share', defineEventHandler(async (event) => {
@@ -22,9 +22,9 @@ router.post('/:_id/share', defineEventHandler(async (event) => {
     const band = await Band.findOne({_id, shareCode})
     if (!band) throw createError({statusCode: 404, message: 'К этой группе нет доступа'})
     const {shares} = band
-    if(shares.includes(user.id)) throw createError({statusCode: 406, message: 'Вы уже имеете доступ к этой группе'})
+    if (shares.includes(user.id)) throw createError({statusCode: 406, message: 'Вы уже имеете доступ к этой группе'})
     shares.push(user)
-    await Band.updateOne({_id}, {shareCode:'', shares})
+    await Band.updateOne({_id}, {shareCode: '', shares})
     return 1
 }))
 
@@ -32,18 +32,19 @@ router.put('/:_id/message', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён'})
     const {_id} = event.context.params as Record<string, string>
-    const band = await Band.findOne({_id})
+    const band = await Band.findOne({_id}).populate(['user', 'shares'])
     if (!band) throw createError({statusCode: 404, message: 'Группа не найдена'})
     const {text} = await readBody(event)
     const message = await Message.create({text, band, user})
-    const found = await Message.findById(message.id)
-    /*const res = await transporter.sendMail({
-        from: process.env.MAIL_USER,
-        to: user.email,
-        subject: 'Новый пароль',
-        text: `Используйте этот пароль: ${password}`
-    })*/
-    return  message.populate({path: 'user', select: {email: 1, nameStored: 1, avatarImage: 1}})
+    await message.populate({path: 'user', select: {email: 1, nameStored: 1, avatarImage: 1}})
+    const emails = [band.user.email, ...band.shares.filter(s=>!s.strategy).map(s => s.email)]
+    //TODO send telegram
+    await utils.sendMail({
+        to: emails,
+        subject: `[YKT-BANDS] Новое сообщение для группы "${band.name}"`,
+        text: `${message.user.name}: ${message.text} \n ${event.node.req.headers.origin}${band.editLink}?tab=messages`
+    })
+    return message
 }))
 
 
