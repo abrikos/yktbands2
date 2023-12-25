@@ -4,8 +4,6 @@ import YoutubePlayer from "~/components/band/YoutubePlayer.vue";
 
 const props = defineProps<{ band: IBand }>()
 const route = useRoute()
-const {$listen} = useNuxtApp()
-//$listen('band-view:refresh', () => refreshBand())
 let {band} = props
 if(!band){
     const {data: bandData, refresh: refreshBand, pending: pendingBand} = await

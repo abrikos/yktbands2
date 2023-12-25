@@ -28,7 +28,7 @@ v-card(width="600" )
         v-btn(@click="create" color="primary") Создать
     v-card-text
         v-list
-            v-list-item(v-for="(item, i) of list" :key="i" @click="()=>router.push(`/my-band-${item.id}`)") {{item.name}}
+            v-list-item(v-for="(item, i) of list" :key="i" @click="()=>router.push(`/my-band-${item.id}`)") {{item.name || item.id}}
 </template>
 
 <style scoped>

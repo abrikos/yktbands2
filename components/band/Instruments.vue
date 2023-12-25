@@ -73,7 +73,7 @@ v-card
                 tbody
                     tr(v-for="(instrument,i) of instrumentsFiltered" :key="'instr'+i" align="center" no-gutters)
                         td.text-left {{instrument.artist.name}}
-                        td
+                        td.icons
                             span(v-for="(obj,i) of instrumentPosition" :key="i" @click="setInstrument(instrument, obj.key)")
                                 BandInstrumentIcon(:icon="obj.key" :class="instrument?.icons.includes(obj.key) ? 'selected':''")
 
@@ -91,6 +91,8 @@ v-card
     border-collapse: collapse
 
     tr
+        td.icons
+            width: 150px
         td
             border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity))
             padding: 5px 0

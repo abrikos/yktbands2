@@ -5,9 +5,9 @@ import type {IConcert} from "~/server/models/concert.model";
 const route = useRoute()
 const {band} = defineProps<{ band: IBand }>()
 const {$event, $listen} = useNuxtApp()
-$listen('concert:update', (payload) => {
+$listen('concert:update', (payload: IConcert) => {
     if (concertEditIndex.value) {
-        band.concerts[concertEditIndex.value] = payload as IConcert
+        band.concerts[concertEditIndex.value] = payload
     } else {
         band.concerts.push(payload as IConcert)
     }

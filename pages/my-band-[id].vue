@@ -9,7 +9,7 @@ const route = useRoute()
 const router = useRouter()
 
 const {data, refresh: refreshBand, pending: pendingBand} = await useNuxtApp().$GET(`/my-band/${route.params.id}/view/`)
-const band = data as unknown as IBand
+const band = data as IBand
 const { $listen, $event } = useNuxtApp()
 const bandSnapshot = ref(JSON.parse(JSON.stringify(band.value)))
 const edited = computed(()=>{
@@ -78,7 +78,7 @@ div(v-if="band")
             BandYoutube(v-if="tab==='youtube'" :band="band")
             BandPhotoEdit(v-if="tab==='photo'" :band="band")
             BandShare(v-if="tab==='share'" :band="band")
-            v-btn(@click="submit" color="primary" ) Сохранить
+            //v-btn(@click="submit" color="primary" ) Сохранить
             v-card-actions(v-if="edited" )
                 v-btn(@click="submit" color="primary" ) Сохранить
                 v-spacer

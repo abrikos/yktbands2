@@ -10,9 +10,9 @@ const concert = ref()
 const hours = Array.from(Array(25).keys())
 
 const {$event, $listen} = useNuxtApp()
-$listen('concertDialog:show', (payload) => {
+$listen('concertDialog:show', (payload:IConcert) => {
     showDialog.value = true
-    concert.value = payload as IConcert
+    concert.value = payload
     concert.value.date = concert.value.date && new Date(concert.value.date)
 })
 
