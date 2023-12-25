@@ -3,11 +3,14 @@ import mongoose from 'mongoose';
 import {IUser} from "~/server/models/user.model";
 import moment from "moment";
 
+const {authExpiration, authTokenName, authRefreshBeforeExpiration} = useRuntimeConfig()
+
 export interface IToken extends mongoose.Document {
     access: string;
     resetCode: string;
     secondsFromCreation: number
     createdAt: number
+    expired: boolean
     user: IUser
 }
 
@@ -26,14 +29,15 @@ const schema = new Schema({
     toJSON: {virtuals: true}
 })
 
-schema.virtual('secondsFromCreation')
+schema.virtual('expired')
     .get(function () {
         const timestamp = moment().unix()
-        return  timestamp - (this.createdAt || timestamp);
+        const secondsFromCreation = timestamp - (this.createdAt || timestamp);
+        return  authExpiration - secondsFromCreation < authRefreshBeforeExpiration
     })
 
-schema.statics.deleteExpiredTokens = async function (maxAge) {
-    await this.deleteMany({createdAt: {$lt: moment().unix() - maxAge}})
+schema.statics.deleteExpiredTokens = async function () {
+    await this.deleteMany({createdAt: {$lt: moment().unix() - authExpiration}})
 }
 
 schema.pre('save', function (next) {

@@ -69,19 +69,19 @@ schema.virtual('date')
         return moment(this.createdAt).format('YYYY-MM-DD HH:mm')
     })
 schema.virtual('editLink')
-    .get(function (this: { id: string }) {
+    .get(function () {
         return `/my-band-${this.id}`
     })
 schema.virtual('viewLink')
-    .get(function (this: { id: string }) {
+    .get(function () {
         return `/band-${this.id}`
     })
 schema.virtual('posterRnd')
-    .get(function (this: { poster: string }) {
+    .get(function () {
         return this.poster + '?' + Math.random()
     })
 schema.virtual('logoRnd')
-    .get(function (this: { logo: string }) {
+    .get(function () {
         return this.logo + '?' + Math.random()
     })
 
