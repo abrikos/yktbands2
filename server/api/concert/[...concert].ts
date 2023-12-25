@@ -2,15 +2,14 @@ import {Types} from "mongoose";
 import {IConcert} from "~/server/models/concert.model";
 
 const router = createRouter()
-
+const {yandexMapKey} = useRuntimeConfig()
 router.get('/all', defineEventHandler(async (event) => {
     return Concert.find({date: {$gt: new Date()}}).sort({date: -1}).populate(Concert.getPopulation())
 }))
 
 router.post('/address', defineEventHandler(async (event) => {
     const coordinate = await readBody(event)
-    const keyYandex = process.env.YMAP
-    const url = `https://geocode-maps.yandex.ru/1.x/?format=json&apikey=${keyYandex}&geocode=${coordinate[1]},${coordinate[0]}`
+    const url = `https://geocode-maps.yandex.ru/1.x/?format=json&apikey=${yandexMapKey}&geocode=${coordinate[1]},${coordinate[0]}`
     try {
         const response = await fetch(url)
         const data = await response.json()

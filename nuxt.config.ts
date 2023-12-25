@@ -30,6 +30,10 @@ export default defineNuxtConfig({
         authExpiration: 3600 * 24,
         authRefreshBeforeExpiration: 3000,
         authTokenName: 'auth_token',
+        mailUser: process.env.MAIL_USER,
+        mailPassword: process.env.MAIL_PASSWORD,
+        telegramBotToken: process.env.BOT_TOKEN,
+        yandexMapKey: process.env.YMAP,
         public: {
             botName: process.env.BOT_NAME
         }

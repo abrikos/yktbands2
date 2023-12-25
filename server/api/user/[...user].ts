@@ -1,21 +1,9 @@
 import {Token} from "~/server/models/token.model";
-import {IUser, User} from "~/server/models/user.model";
+import {User} from "~/server/models/user.model";
 import crypto from "crypto";
-import nodemailer from 'nodemailer'
 
 //User.deleteMany().then(console.log)
 const router = createRouter()
-
-const transporter = nodemailer.createTransport({
-    host: 'smtp.mail.ru',
-    port: 465,
-    secure: true,
-    auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASSWORD,
-    },
-});
-
 
 router.post('/request-restore-password', defineEventHandler(async (event) => {
     const {email} = await readBody(event)
@@ -26,8 +14,7 @@ router.post('/request-restore-password', defineEventHandler(async (event) => {
     }
     user.restorePassword = crypto.createHmac('sha256', '').update(Math.random().toString()).digest('hex')
     await user.save()
-    const res = await transporter.sendMail({
-        from: process.env.MAIL_USER,
+    const res = await utils.sendMail({
         to: email,
         subject: 'Восстановление пароля',
         text: `Ссылка восстановления ${event.node.req.headers.origin}/password-restore-${user.restorePassword}`
@@ -44,8 +31,7 @@ router.post('/process-restore-password', defineEventHandler(async (event) => {
     user.password = password
     user.restorePassword = ''
     await user.save()
-    const res = await transporter.sendMail({
-        from: process.env.MAIL_USER,
+    const res = await utils.sendMail({
         to: user.email,
         subject: 'Новый пароль',
         text: `Используйте этот пароль: ${password}`

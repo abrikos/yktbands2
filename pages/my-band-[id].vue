@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type {IBand} from "~/server/models/band.model";
+import MessagesEdit from "~/components/band/MessagesEdit.vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -40,6 +41,7 @@ const tabsItems = {
     photo: {title: 'Фото'},
     youtube: {title: 'Youtube'},
     share: {title: 'Доступ для редактирования'},
+    messages: {title: 'Сообщения'},
 }
 
 const tab = computed({
@@ -81,6 +83,7 @@ div(v-else)
                     BandYoutube(v-if="tab==='youtube'" :band="band")
                     BandPhotoEdit(v-if="tab==='photo'" :band="band")
                     BandShare(v-if="tab==='share'" :band="band")
+                    MessagesEdit(v-if="tab==='messages'" :band="band")
                 v-card-actions(v-if="edited" )
                     v-btn(@click="submit" color="primary" ) Сохранить
                     v-spacer

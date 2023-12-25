@@ -8,6 +8,8 @@ interface IStrategy {
     [key: string]: (event: H3Event<EventHandlerRequest>) => Promise<IUser | undefined>
 }
 
+const {telegramBotToken} = useRuntimeConfig()
+
 export const strategies: IStrategy = {
     async password(event: H3Event) {
         const {email, password} = await readBody(event)
@@ -20,7 +22,7 @@ export const strategies: IStrategy = {
         const body = await readBody(event)
         const {username, first_name, last_name, photo_url} = body
         const email = username + '@telegram.org'
-        const TOKEN: BinaryLike = process.env.BOT_TOKEN as BinaryLike;
+        const TOKEN: BinaryLike = telegramBotToken as BinaryLike;
         const secret = crypto.createHash('sha256')
             .update(TOKEN)
             .digest();
