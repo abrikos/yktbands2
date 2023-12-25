@@ -8,14 +8,12 @@ const router = createRouter()
 router.get('/all', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
-    // @ts-ignore
     return Band.find({$or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]}).populate(Band.getPopulation())
 }))
 
 router.put('/create', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
-    // @ts-ignore
     return Band.create({user})
 }))
 
@@ -27,7 +25,6 @@ router.get('/:_id/view', defineEventHandler(async (event) => {
     try {
         const band = await Band
             .findOne({_id, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]})
-            // @ts-ignore
             .populate(Band.getPopulation())
         return band
     } catch (e: any) {

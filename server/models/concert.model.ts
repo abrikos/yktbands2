@@ -15,6 +15,10 @@ export interface IConcert extends mongoose.Document {
     dateHuman: string
 }
 
+interface ConcertModel extends mongoose.Model<IConcert>{
+    getPopulation():any
+}
+
 
 const schema = new Schema({
         place: {type: mongoose.Schema.Types.ObjectId, ref: 'place'},
@@ -43,4 +47,4 @@ schema.statics.getPopulation = () => [
 ]
 
 
-export const Concert = defineMongooseModel('concert', schema)
+export const Concert = mongoose.model<IConcert, ConcertModel>('concert', schema)

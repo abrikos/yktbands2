@@ -43,6 +43,8 @@ div(vif="band")
                         :class="!concert.id?'new-concert':''")
                         v-col {{concert.place.fullName}}
                         v-col {{concert.dateHuman}}
+            br
+            BandMessagesView(:band="band")
         v-col
             v-card
                 v-toolbar(density="compact" )

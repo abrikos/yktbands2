@@ -4,7 +4,6 @@ import {IConcert} from "~/server/models/concert.model";
 const router = createRouter()
 
 router.get('/all', defineEventHandler(async (event) => {
-    // @ts-ignore
     return Concert.find({date: {$gt: new Date()}}).sort({date: -1}).populate(Concert.getPopulation())
 }))
 

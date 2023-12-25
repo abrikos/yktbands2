@@ -1,4 +1,3 @@
-import {defineMongooseModel} from '#nuxt/mongoose'
 import mongoose from 'mongoose';
 import {IConcert} from "~/server/models/concert.model";
 
@@ -11,6 +10,9 @@ export interface IPlace extends mongoose.Document {
     coordinate: number[],
     coordinateValid: boolean
     concerts: IConcert[]
+}
+interface PlaceModel extends mongoose.Model<IPlace>{
+    getPopulation():any
 }
 
 
@@ -59,4 +61,4 @@ schema.virtual('concerts', {
 })
 
 
-export const Place = defineMongooseModel('place', schema)
+export const Place = mongoose.model<IPlace, PlaceModel>('place', schema)

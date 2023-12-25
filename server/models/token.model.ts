@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import {IUser} from "~/server/models/user.model";
 import moment from "moment";
 
+const model = 'token'
 const {authExpiration, authTokenName, authRefreshBeforeExpiration} = useRuntimeConfig()
 
 export interface IToken extends mongoose.Document {
@@ -14,6 +15,10 @@ export interface IToken extends mongoose.Document {
     user: IUser
 }
 
+export interface TokenModel extends mongoose.Model<IToken> {
+    deleteExpiredTokens(): Promise<void>;
+}
+
 const tokenPrefix = 'auth'
 const Schema = mongoose.Schema;
 
@@ -23,6 +28,11 @@ const schema = new Schema({
     resetCode: {type: String},
     createdAt: {type: Number, default: 0},
 }, {
+    /*statics:{
+        async  deleteExpiredTokens() {
+            await this.deleteMany({createdAt: {$lt: moment().unix() - authExpiration}})
+        }
+    },*/
     toObject: {virtuals: true},
     // use if your results might be retrieved as JSON
     // see http://stackoverflow.com/q/13133911/488666
@@ -36,7 +46,7 @@ schema.virtual('expired')
         return  authExpiration - secondsFromCreation < authRefreshBeforeExpiration
     })
 
-schema.statics.deleteExpiredTokens = async function () {
+schema.statics.deleteExpiredTokens = async function(){
     await this.deleteMany({createdAt: {$lt: moment().unix() - authExpiration}})
 }
 
@@ -46,5 +56,4 @@ schema.pre('save', function (next) {
     this.createdAt = moment().unix()
     next();
 })
-
-export const Token = defineMongooseModel('token', schema)
+export const Token = mongoose.model<IToken, TokenModel>(model, schema)

@@ -4,7 +4,6 @@ import {IBand} from "~/server/models/band.model";
 const router = createRouter()
 
 router.get('/all', defineEventHandler(async (event) => {
-    // @ts-ignore
     return  Artist.find()
 }))
 

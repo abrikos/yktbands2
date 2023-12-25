@@ -1,6 +1,5 @@
 <script setup lang="ts">
-const {$bus} = useNuxtApp()
-console.log($bus)
+const {band} = defineProps<{ band: IBand }>()
 </script>
 
 <template lang="pug">

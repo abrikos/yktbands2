@@ -29,10 +29,8 @@ export interface IBand extends mongoose.Document {
     viewLink: string
 }
 
-export interface IBandResponse {
-    data: Ref<IBand>
-    refresh: any
-    pending: any
+interface BandModel extends mongoose.Model<IBand>{
+    getPopulation():any
 }
 
 
@@ -97,4 +95,4 @@ schema.virtual('concerts', {
     options: {sort: {date: -1}}
 })
 
-export const Band = defineMongooseModel('band', schema)
+export const Band = mongoose.model<IBand, BandModel>('band', schema)
