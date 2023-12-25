@@ -12,7 +12,7 @@ export default {
     },
     async setAuthToken(event: H3Event, user: IUser) {
         const {authExpiration, authTokenName} = useRuntimeConfig(event)
-        const token: IToken = await Token.create({user}) as unknown as IToken
+        const token = await Token.create({user})
         setCookie(event, authTokenName, token.access, {maxAge: authExpiration})
         return token
     },

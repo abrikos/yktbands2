@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type {IBandResponse} from "~/server/models/band.model";
-
 const route = useRoute()
 const {$event} = useNuxtApp()
 const {band} = defineProps<{ band: IBand }>()

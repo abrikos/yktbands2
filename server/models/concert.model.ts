@@ -5,6 +5,7 @@ import {IBand} from "~/server/models/band.model";
 import moment from "moment";
 
 const Schema = mongoose.Schema;
+const name = 'concert'
 
 export interface IConcert extends mongoose.Document {
     place: IPlace
@@ -15,8 +16,8 @@ export interface IConcert extends mongoose.Document {
     dateHuman: string
 }
 
-interface ConcertModel extends mongoose.Model<IConcert>{
-    getPopulation():any
+interface ConcertModel extends mongoose.Model<IConcert> {
+    getPopulation(): any
 }
 
 
@@ -36,7 +37,7 @@ const schema = new Schema({
     });
 
 schema.virtual('dateHuman')
-    .get(function (this: { date: Date, hour:number }) {
+    .get(function (this: { date: Date, hour: number }) {
         return moment(this.date).add(this.hour, 'hours').format('YYYY-MM-DD HH:mm')
     })
 
@@ -47,4 +48,4 @@ schema.statics.getPopulation = () => [
 ]
 
 
-export const Concert = mongoose.model<IConcert, ConcertModel>('concert', schema)
+export const Concert = mongoose.model<IConcert, ConcertModel>(name, schema)

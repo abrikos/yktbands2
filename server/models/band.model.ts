@@ -1,10 +1,10 @@
-import {defineMongooseModel} from '#nuxt/mongoose'
 import mongoose from 'mongoose';
 import {IUser} from "~/server/models/user.model";
 import moment from "moment";
 import {IConcert} from "~/server/models/concert.model";
-import {Ref} from "vue";
 import {IArtist} from "~/server/models/artist.model";
+import {IMessage} from "~/server/models/message.model";
+
 
 const Schema = mongoose.Schema;
 
@@ -15,9 +15,10 @@ export interface IBand extends mongoose.Document {
     shortcut: string
     enabled: boolean
     instruments: IInstrument[]
+    messages: IMessage[]
     concerts: IConcert[]
-    user: IUser,
-    shares: IUser[],
+    user: IUser
+    shares: IUser[]
     logo: string
     shareCode: string
     youtube: string[]
@@ -56,9 +57,10 @@ const schema = new Schema({
     });
 
 schema.statics.getPopulation = () => [
-    {path: 'user', select: {email: 1, name: 1, avatarImage: 1}},
-    {path: 'shares', select: {email: 1, name: 1, avatarImage: 1}},
-    {path: 'instruments', populate: 'artist', options: {sort: {'artist.name': -1}}},
+    {path: 'user', select: {email: 1, nameStored: 1, avatarImage: 1}},
+    {path: 'shares', select: {email: 1, nameStored: 1, avatarImage: 1}},
+    {path: 'instruments', populate: {path:'artist'}},
+    {path: 'messages', populate: {path:'user'}},
     {path: 'concerts', populate: 'place'},
 ]
 
@@ -93,6 +95,13 @@ schema.virtual('concerts', {
     localField: '_id',
     foreignField: 'band',
     options: {sort: {date: -1}}
+})
+
+schema.virtual('messages', {
+    ref: 'message',
+    localField: '_id',
+    foreignField: 'band',
+    options: {sort: {createdAt: 1}}
 })
 
 export const Band = mongoose.model<IBand, BandModel>('band', schema)

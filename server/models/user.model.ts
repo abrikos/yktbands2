@@ -72,4 +72,4 @@ schema.virtual('tokens', {
     foreignField: 'user'
 })
 
-export const User = defineMongooseModel('user', schema)
+export const User = mongoose.model<IUser>('user', schema)

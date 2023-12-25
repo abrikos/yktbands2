@@ -3,10 +3,12 @@ import crypto from "crypto";
 import {IUser, User} from "~/server/models/user.model";
 import {IToken, Token} from "~/server/models/token.model";
 import {EventHandlerRequest, H3Event} from "h3";
-interface IStrategy{
+
+interface IStrategy {
     [key: string]: (event: H3Event<EventHandlerRequest>) => Promise<IUser | undefined>
 }
-export const strategies:IStrategy = {
+
+export const strategies: IStrategy = {
     async password(event: H3Event) {
         const {email, password} = await readBody(event)
         const user: IUser | null = await User.findOne({email});
@@ -28,7 +30,7 @@ export const strategies:IStrategy = {
             const {returnUrl, strategy, ...rest} = data;
             const checkString = Object.keys(rest)
                 .sort()
-                .filter(k=>data[k])
+                .filter(k => data[k])
                 .map(k => (`${k}=${data[k]}`))
                 .join('\n');
             const hmac = crypto.createHmac('sha256', secret)
@@ -38,14 +40,14 @@ export const strategies:IStrategy = {
         }
 
         if (checkSignature(body)) {
-            let user: IUser = await User.findOne({email, strategy: 'telegram'}) as unknown as IUser;
+            let user = await User.findOne({email, strategy: 'telegram'})
             if (!user) {
-                user = await User.create({
+                return User.create({
                     strategy: 'telegram',
                     name: first_name + ' ' + last_name,
                     avatarImage: photo_url,
                     email,
-                }) as unknown as IUser;
+                })
             }
             return user
         }

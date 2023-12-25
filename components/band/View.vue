@@ -1,22 +1,16 @@
 <script setup lang="ts">
-import type {IBand, IBandResponse} from "~/server/models/band.model";
+import type {IBand} from "~/server/models/band.model";
 import YoutubePlayer from "~/components/band/YoutubePlayer.vue";
 import {useAuthStore} from "~/store/auth-store";
 import type {IUser} from "~/server/models/user.model";
 
 const {loggedUser} = useAuthStore() as { loggedUser: IUser }
-const props = defineProps<{ band?: IBand }>()
-const route = useRoute()
+const {band} = defineProps<{ band: IBand }>()
 const router = useRouter()
-let {band} = props
-if(!band){
-    const {data: bandData, refresh: refreshBand, pending: pendingBand} = await
-            useNuxtApp().$GET(`/band/${route.params.id}/view/`)
-    band = bandData.value as IBand
-}
 
 const canEdit = computed(()=>{
     return loggedUser
+            && band
             && (band.shares.map(u=>u.id).includes(loggedUser.id) || band.user.id === loggedUser.id)
 })
 

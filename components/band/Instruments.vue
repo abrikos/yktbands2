@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {IInstrument, IBand, IBandResponse} from "~/server/models/band.model";
+import type {IInstrument, IBand} from "~/server/models/band.model";
 import type {IArtist} from "~/server/models/artist.model";
 
 
@@ -65,20 +65,21 @@ const newArtist = ref()
             template(v-slot:append)
                 v-btn(v-if="selectedArtists" @click="addInstrument" small) Добавить
         v-container
-            table.instruments
-                tbody
-                    tr(v-for="(instrument,i) of instrumentsFiltered" :key="'instr'+i" align="center" no-gutters)
-                        td.text-left {{instrument.artist.name}}
-                        td.icons
-                            span(v-for="(obj,i) of instrumentPosition" :key="i" @click="setInstrument(instrument, obj.key)")
-                                BandInstrumentIcon(:icon="obj.key" :class="instrument?.icons.includes(obj.key) ? 'selected':''")
+            client-only
+                table.instruments
+                    tbody
+                        tr(v-for="(instrument,i) of instrumentsFiltered" :key="'instr'+i" align="center" no-gutters)
+                            td.text-left {{instrument.artist.name}}
+                            td.icons
+                                span(v-for="(obj,i) of instrumentPosition" :key="i" @click="setInstrument(instrument, obj.key)")
+                                    BandInstrumentIcon(:icon="obj.key" :class="instrument?.icons.includes(obj.key) ? 'selected':''")
 
-                        //td.text-left
-                            BandInstrumentIcon(v-for="icon of instrument.icons" :key="icon" :icon="icon")
-                        //td
-                            v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" icon="mdi-music" color="primary")
-                        td
-                            v-btn(@click.prevent="deleteInstrument(i)" icon="mdi-delete" size="x-small" color="red")
+                            //td.text-left
+                                BandInstrumentIcon(v-for="icon of instrument.icons" :key="icon" :icon="icon")
+                            //td
+                                v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" icon="mdi-music" color="primary")
+                            td
+                                v-btn(@click.prevent="deleteInstrument(i)" icon="mdi-delete" size="x-small" color="red")
 </template>
 
 <style scoped lang="sass">

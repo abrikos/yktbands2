@@ -20,16 +20,12 @@ router.put('/create', defineEventHandler(async (event) => {
 router.get('/:_id/view', defineEventHandler(async (event) => {
     const user = event.context.user
     const {_id} = event.context.params as Record<string, string>
-    if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
-    try {
-        const band = await Band
-            .findOne({_id, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]})
-            .populate(Band.getPopulation())
-        return band
-    } catch (e: any) {
-        throw createError({statusCode: 403, message: e.message})
-    }
+    return Band
+        .findOne({_id, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]})
+        .populate(Band.getPopulation())
+        .catch(e=>{})
+
 }))
 
 //User.findOne({email:'abrikoz@gmail.com'}).then(console.log)
@@ -62,11 +58,10 @@ router.post('/update', defineEventHandler(async (event) => {
             }
         }
         concertData.place = place.id
-        if(_id) {
+        if (_id) {
             const q = await Concert.updateOne({_id}, concertData)
-        }else{
-            const w = await Concert.create(concertData)
-            console.log('zzzzzzzz', w)
+        } else {
+            await Concert.create(concertData)
         }
     }
     await Band.updateOne({_id, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]}, data)

@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import type {IBand, IBandResponse} from "~/server/models/band.model";
+import type {IBand} from "~/server/models/band.model";
 
 const route = useRoute()
 const router = useRouter()
 
 const {data, refresh: refreshBand, pending: pendingBand} = await useNuxtApp().$GET(`/my-band/${route.params.id}/view/`)
 const band = data as IBand
-const { $listen, $event } = useNuxtApp()
-const bandSnapshot = ref(JSON.parse(JSON.stringify(band.value)))
+
+const { $listen } = useNuxtApp()
+$listen('my-band:refresh',()=> {
+    refreshBand()
+})
+
+const bandSnapshot = ref(band.value && JSON.parse(JSON.stringify(band.value)))
 const edited = computed(()=>{
-    return JSON.stringify(bandSnapshot.value) !== JSON.stringify(band.value)
+    return band.value && JSON.stringify(bandSnapshot.value) !== JSON.stringify(band.value)
 })
 function reset() {
     for(const key in band.value){
@@ -27,9 +32,6 @@ async function submit() {
     snapshot()
 }
 
-$listen('band:refresh',()=> {
-    refreshBand()
-})
 
 const tabsItems = {
     settings: {title: 'Параметры'},
@@ -56,7 +58,8 @@ const fullUrl = computed(() => {
 </script>
 
 <template lang="pug">
-div(v-if="band")
+h1(v-if="!band").text-red Группа не найдена
+div(v-else)
     h1.d-flex.justify-center
         span Группа "{{band.name}}"
     div.d-flex.justify-center

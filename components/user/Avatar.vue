@@ -1,8 +1,7 @@
 <script setup lang="ts">
-const props = defineProps({
-    user: {type: Object, required: true}
-})
-const {user} = props
+import type {IUser} from "~/server/models/user.model";
+
+const {user} = defineProps<{ user: IUser }>()
 const valid = ref()
 try {
     const url = new URL(user.avatarImage)

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {IBand, IBandResponse} from "~/server/models/band.model";
+import type {IBand} from "~/server/models/band.model";
 import type {IConcert} from "~/server/models/concert.model";
 
 const route = useRoute()

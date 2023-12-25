@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
 
 router.post('/request-restore-password', defineEventHandler(async (event) => {
     const {email} = await readBody(event)
-    const user: IUser | null = await User.findOne({email}) as unknown as IUser;
+    const user = await User.findOne({email});
     if (!user) {
         await utils.sleep(4000)
         return 1
@@ -38,7 +38,7 @@ router.post('/request-restore-password', defineEventHandler(async (event) => {
 
 router.post('/process-restore-password', defineEventHandler(async (event) => {
     const {code} = await readBody(event)
-    const user: IUser | null = await User.findOne({restorePassword: code}) as unknown as IUser;
+    const user = await User.findOne({restorePassword: code});
     if (!user) return
     const password = crypto.createHmac('sha256', '').update(Math.random().toString()).digest('hex').substring(1, 5)
     user.password = password
@@ -67,12 +67,12 @@ router.get('/logout', defineEventHandler(async (event) => {
 
 router.put('/signup', defineEventHandler(async (event) => {
     const {email, password} = await readBody(event)
-    let user = await User.create({email, password}) as unknown as IUser | null;
+    const user = await User.create({email, password});
     if (!user) throw createError({statusCode: 403, message: 'STRANGE: create error: '})
-    user = await User.findById<IUser>(user.id, '-passwordHash')
-    if (!user) throw createError({statusCode: 403, message: 'STRANGE: user not found: '})
-    await  utils.setAuthToken(event, user)
-    return utils.adaptUser(user)
+    const found = await User.findById(user.id, '-passwordHash')
+    if (!found) throw createError({statusCode: 403, message: 'STRANGE: user not found: '})
+    await  utils.setAuthToken(event, found)
+    return utils.adaptUser(found)
 
 }))
 
@@ -89,7 +89,7 @@ router.post('/update', defineEventHandler(async (event) => {
     const {name, password, avatarImage} = await readBody(event)
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
-    const found = await User.findById(user.id) as unknown as IUser
+    const found = await User.findById(user.id)
     if (!found) throw createError({statusCode: 403, message: 'STRANGE: user not found: ' + user.id,})
     found.name = name
     found.avatarImage = avatarImage
