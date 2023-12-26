@@ -34,30 +34,19 @@ router.get('/:_id/view', defineEventHandler(async (event) => {
 //Concert.find({band:'65880f6a385b78755ae5095b'}).then(console.log)
 //Concert.find({_id:'658830d7a4bcaf8aa19d9d31'}).then(console.log)
 //Concert.deleteMany().then(console.log);
+//Place.deleteMany().then(console.log);
+//Place.find().then(console.log);
+//Concert.find().then(console.log);
 
 router.post('/update', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
-    const body = await readBody(event)
-    const {_id, id, ...data} = body
+    const band = await readBody(event)
+    const {_id, id, ...data} = band
     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
-    for (const concert of body.concerts) {
-        concert.band = body.id
-        let {_id, id, place, ...concertData} = concert
-        if (!(concert.place.name && concert.date && concert.place.address)) continue
-        if (!place) continue
-        if (!place.coordinate) continue
-        const [x, y] = place.coordinate
-        if (typeof x !== 'number' || typeof y !== 'number') continue
-
-        if (!place.id) {
-            const {address, name} = place
-            place = await Place.findOne({address, name})
-            if (!place) {
-                place = await Place.create({address, name})
-            }
-        }
-        concertData.place = place.id
+    for (const concert of band.concerts) {
+        concert.band = band.id
+        const {_id, id, ...concertData} = concert
         if (_id) {
             const q = await Concert.updateOne({_id}, concertData)
         } else {

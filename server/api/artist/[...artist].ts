@@ -10,13 +10,12 @@ router.get('/all', defineEventHandler(async (event) => {
 router.put('/create', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён'})
-    const body = await readBody(event)
     const {name} = await readBody(event)
     const artist = await Artist.findOne({name})
     if(artist) {
         return artist
     }
-    return Artist.create({name})
+    return Artist.create({name, user})
 
 }))
 

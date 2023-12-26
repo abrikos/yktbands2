@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import {IConcert} from "~/server/models/concert.model";
+import {IUser} from "~/server/models/user.model";
 
 const Schema = mongoose.Schema;
 
@@ -10,6 +11,7 @@ export interface IPlace extends mongoose.Document {
     coordinate: number[],
     coordinateValid: boolean
     concerts: IConcert[]
+    user: IUser
 }
 interface PlaceModel extends mongoose.Model<IPlace>{
     getPopulation():any
@@ -21,6 +23,7 @@ const schema = new Schema({
         address: {type: String},
         coordinateX: Number,
         coordinateY: Number,
+        user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
     },
     {
         toObject: {virtuals: true},

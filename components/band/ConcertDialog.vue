@@ -21,9 +21,12 @@ const canCreate = computed(() => {
     return concert.value.date && concert.value.place
 })
 
-function upsertConcert(){
+async function upsertConcert(){
+    const {data:place} = await useNuxtApp().$PUT(`/place/create`, concert.value.place)
+    refreshPlaces()
     showDialog.value = false
     concert.value.dateHuman = moment(concert.value.date).add(concert.value.hour,'hours').format('YYYY-MM-DD HH:mm')
+    concert.value.place = place.value
     $event('concert:update',concert.value)
 }
 
