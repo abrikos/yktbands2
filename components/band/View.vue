@@ -5,7 +5,7 @@ import {useAuthStore} from "~/store/auth-store";
 import type {IUser} from "~/server/models/user.model";
 
 const {loggedUser} = useAuthStore() as { loggedUser: IUser }
-const {band} = defineProps<{ band: IBand }>()
+const {band, preview} = defineProps<{ band: IBand, preview:boolean }>()
 const router = useRouter()
 
 const canEdit = computed(()=>{
@@ -18,14 +18,17 @@ const canEdit = computed(()=>{
 
 <template lang="pug">
 div(vif="band")
-    v-toolbar(color="secondary" )
-        v-toolbar-title {{band.name}}
-        v-divider.mx-4(vertical inset)
-        v-btn(v-if="canEdit" @click="router.push(band.editLink)") Редактировать
-    div#images
-        img.logo(:src="band.logoRnd" onerror="this.src='/logo.svg'")
-        //img.poster(:src="band.posterRnd" onerror="this.src='/logo.svg'")
-        div.poster(:style="`background-image:url(${band.posterRnd})`")
+    h1.text-red(v-if="preview && !band.enabled") Не отображается для всех
+    div#header
+        NuxtLink#edit-link(v-if="canEdit && !preview" :to="band.editLink") Редактировать
+        //div.poster(:style="`background-image:url(${band.posterRnd})`")
+        div#poster
+            img(:src="band.posterRnd")
+        div#info-wrap
+            div#info(:style="`background-color: ${band.colorBanner}`")
+                img.logo(:src="band.logoRnd" onerror="this.src='/logo.svg'" :style="`background-color: ${band.colorBanner}`")
+                h1#band-name(:style="`color: ${band.colorText}`") {{band.name}}
+
     br
     v-row
         v-col(md="6")
@@ -74,21 +77,55 @@ div(vif="band")
         td
             border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity))
             padding: 5px 0
-
-#images
-    .logo
-        max-width: 100px
-        max-height: 100px
+.v-theme--dark
+    #info
+        background-color: white
+#header
+    text-align: center
+    #edit-link
         position: absolute
+        background-color: white
+        padding: 5px
+        border-radius: 6px
+        color: black
+    #info-wrap
+        position: relative
+        #info
+            width: 100%
+            border-top-left-radius: 21px
+            border-top-right-radius: 21px
+            display: flex
+            position: absolute
+            height: 70px
+            top: -70px
+            #band-name
+                width: 100%
+                //border: 1px solid red
+                display: flex
+                align-items: center
+                justify-content: center
+    #poster
+        height: 400px
+        img
+            margin: auto
+            max-width: 100%
+            max-height: 400px
+    .logo
+        width: 100px
+        height: 100px
+        top: -50px
+        position: relative
         margin: 20px
-        border-radius: 10px
-        -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
-        -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
-        box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
+        padding: 5px
+        border-radius: 50px
+        //-webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
+        //-moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
+        //box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
 
     .poster
         width: 100%
         height: 400px
         //border: 1px solid red
-        background-size: auto
+        background-size: contain
+        background-position: top
 </style>

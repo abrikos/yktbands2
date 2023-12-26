@@ -91,7 +91,7 @@ div(v-else)
 
         v-col
             //a(:href="`/band-short-${band.shortcut}`" target="_blank") Перейти
-            BandView#preview(:band="band" :key="Math.random()")
+            BandView#preview(:band="band" :preview="true" :key="Math.random()")
 </template>
 
 <style scoped lang="sass">

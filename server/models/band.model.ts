@@ -8,9 +8,14 @@ import {IMessage} from "~/server/models/message.model";
 
 const Schema = mongoose.Schema;
 
-export interface IInstrument{artist:IArtist, icons:string[]}
+export interface IInstrument {
+    artist: IArtist,
+    icons: string[]
+}
+
 export interface IBand extends mongoose.Document {
-    [key:string]:any
+    [key: string]: any
+
     name: string
     shortcut: string
     enabled: boolean
@@ -21,6 +26,9 @@ export interface IBand extends mongoose.Document {
     shares: IUser[]
     logo: string
     shareCode: string
+    about: string
+    colorBanner: string
+    colorText: string
     youtube: string[]
     photos: string[]
     poster: string
@@ -30,8 +38,8 @@ export interface IBand extends mongoose.Document {
     viewLink: string
 }
 
-interface BandModel extends mongoose.Model<IBand>{
-    getPopulation():any
+interface BandModel extends mongoose.Model<IBand> {
+    getPopulation(): any
 }
 
 
@@ -40,12 +48,15 @@ const schema = new Schema({
         shortcut: {type: String, unique: true},
         logo: {type: String},
         poster: {type: String},
+        colorBanner: {type: String, default: 'wheat'},
+        colorText: {type: String, default: 'black'},
+        about: {type: String},
         shareCode: {type: String},
         youtube: [{type: String}],
         photos: [{type: String}],
         user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
         shares: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
-        instruments: [{artist:{type: mongoose.Schema.Types.ObjectId, ref: 'artist'}, icons:[]}],
+        instruments: [{artist: {type: mongoose.Schema.Types.ObjectId, ref: 'artist'}, icons: []}],
         enabled: {type: Boolean, default: false}
     },
     {
@@ -59,8 +70,8 @@ const schema = new Schema({
 schema.statics.getPopulation = () => [
     {path: 'user', select: {email: 1, nameStored: 1, avatarImage: 1}},
     {path: 'shares', select: {email: 1, nameStored: 1, avatarImage: 1}},
-    {path: 'instruments', populate: {path:'artist'}},
-    {path: 'messages', populate: {path:'user'}},
+    {path: 'instruments', populate: {path: 'artist'}},
+    {path: 'messages', populate: {path: 'user'}},
     {path: 'concerts', populate: 'place'},
 ]
 

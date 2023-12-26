@@ -11,7 +11,7 @@ const maxLength = 500
 
 const {band} = defineProps<{ band: IBand }>()
 const {$event} = useNuxtApp()
-const text = ref('asdasd asdas')
+const text = ref('')
 const loading =ref()
 async function submit() {
     const body = {text: text.value} as IMessage
