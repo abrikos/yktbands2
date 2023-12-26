@@ -26,18 +26,15 @@ export const useAuthStore = defineStore('auth', {
             }
         },
         async authenticateUser(body: UserPayloadInterface, strategy: string) {
-            // useFetch from nuxt 3
-            const {data, pending}: any = await useNuxtApp().$POST(`/user/login/${strategy}`, body);
+            const {data}: any = await useNuxtApp().$POST(`/user/login/${strategy}`, body);
             if (!data.value) return
             this.loggedUser = data.value
-            this.loading = pending;
             const router = useRouter();
             await router.push(this.redirect || '/cabinet')
         },
         async signupUser({email, password}: UserPayloadInterface) {
             // useFetch from nuxt 3
-            const {data, pending}: any = await useNuxtApp().$PUT('/user/signup', {email, password,});
-            this.loading = pending;
+            const {data}: any = await useNuxtApp().$PUT('/user/signup', {email, password,});
             this.loggedUser = data.value
             const router = useRouter();
             await router.push('/cabinet')

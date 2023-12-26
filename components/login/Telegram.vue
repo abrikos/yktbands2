@@ -9,7 +9,6 @@ function login(data){
 }
 
 onMounted(()=>{
-    console.log('zzzzzzzz', config.public.telegramBotName)
     window.onTelegramAuth = async function (user) {
         login(user)
     }
