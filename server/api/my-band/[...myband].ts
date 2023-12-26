@@ -44,15 +44,6 @@ router.post('/update', defineEventHandler(async (event) => {
     const band = await readBody(event)
     const {_id, id, ...data} = band
     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
-    for (const concert of band.concerts) {
-        concert.band = band.id
-        const {_id, id, ...concertData} = concert
-        if (_id) {
-            const q = await Concert.updateOne({_id}, concertData)
-        } else {
-            await Concert.create(concertData)
-        }
-    }
     await Band.updateOne({_id, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]}, data)
 }))
 

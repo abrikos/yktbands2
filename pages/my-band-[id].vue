@@ -13,7 +13,7 @@ $listen('my-band:refresh',()=> {
     refreshBand()
 })
 
-const bandSnapshot = ref(band.value && JSON.parse(JSON.stringify(band.value)))
+const bandSnapshot = ref<IBand>(band.value && JSON.parse(JSON.stringify(band.value)))
 const edited = computed(()=>{
     return band.value && JSON.stringify(bandSnapshot.value) !== JSON.stringify(band.value)
 })
@@ -54,9 +54,6 @@ const tab = computed({
 })
 const {origin} = useRequestURL()
 
-const fullUrl = computed(() => {
-    return `${origin}/band-${band.id}`
-})
 </script>
 
 <template lang="pug">

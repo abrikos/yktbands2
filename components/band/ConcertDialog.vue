@@ -13,6 +13,7 @@ const {$event, $listen} = useNuxtApp()
 $listen('concertDialog:show', (payload:IConcert) => {
     showDialog.value = true
     concert.value = payload
+    console.log('zzzzzzz', concert)
     concert.value.date = concert.value.date && new Date(concert.value.date)
 })
 
@@ -22,12 +23,14 @@ const canCreate = computed(() => {
 })
 
 async function upsertConcert(){
-    const {data:place} = await useNuxtApp().$PUT(`/place/create`, concert.value.place)
+    const {data:place} = await useNuxtApp().$PUT(`/place/upsert`, concert.value.place)
     refreshPlaces()
+    concert.value.place = place.value.id
+    concert.value.band = band.id
+    await useNuxtApp().$PUT(`/concert/upsert`, concert.value)
     showDialog.value = false
-    concert.value.dateHuman = moment(concert.value.date).add(concert.value.hour,'hours').format('YYYY-MM-DD HH:mm')
-    concert.value.place = place.value
-    $event('concert:update',concert.value)
+    concert.value = null
+    $event('concerts:update')
 }
 
 

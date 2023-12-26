@@ -17,7 +17,7 @@ router.get('/:_id/view', defineEventHandler(async (event) => {
 //Place.deleteMany().then(console.log)
 //Place.find().then(res=>{    console.log(res.length)})
 
-router.put('/create', defineEventHandler(async (event) => {
+router.put('/upsert', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {address, name, coordinate} = await readBody(event)
