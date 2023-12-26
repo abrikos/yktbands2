@@ -9,7 +9,7 @@ interface IStrategy {
 }
 
 const {telegramBotToken, telegramBotName} = useRuntimeConfig()
-console.log(telegramBotToken, telegramBotName)
+console.log('zzzzzzzz', telegramBotToken, telegramBotName)
 export const strategies: IStrategy = {
     async password(event: H3Event) {
         const {email, password} = await readBody(event)
