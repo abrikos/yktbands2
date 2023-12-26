@@ -12,6 +12,7 @@ onMounted(()=>{
     window.onTelegramAuth = async function (user) {
         login(user)
     }
+    console.log(config.public.telegramBotName)
     const tgScript = document.createElement('script')
     tgScript.async = true
     tgScript.src = "https://telegram.org/js/telegram-widget.js?22"

@@ -8,8 +8,8 @@ interface IStrategy {
     [key: string]: (event: H3Event<EventHandlerRequest>) => Promise<IUser | undefined>
 }
 
-const {telegramBotToken} = useRuntimeConfig()
-
+const {telegramBotToken, telegramBotName} = useRuntimeConfig()
+console.log(telegramBotToken, telegramBotName)
 export const strategies: IStrategy = {
     async password(event: H3Event) {
         const {email, password} = await readBody(event)
