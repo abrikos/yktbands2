@@ -7,7 +7,11 @@ function copy(){
 </script>
 
 <template lang="pug">
-v-btn(icon="mdi-clipboard" @click="copy" size="x-small" )
+v-tooltip(location="top" )
+    template(v-slot:activator="{props}")
+        v-btn(icon="mdi-clipboard" @click="copy" size="x-small" v-bind="props")
+    span Копировать
+
 </template>
 
 <style scoped lang="sass">

@@ -9,13 +9,14 @@ function login(data){
 }
 
 onMounted(()=>{
+    console.log('zzzzzzzz', config.public.telegramBotName)
     window.onTelegramAuth = async function (user) {
         login(user)
     }
     const tgScript = document.createElement('script')
     tgScript.async = true
     tgScript.src = "https://telegram.org/js/telegram-widget.js?22"
-    tgScript.setAttribute('data-telegram-login', config.public.botName)
+    tgScript.setAttribute('data-telegram-login', config.public.telegramBotName)
     tgScript.setAttribute('data-onauth', 'window.onTelegramAuth(user)')
     tgScript.setAttribute('data-request-access', 'write')
     tgScript.setAttribute('data-size', 'large')

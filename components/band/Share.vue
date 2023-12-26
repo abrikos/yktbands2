@@ -20,9 +20,14 @@ function cancelShare() {
 div
     div(v-if="band.shareCode" )
         div Ссылка доступна только для подключения одного юзера
-        div {{shareUrl}}
-            CopyBtn(:str="shareUrl")
-        v-btn(@click="cancelShare") Отменить доступ
+        v-text-field(:value="shareUrl")
+            template(v-slot:append-inner)
+                CopyBtn(:str="shareUrl")
+                v-tooltip(location="top" )
+                    template(v-slot:activator="{props}")
+                        v-btn(@click="cancelShare" icon="mdi-close" color="red" size="xs-small" v-bind="props")
+                    span Отменить доступ
+
     v-btn(v-else @click="createShare") Дать доступ к группе
 v-card-title Имеют доступ
 v-card-text
