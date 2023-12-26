@@ -32,10 +32,11 @@ export default defineNuxtConfig({
         authTokenName: 'auth_token',
         mailUser: process.env.MAIL_USER,
         mailPassword: process.env.MAIL_PASSWORD,
-        telegramBotToken: process.env.BOT_TOKEN,
+        telegramBotToken: process.env.TG_BOT_TOKEN,
+        telegramBotName: process.env.TG_BOT_NAME,
         yandexMapKey: process.env.YMAP,
         public: {
-            botName: process.env.BOT_NAME
+            telegramBotName: process.env.TG_BOT_NAME
         }
     },
     app: {

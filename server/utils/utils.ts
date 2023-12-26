@@ -3,7 +3,9 @@ import {H3Event} from "h3";
 import {Token} from "~/server/models/token.model";
 import nodemailer from "nodemailer";
 
-const {mailUser, mailPassword} = useRuntimeConfig()
+
+
+const {mailUser, mailPassword, telegramBotToken} = useRuntimeConfig()
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.mail.ru',
