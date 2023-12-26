@@ -28,7 +28,7 @@ div(vif="band")
             div#info(:style="`background-color: ${band.colorBanner}`")
                 img.logo(:src="band.logoRnd" onerror="this.src='/logo.svg'" :style="`background-color: ${band.colorBanner}`")
                 h1#band-name(:style="`color: ${band.colorText}`") {{band.name}}
-
+    v-banner#about {{band.about}}
     br
     v-row
         v-col(md="6")
