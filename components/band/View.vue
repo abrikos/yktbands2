@@ -111,13 +111,13 @@ div(vif="band")
             max-width: 100%
             max-height: 400px
     .logo
-        width: 100px
-        height: 100px
-        top: -50px
+        width: 150px
+        height: 150px
+        top: -98px
         position: relative
         margin: 20px
         padding: 5px
-        border-radius: 50px
+        border-radius: 75px
         //-webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
         //-moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
         //box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
