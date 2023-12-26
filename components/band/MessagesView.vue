@@ -36,19 +36,20 @@ const validate = [
 <template lang="pug">
 v-card
     v-toolbar
-        v-toolbar-title Сообщения {{band.messages.length}}
+        v-toolbar-title Сообщения
     v-card-text
         div.chat
             div
                 div(v-for="(message, i) of band.messages" :key="i" )
-                    div.d-flex.justify-end.align-center.text-blue
-                        span.px-2 {{message.user.name}}
-                        UserAvatar(:user="message.user")
-                        span {{message.date}}
-
-                    div {{message.text}}
-        div(v-if="loggedUser") {{validTextLength}}
+                    div
+                        span.text-blue
+                            span {{message.date}}
+                            UserAvatar(:user="message.user")
+                            span {{message.user.name}}:
+                        span.px-2 {{message.text}}
+        div(v-if="loggedUser").pt-2
             v-textarea(v-model="text" :rules="validate" placeholder="Введите текст сообщения")#input
+                template(v-slot:append)
             v-btn(v-if="validTextLength" @click="submit" :loading="loading") Отправить {{text.length}} символов
         div(v-else).text-red Сообщения могут отправлять только зарегистрированные пользователи &nbsp;
             NuxtLink(to="/login") Войти
