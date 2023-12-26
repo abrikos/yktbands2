@@ -2,14 +2,15 @@
 import { storeToRefs } from 'pinia'; // import storeToRefs helper hook from pinia
 import { useAuthStore } from '~/store/auth-store'; // import the auth store we just created
 import { useTheme } from 'vuetify'
+import type {IUser} from "~/server/models/user.model";
 const theme = useTheme()
 
 //const { getUser } = useAuthStore();
 //await getUser()
 
 const { logUserOut } = useAuthStore(); // use authenticateUser action from  auth store
-const { loggedUser } = storeToRefs(useAuthStore()) ; // make authenticated state reactive with storeToRefs
-
+const store = storeToRefs(useAuthStore()) ; // make authenticated state reactive with storeToRefs
+const loggedUser = store.loggedUser.value as IUser
 const drawerLeft = ref(true)
 const drawerRight = ref(false)
 const nightMode = ref(true)
@@ -24,7 +25,7 @@ function toggleTheme () {
 v-app
     NuxtLoadingIndicator
     v-app-bar(density="compact" )
-        v-app-bar-title Ykt Bands
+        v-app-bar-title Музыкальные группы Якутска
         v-btn(to="/") Начало
         v-btn(to="/my-bands" vif="user") Мои группы
         v-btn(to="/login" v-if="!loggedUser") Войти
