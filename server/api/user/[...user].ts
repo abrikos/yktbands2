@@ -72,14 +72,20 @@ router.post('/login/:strategy', defineEventHandler(async (event) => {
 }))
 
 router.post('/update', defineEventHandler(async (event) => {
-    const {name, password, avatarImage} = await readBody(event)
+    const {name, email, avatarImage} = await readBody(event)
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const found = await User.findById(user.id)
     if (!found) throw createError({statusCode: 403, message: 'STRANGE: user not found: ' + user.id,})
+    found.email = email
     found.name = name
     found.avatarImage = avatarImage
-    await found.save()
+    try {
+        await found.save()
+    }catch (e:any) {
+        console.error(e)
+        if(e.code===11000) throw createError({statusCode: 406, message: 'Этот email уже занят'})
+    }
 }))
 
 //User.updateOne({email:'abrikoz@gmail.com'},{passwordHash:'d09ae2219e185ef2cbc84e1425e6cc08959a831e0646a0d85bd1542505571098'}).then(console.log)
