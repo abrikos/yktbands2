@@ -8,25 +8,30 @@ const router = useRouter()
 const {data, refresh: refreshBand, pending: pendingBand} = await useNuxtApp().$GET(`/my-band/${route.params.id}/view/`)
 const band = data as IBand
 
-const { $listen } = useNuxtApp()
-$listen('my-band:refresh',()=> {
+const {$listen} = useNuxtApp()
+$listen('my-band:refresh', () => {
     refreshBand()
 })
 
 const bandSnapshot = ref<IBand>(band.value && JSON.parse(JSON.stringify(band.value)))
-const edited = computed(()=>{
-    return band.value && JSON.stringify(bandSnapshot.value) !== JSON.stringify(band.value)
+const edited = computed(() => {
+    return band.value
+            && !['concerts', 'instruments'].includes(tab.value)
+            && JSON.stringify(bandSnapshot.value) !== JSON.stringify(band.value)
 })
+
 function reset() {
-    for(const key in band.value){
+    for (const key in band.value) {
         band.value[key] = bandSnapshot.value[key]
     }
 }
+
 function snapshot() {
     for (const key in band.value) {
         bandSnapshot.value[key] = band.value[key]
     }
 }
+
 async function submit() {
     await useNuxtApp().$POST(`/my-band/update`, band.value)
     await refreshBand()
@@ -46,7 +51,7 @@ const tabsItems = {
 
 const tab = computed({
     get() {
-        return route.query.tab || 'settings'
+        return route.query.tab as string || 'settings'
     },
     async set(tab) {
         await router.replace({query: {...route.query, tab}})

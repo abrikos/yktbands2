@@ -4,14 +4,10 @@ import moment from "moment";
 import {IConcert} from "~/server/models/concert.model";
 import {IArtist} from "~/server/models/artist.model";
 import {IMessage} from "~/server/models/message.model";
+import {IInstrument} from "~/server/models/instrument.model";
 
 
 const Schema = mongoose.Schema;
-
-export interface IInstrument {
-    artist: IArtist,
-    icons: string[]
-}
 
 export interface IBand extends mongoose.Document {
     [key: string]: any
@@ -56,7 +52,6 @@ const schema = new Schema({
         photos: [{type: String}],
         user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
         shares: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
-        instruments: [{artist: {type: mongoose.Schema.Types.ObjectId, ref: 'artist'}, icons: []}],
         enabled: {type: Boolean, default: false}
     },
     {
@@ -106,6 +101,12 @@ schema.virtual('concerts', {
     localField: '_id',
     foreignField: 'band',
     options: {sort: {date: -1}}
+})
+schema.virtual('instruments', {
+    ref: 'instrument',
+    localField: '_id',
+    foreignField: 'band',
+    options: {sort: {name: 1}}
 })
 
 schema.virtual('messages', {

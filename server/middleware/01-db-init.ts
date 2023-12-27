@@ -1,4 +1,5 @@
 import {User, Concert, Place, Band, Token, Artist, Message} from "#imports";
+import {Instrument} from "~/server/models/instrument.model";
 export default defineEventHandler(async (event) => {
     User.findOne()
     Concert.findOne()
@@ -7,4 +8,5 @@ export default defineEventHandler(async (event) => {
     Token.findOne()
     Artist.findOne()
     Message.findOne()
+    Instrument.findOne()
 })
