@@ -16,7 +16,7 @@ $listen('my-band:refresh', () => {
 const bandSnapshot = ref<IBand>(band.value && JSON.parse(JSON.stringify(band.value)))
 const edited = computed(() => {
     return band.value
-            && !['concerts', 'instruments'].includes(tab.value)
+            && !['concerts', 'instruments', 'photos'].includes(tab.value)
             && JSON.stringify(bandSnapshot.value) !== JSON.stringify(band.value)
 })
 
@@ -43,7 +43,7 @@ const tabsItems = {
     settings: {title: 'Параметры'},
     concerts: {title: 'Концерты'},
     instruments: {title: 'Состав группы'},
-    photo: {title: 'Фото'},
+    photos: {title: 'Фото'},
     youtube: {title: 'Youtube'},
     share: {title: 'Доступ для редактирования'},
     messages: {title: 'Сообщения'},
@@ -83,7 +83,7 @@ div(v-else)
                     BandSettings(v-if="tab==='settings'" :band="band" )
                     BandInstruments(v-if="tab==='instruments'" :band="band")
                     BandYoutube(v-if="tab==='youtube'" :band="band")
-                    BandPhotoEdit(v-if="tab==='photo'" :band="band")
+                    BandPhotoEdit(v-if="tab==='photos'" :band="band")
                     BandShare(v-if="tab==='share'" :band="band")
                     MessagesEdit(v-if="tab==='messages'" :band="band")
                 v-card-actions(v-if="edited" )
@@ -92,6 +92,8 @@ div(v-else)
                     v-btn(@click="reset") Сбросить
 
         v-col
+            div {{band.photos.length}} photos
+            div {{band.instruments.length}} instruments
             //a(:href="`/band-short-${band.shortcut}`" target="_blank") Перейти
             BandView#preview(:band="band" :preview="true" :key="Math.random()")
 </template>

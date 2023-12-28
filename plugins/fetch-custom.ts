@@ -44,11 +44,11 @@ export default defineNuxtPlugin((_nuxtApp) => {
     return {
         provide: {
             async POST(path: String, body?: Object, debug?:boolean) {
-                body = body && JSON.parse(JSON.stringify(body))
+                //body = body && JSON.parse(JSON.stringify(body))
                 return useCustomFetch('/api' + path, {method: 'POST', body}, debug)
             },
             async PUT(path: String, body?: Object, debug?:boolean) {
-                body = body && JSON.parse(JSON.stringify(body))
+                //body = body && JSON.parse(JSON.stringify(body))
                 return useCustomFetch('/api' + path, {method: 'PUT', body}, debug)
             },
             async GET(path: String, debug?:boolean) {

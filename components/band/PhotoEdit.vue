@@ -1,31 +1,45 @@
 <script setup lang="ts">
 import type {IBand} from "~/server/models/band.model";
+import type {IInstrument} from "~/server/models/instrument.model";
+import type {IPhoto} from "~/server/models/photo.model";
 
 const {$event} = useNuxtApp()
 const {band} = defineProps<{ band: IBand }>()
+const {data, refresh} = await useNuxtApp().$GET(`/photo/band/${band.id}`)
+const photos = data as IPhoto[]
+const input = ref()
+const loading = ref()
 
-const newLink = ref()
-
-function addLink() {
-    if (!newLink.value) return
-    band.photos.push(newLink.value)
+async function deleteLink(photo: IPhoto) {
+    //if(!window.confirm(`Удалить фото?`)) return
+    await useNuxtApp().$DELETE(`/photo/${photo.id}`)
+    await refresh()
+    band.photos = photos
 }
 
-function deleteLink(i: number) {
-    band.photos.splice(i, 1)
+async function upload(e: any) {
+    loading.value = true
+    const formData = new FormData()
+    for (const file of e.target.files)
+        formData.append('photo', file)
+    await useNuxtApp().$PUT(`/photo/band/${band.id}/upload`, formData)
+    input.value.value = null
+    await refresh()
+    band.photos = photos
+    loading.value = false
+
 }
 
 </script>
 
 <template lang="pug">
-v-text-field(v-model="newLink" placeholder="Вставте ссылку на фото" )
-    template(v-slot:append-inner)
-        v-btn(v-if="newLink" @click="addLink") Добавить
-div(v-for="(link,i) of band.photos" :key="i" )
+input(type="file" ref="input" @change="upload" hidden multiple)
+v-btn(@click="()=>input.click()" :loading="loading") Выбрать файл
+
+div(v-for="(photo,i) of photos" :key="i" )
     div
-        v-btn(@click="deleteLink(i)" icon="mdi-delete" color="red" size="x-small" )
-        span {{link}}
-    img(:src="link")
+        v-btn(@click="deleteLink(photo)" icon="mdi-delete" color="red" size="x-small")
+    img(:src="photo.thumb")
 //BandPhotoView(:photos="band.photos")
 
 </template>

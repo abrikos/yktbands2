@@ -5,6 +5,7 @@ import {IConcert} from "~/server/models/concert.model";
 import {IArtist} from "~/server/models/artist.model";
 import {IMessage} from "~/server/models/message.model";
 import {IInstrument} from "~/server/models/instrument.model";
+import {IPhoto} from "~/server/models/photo.model";
 
 
 const Schema = mongoose.Schema;
@@ -26,7 +27,7 @@ export interface IBand extends mongoose.Document {
     colorBanner: string
     colorText: string
     youtube: string[]
-    photos: string[]
+    photos: IPhoto[]
     poster: string
     logoRnd: string
     posterRnd: string
@@ -49,7 +50,6 @@ const schema = new Schema({
         about: {type: String},
         shareCode: {type: String},
         youtube: [{type: String}],
-        photos: [{type: String}],
         user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
         shares: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
         enabled: {type: Boolean, default: false}
@@ -68,6 +68,7 @@ schema.statics.getPopulation = () => [
     {path: 'instruments', populate: {path: 'artist'}},
     {path: 'messages', populate: {path: 'user'}},
     {path: 'concerts', populate: 'place'},
+    {path: 'photos'},
 ]
 
 schema.virtual('date')
@@ -111,6 +112,13 @@ schema.virtual('instruments', {
 
 schema.virtual('messages', {
     ref: 'message',
+    localField: '_id',
+    foreignField: 'band',
+    options: {sort: {createdAt: 1}}
+})
+
+schema.virtual('photos', {
+    ref: 'photo',
     localField: '_id',
     foreignField: 'band',
     options: {sort: {createdAt: 1}}

@@ -1,9 +1,7 @@
-import {H3Event} from "h3";
-import {IBand, IInstrument} from "~/server/models/band.model";
 import {Types} from "mongoose"
 
 const router = createRouter()
-
+const {imgbbKey} = useRuntimeConfig()
 
 router.get('/all', defineEventHandler(async (event) => {
     const user = event.context.user
@@ -24,7 +22,8 @@ router.get('/:_id/view', defineEventHandler(async (event) => {
     return Band
         .findOne({_id, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]})
         .populate(Band.getPopulation())
-        .catch(e=>{})
+        .catch(e => {
+        })
 
 }))
 

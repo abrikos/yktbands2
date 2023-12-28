@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const props = defineProps<{ photos: string[] }>()
+import type {IPhoto} from "~/server/models/photo.model";
+
+const props = defineProps<{ photos: IPhoto[] }>()
 const {photos} = props
 const selectedPhoto = ref()
 const showDialog = ref(false)
@@ -20,7 +22,7 @@ v-card
         v-toolbar-title Фото {{selectedPhoto}}
     v-card-text
         div#photos.d-flex.flex-wrap
-            img(v-for="(link,i) of photos" :key="i"  :src="link"
+            img(v-for="(photo,i) of photos" :key="i"  :src="photo.thumb"
                 @click="()=>{selectedPhoto=i; showDialog=!showDialog}")
     v-dialog(v-model="showDialog" xfullscreen="" )
         v-card(flat="true" rounded="10")
@@ -32,7 +34,7 @@ v-card
             v-window(v-model="selectedPhoto")
                 v-window-item(v-for="(photo, i) of photos" :key="i" :value="i")
                     v-card.d-flex.justify-center.align-center
-                        v-img(:src="photos[i]")
+                        v-img(:src="photos[i].image")
             v-card-actions.justify-center
                 v-btn(variant="plain" icon="mdi-chevron-left" @click="prev")
                 //v-item-group.text-center(v-model="selectedPhoto" mandatory )
