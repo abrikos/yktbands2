@@ -17,7 +17,7 @@ export interface IUser extends mongoose.Document {
 
 
 const Schema = mongoose.Schema;
-const validateEmail = function (email: string) {
+export const validateEmail = function (email: string) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
 };
 

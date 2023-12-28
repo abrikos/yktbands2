@@ -45,7 +45,7 @@ export const strategies: IStrategy = {
         if (checkSignature(body)) {
             let user = await User.findOne({strategyId: body.id, strategy: 'telegram'})
             if (!user) {
-                return User.updateOne({avatarImage: body.photo_url},{strategyId: body.id})
+                //return User.updateOne({avatarImage: body.photo_url},{strategyId: body.id})
                 return User.create({
                     strategy: 'telegram',
                     name: first_name + ' ' + last_name,
