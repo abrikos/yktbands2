@@ -25,7 +25,11 @@ function toggleTheme () {
 v-app
     NuxtLoadingIndicator
     v-app-bar(density="compact" )
-        v-app-bar-title Музыкальные группы Якутска
+        v-app-bar-title
+            div.d-flex.align-center
+                div.px-2
+                    img#logo(src="/ykt-bands-logo.svg")
+                span Музыкальные группы Якутска
         v-btn(to="/") Начало
         v-btn(to="/my-bands" vif="user") Мои группы
         v-btn(to="/login" v-if="!loggedUser") Войти
@@ -51,11 +55,12 @@ v-app
             v-list-item(@click="logUserOut" v-if="loggedUser" append-icon="mdi-logout" ) Выйти
 
     v-main
-        v-container(fluid)
+        v-container(fluidx).xd-flex.align-center.flex-column
             slot
     NuxtSnackbar
 </template>
 
 <style scoped lang="sass">
-
+img#logo
+    height: 40px
 </style>

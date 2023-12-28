@@ -23,10 +23,10 @@ div(vif="band")
         NuxtLink#edit-link(v-if="canEdit && !preview" :to="band.editLink") Редактировать
         //div.poster(:style="`background-image:url(${band.posterRnd})`")
         div#poster
-            img(:src="band.posterRnd")
+            img(:src="band.posterRnd" onerror="this.src='/ykt-bands-logo.svg'")
         div#info-wrap
             div#info(:style="`background-color: ${band.colorBanner}`")
-                img.logo(:src="band.logoRnd" onerror="this.src='/logo.svg'" :style="`background-color: ${band.colorBanner}`")
+                img.logo(:src="band.logoRnd" onerror="this.src='/ykt-bands-logo.svg'" :style="`background-color: ${band.colorBanner}`")
                 h1#band-name(:style="`color: ${band.colorText}`") {{band.name}}
     v-banner#about {{band.about}}
     br
