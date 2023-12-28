@@ -1,5 +1,5 @@
 import {Token} from "~/server/models/token.model";
-import {User} from "~/server/models/user.model";
+import {User, validateEmail} from "~/server/models/user.model";
 import crypto from "crypto";
 
 //User.deleteMany().then(console.log)
@@ -77,6 +77,7 @@ router.post('/update', defineEventHandler(async (event) => {
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const found = await User.findById(user.id)
     if (!found) throw createError({statusCode: 403, message: 'STRANGE: user not found: ' + user.id,})
+    if(!validateEmail(email)) throw createError({statusCode: 403, message: 'Не верный email'})
     found.email = email
     found.name = name
     found.avatarImage = avatarImage
