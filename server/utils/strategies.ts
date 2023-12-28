@@ -40,9 +40,12 @@ export const strategies: IStrategy = {
             return hmac === hash
         }
 
+        console.log(body)
+
         if (checkSignature(body)) {
-            let user = await User.findOne({email, strategy: 'telegram'})
+            let user = await User.findOne({strategyId: body.id, strategy: 'telegram'})
             if (!user) {
+                return User.updateOne({avatarImage: body.photo_url},{strategyId: body.id})
                 return User.create({
                     strategy: 'telegram',
                     name: first_name + ' ' + last_name,

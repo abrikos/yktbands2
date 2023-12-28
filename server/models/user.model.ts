@@ -10,6 +10,7 @@ export interface IUser extends mongoose.Document {
     restorePassword: string
     email: string;
     strategy: string;
+    strategyId: string;
     checkPasswd: (passwd: string) => boolean
     _doc:any
 }
@@ -29,6 +30,7 @@ const schema = new Schema({
     nameStored: String,
     avatarImage: String,
     strategy: String,
+    strategyId: String,
     passwordHash:  String,
     email: {
         type: String,
