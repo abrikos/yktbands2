@@ -27,7 +27,7 @@ router.get('/:_id/view', defineEventHandler(async (event) => {
 
 }))
 
-//User.findOne({email:'abrikoz@gmail.com'}).then(console.log)
+//User.find().then(console.log)
 //Band.find({user:'6575fa559320e6117254d593'}).then(console.log)
 //Band.findById('65880f6a385b78755ae5095b')    .populate(Band.getPopulation())    .then(console.log)
 //Concert.find({band:'65880f6a385b78755ae5095b'}).then(console.log)
