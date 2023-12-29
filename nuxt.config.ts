@@ -44,7 +44,7 @@ export default defineNuxtConfig({
         head: {
             link: [{ rel: 'icon', type: 'image/svg', href: '/ykt-bands-logo.svg' }],
             script: [
-                //{src:`https://api-maps.yandex.ru/v3/?apikey=${process.env.YMAP}&lang=ru_RU`}
+                {src:'/ym.js'}
             ]
         }
     },
