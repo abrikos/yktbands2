@@ -40,7 +40,7 @@ async function applyHeader(type:string, photo:IPhoto){
 input(type="file" ref="input" @change="upload" hidden multiple)
 v-btn(@click="()=>input.click()" :loading="loading") Выбрать файл
 
-v-row(v-for="(photo,i) of photos" :key="i" )
+v-row(v-for="(photo,i) of photos" :key="i" align="center" )
     v-col
         img(:src="photo.thumb")
     v-col

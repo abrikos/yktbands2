@@ -33,16 +33,17 @@ async function setInstrument(instrument: IInstrument, icon: string) {
     } else {
         instrument.icons.push(icon)
     }
-    await useNuxtApp().$PUT(`/instrument/upsert`, [instrument])
+    band.instruments = instruments
+    await useNuxtApp().$PUT(`/instrument/upsert`, [JSON.parse(JSON.stringify(instrument))])
 }
 
 async function createArtist() {
     const {data: artist} = await useNuxtApp().$PUT(`/artist/create`, {name: newArtist.value})
-    console.log(artist)
     await useNuxtApp().$PUT(`/instrument/upsert`, [{artist:artist.value, band:band.id}])
     refreshArtists()
     refreshInstruments()
     band.instruments = instruments
+    newArtist.value = null
 }
 
 const newArtist = ref()
@@ -57,7 +58,7 @@ v-text-field(v-model="newArtist" label="Создать нового музыка
 v-combobox(item-title="name" item-value="id" :items="artists.filter(a=>!instruments.map(i=>i.artist.id).includes(a.id))"
     v-model="selectedArtists"
     multiple=""
-    label="Выбрать музыканта"
+    label="Выбрать музыкантов"
     density="compact")
     template(v-slot:append)
         v-btn(v-if="selectedArtists" @click="addInstrument" small) Добавить

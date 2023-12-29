@@ -59,16 +59,18 @@ const tab = computed({
 })
 const {origin} = useRequestURL()
 
+const fullUrl = computed(()=>origin + band.value.viewLink)
+
 </script>
 
 <template lang="pug">
 h1(v-if="!band").text-red Группа не найдена
 div(v-else)
-    h1.d-flex.justify-center
+    h1
         span Группа "{{band.name}}"
-    div.d-flex.justify-center
-        a(:href="band.viewLink" target="_blank") Перейти
-        //CopyBtn(:str="fullUrl")
+    div
+        a(:href="band.viewLink" target="_blank") {{fullUrl}}
+        CopyBtn(:str="fullUrl" tooltip="Копировать ссылку")
 
     v-tabs(v-model="tab" density="compact")
         v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}

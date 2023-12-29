@@ -1,8 +1,8 @@
 <script setup lang="ts">
-const props = defineProps<{ str: string }>()
+const {str, tooltip} = defineProps<{ str: string, tooltip?:string }>()
 
 function copy(){
-    navigator.clipboard.writeText(props.str);
+    navigator.clipboard.writeText(str);
 }
 </script>
 
@@ -10,7 +10,7 @@ function copy(){
 v-tooltip(location="top" )
     template(v-slot:activator="{props}")
         v-btn(icon="mdi-clipboard" @click="copy" size="x-small" v-bind="props")
-    span Копировать
+    span {{tooltip || 'Копировать'}}
 
 </template>
 

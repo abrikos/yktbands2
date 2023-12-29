@@ -14,6 +14,10 @@ const canEdit = computed(()=>{
             && (band.shares.map(u=>u.id).includes(loggedUser.id) || band.user.id === loggedUser.id)
 })
 
+const instruments = computed(()=>band.instruments
+        .sort((a: IInstrument, b: IInstrument) => a.artist.name.toLowerCase() > b.artist.name.toLowerCase() ? 1
+                : a.artist.name.toLowerCase() < b.artist.name.toLowerCase() ? -1 : 0))
+
 </script>
 
 <template lang="pug">
@@ -49,7 +53,7 @@ div(vif="band")
                 v-card-text
                     table.instruments
                         tbody
-                            tr(v-for="instrument of band.instruments" :key="instrument.id" align="center" no-gutters)
+                            tr(v-for="instrument of instruments" :key="instrument.id" align="center" no-gutters)
                                 td.text-left {{instrument.artist.name}}
                                 td.text-left
                                     BandInstrumentIcon(v-for="icon of instrument.icons" :icon="icon" :key="icon")

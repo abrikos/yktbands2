@@ -25,7 +25,6 @@ router.put('/upsert', defineEventHandler(async (event) => {
         .findOne({_id: instruments[0].band, $or: [{user}, {shares: {$elemMatch: {$eq: user.id}}}]})
     if (!band) throw createError({statusCode: 406, message: 'Редактирование группы недоступно'})
     for(const instrument of instruments) {
-        console.log(instrument)
         if (instrument.id) {
             await Instrument.findByIdAndUpdate(instrument.id, instrument)
         } else {

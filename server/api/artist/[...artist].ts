@@ -4,8 +4,10 @@ import {IBand} from "~/server/models/band.model";
 const router = createRouter()
 
 router.get('/all', defineEventHandler(async (event) => {
-    return  Artist.find()
+    return  Artist.find().sort('name')
 }))
+
+//Artist.deleteMany({name:null}).then(console.log)
 
 router.put('/create', defineEventHandler(async (event) => {
     const user = event.context.user
