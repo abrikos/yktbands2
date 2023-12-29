@@ -45,8 +45,8 @@ v-card
 
 <style scoped lang="sass">
 .full
-    //max-width: 100%
-    height: 900px
+    max-width: 600px
+    max-height: 400px
 #photos
     img
         max-width: 100px

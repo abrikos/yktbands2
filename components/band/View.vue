@@ -26,8 +26,8 @@ div(vif="band")
     div#header
         NuxtLink#edit-link(v-if="canEdit && !preview" :to="band.editLink") Редактировать
         //div.poster(:style="`background-image:url(${band.posterRnd})`")
-        div#poster(:style="`background-image:url('${band.poster}')`")
-            //img(:src="band.poster" onerror="this.src='/ykt-bands-logo.svg'")
+        div#poster(:xstyle="`background-image:url('${band.poster}')`")
+            v-img(:src="band.poster" onerror="this.src='/ykt-bands-logo.svg'")
         div#info-wrap
             div#info(:style="`background-color: ${band.colorBanner}`")
                 img.logo(:src="band.logo" onerror="this.src='/ykt-bands-logo.svg'" :style="`background-color: ${band.colorBanner}`")
@@ -58,7 +58,7 @@ div(vif="band")
                                 td.text-left
                                     BandInstrumentIcon(v-for="icon of instrument.icons" :icon="icon" :key="icon")
             br
-            BandPhotoView(:photos="band.photos")
+            BandPhotoView(:photos="band.photos" :key="Math.random()")
             br
             v-card
                 v-toolbar(density="compact" )
@@ -86,6 +86,10 @@ div(vif="band")
         background-color: white
 #header
     text-align: center
+    background-size: contain
+    background-repeat: repeat
+    background-image: url("/poster-bg2.jpg")
+    //border: 1px solid red
     #edit-link
         position: absolute
         background-color: white
@@ -99,23 +103,24 @@ div(vif="band")
             border-top-left-radius: 21px
             border-top-right-radius: 21px
             display: flex
-            position: absolute
+            //position: absolute
             height: 70px
             top: -70px
             #band-name
                 width: 100%
-                //border: 1px solid red
                 display: flex
                 align-items: center
                 justify-content: center
     #poster
-        height: 400px
+        height: 350px
         overflow: hidden
-        background-size: cover
+        background-size: contain
         background-position: center
+        background-repeat: repeat
+        //background-image: url("/poster-bg.jpg")
         img
             margin: auto
-            width: 100%
+            //width: 100%
             //max-height: 400px
     .logo
         width: 150px

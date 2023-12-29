@@ -11,7 +11,7 @@ const input = ref()
 const loading = ref()
 
 async function deleteLink(photo: IPhoto) {
-    //if(!window.confirm(`Удалить фото?`)) return
+    if(!window.confirm(`Удалить фото?`)) return
     await useNuxtApp().$DELETE(`/photo/${photo.id}`)
     await refresh()
     band.photos = photos
