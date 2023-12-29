@@ -15,9 +15,10 @@ export interface IMessage extends mongoose.Document {
 
 
 const schema = new Schema({
+        text: {type:String, required: true, maxLength: 500},
         band: {type: mongoose.Schema.Types.ObjectId, ref: 'band'},
         user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
-        text: {type:String, required: true, maxLength: 500}
+
     },
     {
         timestamps: {createdAt: 'createdAt'},

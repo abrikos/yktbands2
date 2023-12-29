@@ -3,7 +3,7 @@ import {Types} from "mongoose";
 const router = createRouter()
 
 router.get('/admin-all', defineEventHandler(async (event) => {
-    return  Message.find().sort('date')
+    return  Message.find().populate('user').sort('date')
 }))
 
 

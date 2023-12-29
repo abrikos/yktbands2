@@ -92,6 +92,15 @@ router.post('/login/:strategy', defineEventHandler(async (event) => {
     await utils.setAuthToken(event, user)
     return utils.adaptUser(user)
 }))
+router.get('/:_id/toggle-admin', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isAdmin) throw createError({statusCode: 403, message: 'Доступ запрещён'})
+    const {_id} = event.context.params as Record<string, string>
+    const found = await User.findById(_id);
+    if (!found) throw createError({statusCode: 401, message: 'login: Ошибка аутентификации',})
+    found.isAdmin = !found.isAdmin
+    await found.save()
+}))
 
 router.post('/update', defineEventHandler(async (event) => {
     const {name, email, avatarImage} = await readBody(event)
