@@ -16,7 +16,7 @@ $listen('my-band:refresh', () => {
 const bandSnapshot = ref<IBand>(band.value && JSON.parse(JSON.stringify(band.value)))
 const edited = computed(() => {
     return band.value
-            && !['concerts', 'instruments', 'photos'].includes(tab.value)
+            && !['concerts', 'instruments', 'photos', 'messages'].includes(tab.value)
             && JSON.stringify(bandSnapshot.value) !== JSON.stringify(band.value)
 })
 

@@ -40,8 +40,6 @@ export const strategies: IStrategy = {
             return hmac === hash
         }
 
-        console.log(body)
-
         if (checkSignature(body)) {
             let user = await User.findOne({strategyId: body.id, strategy: 'telegram'})
             if (!user) {

@@ -13,7 +13,6 @@ const {$event, $listen} = useNuxtApp()
 $listen('concertDialog:show', (payload:IConcert) => {
     showDialog.value = true
     concert.value = payload
-    console.log('zzzzzzz', concert)
     concert.value.date = concert.value.date && new Date(concert.value.date)
 })
 
