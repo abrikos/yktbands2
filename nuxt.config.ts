@@ -44,7 +44,7 @@ export default defineNuxtConfig({
         head: {
             link: [{ rel: 'icon', type: 'image/svg', href: '/ykt-bands-logo.svg' }],
             script: [
-                {src:'/ym.js'}
+                {src:'/ym.js', tagPosition:'bodyClose'}
             ]
         }
     },
