@@ -43,9 +43,31 @@ router.get('/checkAuth', defineEventHandler(async (event) => {
     return event.context.user
 }))
 
+router.get('/admin-all', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isAdmin) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    return User.find()
+}))
+
+router.delete('/:_id', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isAdmin) throw createError({statusCode: 403, message: 'Доступ запрещён'})
+    const {_id} = event.context.params as Record<string, string>
+    const deletedData = await Band.find({user: _id})
+    for (const band of deletedData) {
+        Instrument.deleteMany({band: band._id})
+        Concert.deleteMany({band: band._id})
+        Photo.deleteMany({band: band._id})
+        Message.deleteMany({band: band._id})
+    }
+    await Band.deleteMany({user: _id})
+    await Artist.findByIdAndDelete(_id)
+}))
+
+
 router.get('/logout', defineEventHandler(async (event) => {
     const cookies = parseCookies(event)
-    const { authTokenName} = useRuntimeConfig(event)
+    const {authTokenName} = useRuntimeConfig(event)
     await Token.deleteOne({access: cookies[authTokenName]});
     deleteCookie(event, authTokenName)
 }))
@@ -57,17 +79,17 @@ router.put('/signup', defineEventHandler(async (event) => {
     if (!user) throw createError({statusCode: 403, message: 'STRANGE: create error: '})
     const found = await User.findById(user.id, '-passwordHash')
     if (!found) throw createError({statusCode: 403, message: 'STRANGE: user not found: '})
-    await  utils.setAuthToken(event, found)
+    await utils.setAuthToken(event, found)
     return utils.adaptUser(found)
 
 }))
 
 router.post('/login/:strategy', defineEventHandler(async (event) => {
     const {strategy} = event.context.params as Record<string, string>
-    if(!strategies[strategy]) throw createError({statusCode: 406, message: `Ошибка в стратегии "${strategy}"`})
+    if (!strategies[strategy]) throw createError({statusCode: 406, message: `Ошибка в стратегии "${strategy}"`})
     const user = await strategies[strategy](event);
     if (!user) throw createError({statusCode: 401, message: 'login: Ошибка аутентификации',})
-    await  utils.setAuthToken(event, user)
+    await utils.setAuthToken(event, user)
     return utils.adaptUser(user)
 }))
 
@@ -77,15 +99,15 @@ router.post('/update', defineEventHandler(async (event) => {
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const found = await User.findById(user.id)
     if (!found) throw createError({statusCode: 403, message: 'STRANGE: user not found: ' + user.id,})
-    if(!validateEmail(email)) throw createError({statusCode: 403, message: 'Не верный email'})
+    if (!validateEmail(email)) throw createError({statusCode: 403, message: 'Не верный email'})
     found.email = email
     found.name = name
     found.avatarImage = avatarImage
     try {
         await found.save()
-    }catch (e:any) {
+    } catch (e: any) {
         console.error(e)
-        if(e.code===11000) throw createError({statusCode: 406, message: 'Этот email уже занят'})
+        if (e.code === 11000) throw createError({statusCode: 406, message: 'Этот email уже занят'})
     }
 }))
 

@@ -6,6 +6,17 @@ const router = createRouter()
 router.get('/all', defineEventHandler(async (event) => {
     return  Artist.find().sort('name')
 }))
+router.get('/admin-all', defineEventHandler(async (event) => {
+    return  Artist.find().sort('name')
+}))
+
+router.delete('/:_id', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isAdmin) throw createError({statusCode: 403, message: 'Доступ запрещён'})
+    const {_id} = event.context.params as Record<string, string>
+    await Instrument.deleteMany({artist:_id})
+    await Artist.findByIdAndDelete(_id)
+}))
 
 //Artist.deleteMany({name:null}).then(console.log)
 

@@ -5,12 +5,9 @@ import { useTheme } from 'vuetify'
 import type {IUser} from "~/server/models/user.model";
 const theme = useTheme()
 
-//const { getUser } = useAuthStore();
-//await getUser()
-
 const { logUserOut } = useAuthStore(); // use authenticateUser action from  auth store
-const store = storeToRefs(useAuthStore()) ; // make authenticated state reactive with storeToRefs
-const loggedUser = store.loggedUser.value as IUser
+const {loggedUser} = storeToRefs(useAuthStore()) as unknown as {loggedUser:IUser}
+
 const drawerLeft = ref(true)
 const drawerRight = ref(false)
 const nightMode = ref(true)
@@ -31,7 +28,8 @@ v-app
                     img#logo(src="/ykt-bands-logo.svg")
                 span Музыкальные группы Якутска
         v-btn(to="/") Начало
-        v-btn(to="/my-bands" vif="user") Мои группы
+        v-btn(to="/admin" v-if="loggedUser?.isAdmin") ADMIN
+        v-btn(to="/my-bands" v-if="loggedUser") Мои группы
         v-btn(to="/login" v-if="!loggedUser") Войти
         v-btn(to="/signup" v-if="!loggedUser") Регистрация
         v-btn(to="/cabinet" v-if="loggedUser") {{loggedUser.name}}

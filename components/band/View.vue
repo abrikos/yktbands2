@@ -25,7 +25,6 @@ div(vif="band")
     h1.text-red(v-if="preview && !band.enabled") Не отображается для всех
     div#header
         NuxtLink#edit-link(v-if="canEdit && !preview" :to="band.editLink") Редактировать
-        //div.poster(:style="`background-image:url(${band.posterRnd})`")
         div#poster(:xstyle="`background-image:url('${band.poster}')`")
             v-img(:src="band.poster" onerror="this.src='/ykt-bands-logo.svg'")
         div#info-wrap
@@ -110,9 +109,10 @@ div(vif="band")
                 width: 100%
                 display: flex
                 align-items: center
-                justify-content: center
+                //justify-content: center
     #poster
-        height: 350px
+        @media only screen and (min-width: 944px)
+            height: 350px
         overflow: hidden
         background-size: contain
         background-position: center
@@ -123,9 +123,14 @@ div(vif="band")
             //width: 100%
             //max-height: 400px
     .logo
-        width: 150px
-        height: 150px
-        top: -98px
+        @media only screen and (max-width: 944px)
+            width: 100px
+            height: 100px
+            top: -48px
+        @media only screen and (min-width: 944px)
+            width: 150px
+            height: 150px
+            top: -98px
         position: relative
         margin: 20px
         padding: 5px
@@ -134,10 +139,4 @@ div(vif="band")
         //-moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
         //box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
 
-    .poster
-        width: 100%
-        height: 400px
-        //border: 1px solid red
-        background-size: contain
-        background-position: top
 </style>

@@ -12,6 +12,7 @@ export interface IUser extends mongoose.Document {
     strategy: string;
     strategyId: string;
     checkPasswd: (passwd: string) => boolean
+    isAdmin: boolean
     _doc:any
 }
 
@@ -27,6 +28,7 @@ function md5(str: string) {
 
 
 const schema = new Schema({
+    isAdmin: {type: Boolean, default: false},
     nameStored: String,
     avatarImage: String,
     strategy: String,

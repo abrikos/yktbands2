@@ -8,6 +8,24 @@ router.get('/all', defineEventHandler(async (event) => {
     return Band.find({enabled: true})//.populate(Band.getPopulation())
 }))
 
+router.get('/admin-all', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!(user && user.isAdmin)) throw createError({statusCode: 403, message: 'STRANGE: create error: '})
+    return Band.find()
+}))
+
+router.delete('/:_id', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isAdmin) throw createError({statusCode: 403, message: 'Доступ запрещён'})
+    const {_id} = event.context.params as Record<string, string>
+    Instrument.deleteMany({band: _id})
+    Concert.deleteMany({band: _id})
+    Photo.deleteMany({band: _id})
+    Message.deleteMany({band: _id})
+    await Band.deleteOne({_id})
+}))
+
+
 router.get('/:_id/view', defineEventHandler(async (event) => {
     const {_id} = event.context.params as Record<string, string>
     return Band.findById(_id).populate(Band.getPopulation())
