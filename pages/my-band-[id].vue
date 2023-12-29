@@ -86,19 +86,18 @@ div(v-else)
                     BandPhotoEdit(v-if="tab==='photos'" :band="band")
                     BandShare(v-if="tab==='share'" :band="band")
                     MessagesEdit(v-if="tab==='messages'" :band="band")
-                v-card-actions(v-if="edited" )
-                    v-btn(@click="submit" color="primary" ) Сохранить
-                    v-spacer
-                    v-btn(@click="reset") Сбросить
+                div.action(v-if="edited")
+                    v-card-actions
+                        v-btn(@click="submit" color="primary" active="" ) Сохранить
+                        v-spacer
+                        v-btn(@click="reset") Сбросить
 
         v-col
-            div {{band.photos.length}} photos
-            div {{band.instruments.length}} instruments
-            //a(:href="`/band-short-${band.shortcut}`" target="_blank") Перейти
             BandView#preview(:band="band" :preview="true" :key="Math.random()")
 </template>
 
 <style scoped lang="sass">
-.wtf
-    display: block
+.action
+    border: 1px solid red
+    //background-color: red
 </style>

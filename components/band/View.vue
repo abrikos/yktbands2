@@ -22,11 +22,11 @@ div(vif="band")
     div#header
         NuxtLink#edit-link(v-if="canEdit && !preview" :to="band.editLink") Редактировать
         //div.poster(:style="`background-image:url(${band.posterRnd})`")
-        div#poster
-            img(:src="band.posterRnd" onerror="this.src='/ykt-bands-logo.svg'")
+        div#poster(:style="`background-image:url('${band.poster}')`")
+            //img(:src="band.poster" onerror="this.src='/ykt-bands-logo.svg'")
         div#info-wrap
             div#info(:style="`background-color: ${band.colorBanner}`")
-                img.logo(:src="band.logoRnd" onerror="this.src='/ykt-bands-logo.svg'" :style="`background-color: ${band.colorBanner}`")
+                img.logo(:src="band.logo" onerror="this.src='/ykt-bands-logo.svg'" :style="`background-color: ${band.colorBanner}`")
                 h1#band-name(:style="`color: ${band.colorText}`") {{band.name}}
     v-banner#about {{band.about}}
     br
@@ -106,10 +106,13 @@ div(vif="band")
                 justify-content: center
     #poster
         height: 400px
+        overflow: hidden
+        background-size: cover
+        background-position: center
         img
             margin: auto
-            max-width: 100%
-            max-height: 400px
+            width: 100%
+            //max-height: 400px
     .logo
         width: 150px
         height: 150px

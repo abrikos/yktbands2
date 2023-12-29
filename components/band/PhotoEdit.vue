@@ -27,7 +27,11 @@ async function upload(e: any) {
     await refresh()
     band.photos = photos
     loading.value = false
+}
 
+async function applyHeader(type:string, photo:IPhoto){
+    band[type] = photo.image
+    await useNuxtApp().$POST(`/my-band/update`, {...band})
 }
 
 </script>
@@ -36,10 +40,15 @@ async function upload(e: any) {
 input(type="file" ref="input" @change="upload" hidden multiple)
 v-btn(@click="()=>input.click()" :loading="loading") Выбрать файл
 
-div(v-for="(photo,i) of photos" :key="i" )
-    div
+v-row(v-for="(photo,i) of photos" :key="i" )
+    v-col
+        img(:src="photo.thumb")
+    v-col
+        v-btn(@click="applyHeader('logo', photo)" ) Установить как лого
+        v-btn(@click="applyHeader('poster', photo)") Установить как постер
+
+    v-col
         v-btn(@click="deleteLink(photo)" icon="mdi-delete" color="red" size="x-small")
-    img(:src="photo.thumb")
 //BandPhotoView(:photos="band.photos")
 
 </template>
