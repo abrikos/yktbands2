@@ -27,7 +27,7 @@ export default defineNuxtConfig({
         'nuxt3-leaflet',
     ],
     runtimeConfig: {
-        authExpiration: 3600 * 24,
+        authExpiration: 3600 * 24 * 30,
         authRefreshBeforeExpiration: 3000,
         authTokenName: 'auth_token',
         mailUser: process.env.MAIL_USER,
