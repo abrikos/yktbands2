@@ -34,7 +34,7 @@ v-card
             v-window(v-model="selectedPhoto")
                 v-window-item(v-for="(photo, i) of photos" :key="i" :value="i")
                     v-card.d-flex.justify-center.align-center
-                        v-img(:src="photos[i].image")
+                        img.full(:src="photos[i].image")
             v-card-actions.justify-center
                 v-btn(variant="plain" icon="mdi-chevron-left" @click="prev")
                 //v-item-group.text-center(v-model="selectedPhoto" mandatory )
@@ -44,6 +44,9 @@ v-card
 </template>
 
 <style scoped lang="sass">
+.full
+    //max-width: 100%
+    height: 900px
 #photos
     img
         max-width: 100px
