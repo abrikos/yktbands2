@@ -21,32 +21,31 @@ async function deleteConcert(concert:IConcert) {
 }
 
 function editConcert(concert: IConcert) {
-    $event('concertDialog:show', concert)
+    $event('concertDialog:show', {...concert})
 }
 
 function createConcert() {
     $event('concertDialog:show', {place: {}, hour: 20, enabled: true})
 }
 
-onMounted(() => {
-    //createConcert()
-})
-
+function expired(concert:IConcert) {
+    return new Date(concert.date) < new Date()
+}
 
 </script>
 
 <template lang="pug">
-v-btn(@click="createConcert" color="primary" ) Добавить новый концерт {{concerts.length}}
+v-btn(@click="createConcert" color="primary" ) Добавить новый концерт
 table
     tbody
         tr
             th Ресторан
             th Дата
-            th Показывать
-        tr(v-for="(concert,i) of concerts" :key="i" :class="!concert.id?'new-concert':''")
+            //th Показывать
+        tr(v-for="(concert,i) of concerts" :key="i" :class="expired(concert)?'new-concert':''")
             td {{concert.place.fullName}}
             td {{concert.dateHuman}}
-            td.text-center
+            //td.text-center
                 v-switch(v-model="concert.enabled")
             td
                 v-btn(@click="editConcert(concert)" icon="mdi-pencil" size="x-small" color="primary")
@@ -60,5 +59,7 @@ table
     width: 100%
 
     .new-concert
-        background-color: red
+        td:nth-child(2)
+            border: 1px dotted red
+            //background-color: red
 </style>

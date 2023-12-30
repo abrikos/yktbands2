@@ -3,6 +3,7 @@ import type {IBand} from "~/server/models/band.model";
 import YoutubePlayer from "~/components/band/YoutubePlayer.vue";
 import {useAuthStore} from "~/store/auth-store";
 import type {IUser} from "~/server/models/user.model";
+import type {IConcert} from "~/server/models/concert.model";
 
 const {loggedUser} = useAuthStore() as { loggedUser: IUser }
 const {band, preview} = defineProps<{ band: IBand, preview:boolean }>()
@@ -17,6 +18,11 @@ const canEdit = computed(()=>{
 const instruments = computed(()=>band.instruments
         .sort((a: IInstrument, b: IInstrument) => a.artist.name.toLowerCase() > b.artist.name.toLowerCase() ? 1
                 : a.artist.name.toLowerCase() < b.artist.name.toLowerCase() ? -1 : 0))
+
+function expired(concert:IConcert) {
+    return new Date(concert.date) < new Date()
+}
+const showAllConcerts = ref()
 
 </script>
 
@@ -38,9 +44,14 @@ div(vif="band")
             v-card
                 v-toolbar(density="compact" )
                     v-toolbar-title Концерты
+                    v-spacer
+                    v-btn(@click="showAllConcerts=!showAllConcerts")
+                        span(v-if="showAllConcerts") Скрыть прошедшие
+                        span(v-else) Показать все
+
                 v-card-text
-                    v-row(v-for="concert of band.concerts.filter(c=>c.enabled)" :key="concert.id"
-                        :class="!concert.id?'new-concert':''")
+                    v-row(v-for="concert of band.concerts.filter(c=>c.enabled && (showAllConcerts || !expired(c)))" :key="concert.id"
+                        :class="expired(concert)?'new-concert':''")
                         v-col {{concert.place.fullName}}
                         v-col {{concert.dateHuman}}
             br
@@ -70,7 +81,7 @@ div(vif="band")
 
 <style scoped lang="sass">
 .new-concert
-    background-color: red
+    border: 1px dotted red
 .instruments
     width: 100%
     border-collapse: collapse
@@ -118,6 +129,7 @@ div(vif="band")
         background-position: center
         background-repeat: repeat
         //background-image: url("/poster-bg.jpg")
+        display: flex
         img
             margin: auto
             //width: 100%
