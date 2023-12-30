@@ -3,6 +3,7 @@ import {defineMongooseModel} from '#nuxt/mongoose'
 import mongoose from 'mongoose';
 
 export interface IUser extends mongoose.Document {
+    [key: string]: any
     name: string;
     avatarImage: string;
     passwordHash: string;

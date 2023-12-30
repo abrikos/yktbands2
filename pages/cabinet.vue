@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {useAuthStore} from '~/store/auth-store';
-import type {IUser} from "~/server/models/user.model"; // import the auth store we just created
-const {loggedUser} = useAuthStore() as { loggedUser: IUser }; // make authenticated state reactive with storeToRefs
+import type {IUser} from "~/server/models/user.model";
+import {storeToRefs} from "pinia";
+const {loggedUser} = storeToRefs(useAuthStore()) as unknown as {loggedUser:IUser}
 
 const password = ref()
 const password2 = ref()
@@ -12,12 +13,30 @@ const canSubmit = () => {
 
 async function submit() {
     await useNuxtApp().$POST('/user/update', loggedUser)
+    snapshot()
 }
 
 async function changePassword() {
     await useNuxtApp().$POST('/user/password', {password: password.value})
     password2.value = undefined
     password.value = undefined
+}
+
+const userSnapshot = ref<IUser>(loggedUser && JSON.parse(JSON.stringify(loggedUser.value)))
+const edited = computed(() => {
+    return loggedUser && JSON.stringify(userSnapshot.value) !== JSON.stringify(loggedUser.value)
+})
+
+function reset() {
+    for (const key in loggedUser.value) {
+        loggedUser.value[key] = userSnapshot.value[key]
+    }
+}
+
+function snapshot() {
+    for (const key in loggedUser.value) {
+        userSnapshot.value[key] = loggedUser.value[key]
+    }
 }
 
 
@@ -49,8 +68,10 @@ div(v-if="loggedUser")
                         template(v-slot:append-inner)
                             //v-fade-transition
                             UserAvatar(:user="loggedUser" )
-                v-card-actions
-                    v-btn(@click="submit") Сохранить
+                v-card-actions(v-if="edited")
+                    v-btn(@click="submit" color="primary" ) Сохранить
+                    v-spacer
+                    v-btn(@click="reset") Сбросить
 
         v-window-item(value="2" )
             v-card(v-if="!loggedUser.strategy" width="600" )
@@ -58,8 +79,8 @@ div(v-if="loggedUser")
                 v-card-text
                     v-text-field(v-model="password" label="Новый пароль" type="password")
                     v-text-field(v-model="password2" label="Подтверждение пароля" type="password" :rules="[() => password === password2 || 'Пароль и подтверждение должны совпадать']")
-                v-card-actions
-                    v-btn(@click="changePassword" v-if="canSubmit()") Сохранить
+                v-card-actions(v-if="canSubmit()")
+                    v-btn(@click="changePassword") Сохранить
 
 </template>
 
