@@ -51,33 +51,34 @@ const newArtist = ref()
 </script>
 
 <template lang="pug">
-v-text-field(v-model="newArtist" label="Создать нового музыканта" density="compact")
-    template(v-slot:append)
-        v-btn(v-if="newArtist" @click="createArtist" small) Создать
+div
+    v-text-field(v-model="newArtist" label="Создать нового музыканта" density="compact")
+        template(v-slot:append)
+            v-btn(v-if="newArtist" @click="createArtist" small) Создать
 
-v-combobox(item-title="name" item-value="id" :items="artists.filter(a=>!instruments.map(i=>i.artist.id).includes(a.id))"
-    v-model="selectedArtists"
-    multiple=""
-    label="Выбрать музыкантов"
-    density="compact")
-    template(v-slot:append)
-        v-btn(v-if="selectedArtists" @click="addInstrument" small) Добавить
-v-container
-    client-only
-        table.instruments
-            tbody
-                tr(v-for="(instrument,i) of instruments" :key="'instr'+i" align="center" no-gutters)
-                    td.text-left {{instrument.artist.name}}
-                    td.icons
-                        span(v-for="(obj,i) of instrumentPosition" :key="i" @click="setInstrument(instrument, obj.key)")
-                            BandInstrumentIcon(:icon="obj.key" :class="instrument?.icons.includes(obj.key) ? 'selected':''")
+    v-combobox(item-title="name" item-value="id" :items="artists.filter(a=>!instruments.map(i=>i.artist.id).includes(a.id))"
+        v-model="selectedArtists"
+        multiple=""
+        label="Выбрать музыкантов"
+        density="compact")
+        template(v-slot:append)
+            v-btn(v-if="selectedArtists" @click="addInstrument" small) Добавить
+    v-container
+        client-only
+            table.instruments
+                tbody
+                    tr(v-for="(instrument,i) of instruments" :key="'instr'+i" align="center" no-gutters)
+                        td.text-left {{instrument.artist.name}}
+                        td.icons
+                            span(v-for="(obj,i) of instrumentPosition" :key="i" @click="setInstrument(instrument, obj.key)")
+                                BandInstrumentIcon(:icon="obj.key" :class="instrument?.icons.includes(obj.key) ? 'selected':''")
 
-                    //td.text-left
-                        BandInstrumentIcon(v-for="icon of instrument.icons" :key="icon" :icon="icon")
-                    //td
-                        v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" icon="mdi-music" color="primary")
-                    td
-                        v-btn(@click.prevent="deleteInstrument(instrument)" icon="mdi-delete" size="x-small" color="red")
+                        //td.text-left
+                            BandInstrumentIcon(v-for="icon of instrument.icons" :key="icon" :icon="icon")
+                        //td
+                            v-btn(@click="instrumentForDialog=instrument;showDialog=true" size="x-small" icon="mdi-music" color="primary")
+                        td
+                            v-btn(@click.prevent="deleteInstrument(instrument)" icon="mdi-delete" size="x-small" color="red")
 </template>
 
 <style scoped lang="sass">

@@ -64,38 +64,39 @@ const fullUrl = computed(()=>origin + band.value.viewLink)
 </script>
 
 <template lang="pug">
-h1(v-if="!band").text-red Группа не найдена
-div(v-else)
-    h1
-        span Группа "{{band.name}}"
-    div
-        a(:href="band.viewLink" target="_blank") {{fullUrl}}
-        CopyBtn(:str="fullUrl" tooltip="Копировать ссылку")
+div
+    h1(v-if="!band").text-red Группа не найдена
+    div(v-else)
+        h1
+            span Группа "{{band.name}}"
+        div
+            a(:href="band.viewLink" target="_blank") {{fullUrl}}
+            CopyBtn(:str="fullUrl" tooltip="Копировать ссылку")
 
-    v-tabs(v-model="tab" density="compact")
-        v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}
-    br
-    v-row
-        v-col(md="4")
-            v-card
-                v-toolbar
-                    v-toolbar-title {{tabsItems[tab].title}}
-                v-card-text
-                    BandConcerts(v-if="tab==='concerts'" :band="band" )
-                    BandSettings(v-if="tab==='settings'" :band="band" )
-                    BandInstruments(v-if="tab==='instruments'" :band="band")
-                    BandYoutube(v-if="tab==='youtube'" :band="band")
-                    BandPhotoEdit(v-if="tab==='photos'" :band="band")
-                    BandShare(v-if="tab==='share'" :band="band")
-                    MessagesEdit(v-if="tab==='messages'" :band="band")
-                div.action(v-if="edited")
-                    v-card-actions
-                        v-btn(@click="submit" color="primary" active="" ) Сохранить
-                        v-spacer
-                        v-btn(@click="reset") Сбросить
+        v-tabs(v-model="tab" density="compact")
+            v-tab(v-for="(item, key) in tabsItems" :value="key" :key="key") {{item.title}}
+        br
+        v-row
+            v-col(md="4")
+                v-card
+                    v-toolbar
+                        v-toolbar-title {{tabsItems[tab].title}}
+                    v-card-text
+                        BandConcerts(v-if="tab==='concerts'" :band="band" )
+                        BandSettings(v-if="tab==='settings'" :band="band" )
+                        BandInstruments(v-if="tab==='instruments'" :band="band")
+                        BandYoutube(v-if="tab==='youtube'" :band="band")
+                        BandPhotoEdit(v-if="tab==='photos'" :band="band")
+                        BandShare(v-if="tab==='share'" :band="band")
+                        MessagesEdit(v-if="tab==='messages'" :band="band")
+                    div.action(v-if="edited")
+                        v-card-actions
+                            v-btn(@click="submit" color="primary" active="" ) Сохранить
+                            v-spacer
+                            v-btn(@click="reset") Сбросить
 
-        v-col
-            BandView#preview(:band="band" :preview="true" :key="Math.random()")
+            v-col
+                BandView#preview(:band="band" :preview="true" :key="Math.random()")
 </template>
 
 <style scoped lang="sass">

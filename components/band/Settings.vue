@@ -29,38 +29,39 @@ function choosePhoto(type:string){
 </script>
 
 <template lang="pug">
-v-switch(v-model="band.enabled" label="Отображать для всех")
-v-text-field(v-model="band.name" label="Название")
-input(type="file" ref="input" @change="upload" hidden multiple)
-v-btn(@click="choosePhoto('logo')" :loading="loading") Загрузить лого
-v-btn(@click="choosePhoto('poster')" :loading="loading") Загрузить постер
+div
+    v-switch(v-model="band.enabled" label="Отображать для всех")
+    v-text-field(v-model="band.name" label="Название")
+    input(type="file" ref="input" @change="upload" hidden multiple)
+    v-btn(@click="choosePhoto('logo')" :loading="loading") Загрузить лого
+    v-btn(@click="choosePhoto('poster')" :loading="loading") Загрузить постер
 
-v-text-field(v-model="band.logo" label="Логотип")
-v-text-field(v-model="band.poster" label="Постер")
-v-textarea(v-model="band.about" label="Описание")
+    v-text-field(v-model="band.logo" label="Логотип")
+    v-text-field(v-model="band.poster" label="Постер")
+    v-textarea(v-model="band.about" label="Описание")
 
-v-dialog(width="500")
-    template(v-slot:activator="{props}")
-        v-btn(size="xs-small" v-bind="props"  @click="togglePickers('text')") Цвет текста заголовка
-            template(v-slot:prepend)
-                v-icon(:color="band.colorText") mdi-home
-        br
-        v-btn(size="xs-small" v-bind="props"  @click="togglePickers('banner')") Цвет банера
-            template(v-slot:prepend)
-                v-icon(:color="band.colorBanner") mdi-home
-    template( v-slot:default="{isActive}")
-        v-card
-            v-toolbar
-                v-toolbar-title
-                    span(v-if="showColorPicker==='text'") Заголовок
-                    span(v-if="showColorPicker==='banner'") Баннер
-                v-spacer
-                //v-divider(vertical="" )
+    v-dialog(width="500")
+        template(v-slot:activator="{props}")
+            v-btn(size="xs-small" v-bind="props"  @click="togglePickers('text')") Цвет текста заголовка
+                template(v-slot:prepend)
+                    v-icon(:color="band.colorText") mdi-home
+            br
+            v-btn(size="xs-small" v-bind="props"  @click="togglePickers('banner')") Цвет банера
+                template(v-slot:prepend)
+                    v-icon(:color="band.colorBanner") mdi-home
+        template( v-slot:default="{isActive}")
+            v-card
+                v-toolbar
+                    v-toolbar-title
+                        span(v-if="showColorPicker==='text'") Заголовок
+                        span(v-if="showColorPicker==='banner'") Баннер
+                    v-spacer
+                    //v-divider(vertical="" )
 
-                v-btn(icon="mdi-close" @click="isActive.value=false")
-            v-card-text
-                v-color-picker(v-if="showColorPicker==='text'" hide-inputs show-swatches v-model="band.colorText" )
-                v-color-picker(v-if="showColorPicker==='banner'" hide-inputs show-swatches v-model="band.colorBanner" )
+                    v-btn(icon="mdi-close" @click="isActive.value=false")
+                v-card-text
+                    v-color-picker(v-if="showColorPicker==='text'" hide-inputs show-swatches v-model="band.colorText" )
+                    v-color-picker(v-if="showColorPicker==='banner'" hide-inputs show-swatches v-model="band.colorBanner" )
 
 
 </template>

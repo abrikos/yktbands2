@@ -37,19 +37,20 @@ async function applyHeader(type:string, photo:IPhoto){
 </script>
 
 <template lang="pug">
-input(type="file" ref="input" @change="upload" hidden multiple)
-v-btn(@click="()=>input.click()" :loading="loading") Выбрать файл
+div
+    input(type="file" ref="input" @change="upload" hidden multiple)
+    v-btn(@click="()=>input.click()" :loading="loading") Выбрать файл
 
-v-row(v-for="(photo,i) of photos" :key="i" align="center" )
-    v-col
-        img(:src="photo.thumb")
-    v-col
-        v-btn(@click="applyHeader('logo', photo)" ) Установить как лого
-        v-btn(@click="applyHeader('poster', photo)") Установить как постер
+    v-row(v-for="(photo,i) of photos" :key="i" align="center" )
+        v-col
+            img(:src="photo.thumb")
+        v-col
+            v-btn(@click="applyHeader('logo', photo)" ) Установить как лого
+            v-btn(@click="applyHeader('poster', photo)") Установить как постер
 
-    v-col
-        v-btn(@click="deleteLink(photo)" icon="mdi-delete" color="red" size="x-small")
-//BandPhotoView(:photos="band.photos")
+        v-col
+            v-btn(@click="deleteLink(photo)" icon="mdi-delete" color="red" size="x-small")
+    //BandPhotoView(:photos="band.photos")
 
 </template>
 

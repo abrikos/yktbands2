@@ -29,11 +29,11 @@ div
                     span Отменить доступ
 
     v-btn(v-else @click="createShare") Дать доступ к группе
-v-card-title Имеют доступ
-v-card-text
-    v-list(item-props :items="band.shares.map(u=>{u.prependAvatar = u.avatarImage; return u})" item-value="id"
-        item-title="name")
-    //div {{band.shares.map(u=>{u.prependAvatar = u.avatarImage; return u.avatarImage})}}
+    v-card-title Имеют доступ
+    v-card-text
+        v-list(item-props :items="band.shares.map(u=>{u.prependAvatar = u.avatarImage; return u})" item-value="id"
+            item-title="name")
+        //div {{band.shares.map(u=>{u.prependAvatar = u.avatarImage; return u.avatarImage})}}
 
 </template>
 

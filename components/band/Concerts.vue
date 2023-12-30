@@ -35,23 +35,24 @@ function expired(concert:IConcert) {
 </script>
 
 <template lang="pug">
-v-btn(@click="createConcert" color="primary" ) Добавить новый концерт
-table
-    tbody
-        tr
-            th Ресторан
-            th Дата
-            //th Показывать
-        tr(v-for="(concert,i) of concerts" :key="i" :class="expired(concert)?'new-concert':''")
-            td {{concert.place.fullName}}
-            td {{concert.dateHuman}}
-            //td.text-center
-                v-switch(v-model="concert.enabled")
-            td
-                v-btn(@click="editConcert(concert)" icon="mdi-pencil" size="x-small" color="primary")
-                v-btn(@click="deleteConcert(concert)" icon="mdi-delete" size="x-small" color="red")
+div
+    v-btn(@click="createConcert" color="primary" ) Добавить новый концерт
+    table
+        tbody
+            tr
+                th Ресторан
+                th Дата
+                //th Показывать
+            tr(v-for="(concert,i) of concerts" :key="i" :class="expired(concert)?'new-concert':''")
+                td {{concert.place.fullName}}
+                td {{concert.dateHuman}}
+                //td.text-center
+                    v-switch(v-model="concert.enabled")
+                td
+                    v-btn(@click="editConcert(concert)" icon="mdi-pencil" size="x-small" color="primary")
+                    v-btn(@click="deleteConcert(concert)" icon="mdi-delete" size="x-small" color="red")
 
-BandConcertDialog( :band="band")
+    BandConcertDialog( :band="band")
 </template>
 
 <style scoped lang="sass">

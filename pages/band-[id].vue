@@ -10,6 +10,7 @@ $listen('band:refresh',()=> {
 </script>
 
 <template lang="pug">
+div
     BandView(v-if="band" :band="band")
     h1.text-red(v-else) Группа не найдена
 </template>

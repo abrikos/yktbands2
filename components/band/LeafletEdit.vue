@@ -55,28 +55,29 @@ watch(placeSearch, (n, o) => {
 </script>
 
 <template lang="pug">
-client-only
-    div#popup(:style="popupStyle" v-if="hoveredPlace?.name") {{hoveredPlace?.name}}, {{hoveredPlace?.address}}
-    l-map#leaflet(ref="map" :zoom="16" :center="concert.place?.coordinate || center" @click="mapClickHandler")
-        l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="" layer-type="base" name="OpenStreetMap")
-        //l-control(position="bottomright")
-            v-btn(v-if="concert?.place.coordinate" icon="mdi-cancel" @click.stop="cancel")
-        l-marker(v-for="(place,i) of places.filter(p=>p.coordinateValid)" :lat-lng="place.coordinate" :key="i" @click="placeMarkerClickHandler(place)" @mouseover="(e)=>mouseOverHandle(e,place)" @mouseout="mouseLeaveHandle")
-            l-icon(v-if="concert.place?.id!==place.id" icon-url="/marker-blue.svg" :icon-anchor="[20,40]" )
-            l-icon(v-else icon-url="/marker-red.svg" :icon-anchor="[20,40]" )
+div
+    client-only
+        div#popup(:style="popupStyle" v-if="hoveredPlace?.name") {{hoveredPlace?.name}}, {{hoveredPlace?.address}}
+        l-map#leaflet(ref="map" :zoom="16" :center="concert.place?.coordinate || center" @click="mapClickHandler")
+            l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="" layer-type="base" name="OpenStreetMap")
+            //l-control(position="bottomright")
+                v-btn(v-if="concert?.place.coordinate" icon="mdi-cancel" @click.stop="cancel")
+            l-marker(v-for="(place,i) of places.filter(p=>p.coordinateValid)" :lat-lng="place.coordinate" :key="i" @click="placeMarkerClickHandler(place)" @mouseover="(e)=>mouseOverHandle(e,place)" @mouseout="mouseLeaveHandle")
+                l-icon(v-if="concert.place?.id!==place.id" icon-url="/marker-blue.svg" :icon-anchor="[20,40]" )
+                l-icon(v-else icon-url="/marker-red.svg" :icon-anchor="[20,40]" )
 
-        l-marker(v-if="concert.place?.coordinate" :lat-lng="concert.place.coordinate")
-            l-icon(icon-url="/marker-red.svg" :icon-anchor="[20,40]" )
-    //small {{newConcert.place}}
-v-combobox(placeholder="Поиск ресторана" item-title="fullName" item-value="id" :items="places" v-model="placeSearch" density="compact" variant="outlined" )
-    template(v-slot:prepend-inner)
-        v-icon mdi-magnify
-v-text-field(v-if="!concert.place?.id && concert.place.coordinate" v-model="concert.place.name"
-    :loading="showLoader"
-    :error-messages="!concert.place.name ? [`Название не указано`]:[]"
-    :placeholder="`Введите название нового ресторана для ${concert.place.address}`"
-    density="compact"
-    variant="outlined" )
+            l-marker(v-if="concert.place?.coordinate" :lat-lng="concert.place.coordinate")
+                l-icon(icon-url="/marker-red.svg" :icon-anchor="[20,40]" )
+        //small {{newConcert.place}}
+    v-combobox(placeholder="Поиск ресторана" item-title="fullName" item-value="id" :items="places" v-model="placeSearch" density="compact" variant="outlined" )
+        template(v-slot:prepend-inner)
+            v-icon mdi-magnify
+    v-text-field(v-if="!concert.place?.id && concert.place.coordinate" v-model="concert.place.name"
+        :loading="showLoader"
+        :error-messages="!concert.place.name ? [`Название не указано`]:[]"
+        :placeholder="`Введите название нового ресторана для ${concert.place.address}`"
+        density="compact"
+        variant="outlined" )
 
 </template>
 
