@@ -39,7 +39,7 @@ async function applyHeader(type:string, photo:IPhoto){
 <template lang="pug">
 div
     input(type="file" ref="input" @change="upload" hidden multiple)
-    v-btn(@click="()=>input.click()" :loading="loading") Выбрать файл
+    v-btn(@click="()=>input.click()" :loading="loading" color="primary" ) Загрузить фото
 
     v-row(v-for="(photo,i) of photos" :key="i" align="center" )
         v-col
