@@ -35,6 +35,7 @@ v-app
         v-btn(to="/cabinet" v-if="loggedUser") {{loggedUser.name}}
             UserAvatar(:user="loggedUser")
         v-btn(@click="logUserOut" v-if="loggedUser" append-icon="mdi-logout" ) Выйти
+        v-btn(@click="toggleTheme" icon="mdi-theme-light-dark" )
         //template(v-slot:prepend)
             v-app-bar-nav-icon(@click.stop="drawerLeft = !drawerLeft")
         template(v-slot:append)
