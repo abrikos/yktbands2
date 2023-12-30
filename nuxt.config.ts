@@ -42,7 +42,7 @@ export default defineNuxtConfig({
     },
     app: {
         head: {
-            link: [{ rel: 'icon', type: 'image/svg', href: '/ykt-bands-logo.svg' }],
+            link: [{ rel: 'icon', type: 'image/svg', href: '/notes.svg' }],
             script: [
                 {src:'/ym.js', tagPosition:'bodyClose'}
             ]
