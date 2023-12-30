@@ -6,22 +6,23 @@ import type {IUser} from "~/server/models/user.model";
 import type {IConcert} from "~/server/models/concert.model";
 
 const {loggedUser} = useAuthStore() as { loggedUser: IUser }
-const {band, preview} = defineProps<{ band: IBand, preview:boolean }>()
+const {band, preview} = defineProps<{ band: IBand, preview?: boolean }>()
 const router = useRouter()
 
-const canEdit = computed(()=>{
+const canEdit = computed(() => {
     return loggedUser
             && band
-            && (band.shares.map(u=>u.id).includes(loggedUser.id) || band.user.id === loggedUser.id)
+            && (band.shares.map(u => u.id).includes(loggedUser.id) || band.user.id === loggedUser.id)
 })
 
-const instruments = computed(()=>band.instruments
+const instruments = computed(() => band.instruments
         .sort((a: IInstrument, b: IInstrument) => a.artist.name.toLowerCase() > b.artist.name.toLowerCase() ? 1
                 : a.artist.name.toLowerCase() < b.artist.name.toLowerCase() ? -1 : 0))
 
-function expired(concert:IConcert) {
+function expired(concert: IConcert) {
     return new Date(concert.date) < new Date()
 }
+
 const showAllConcerts = ref()
 
 </script>
@@ -30,7 +31,6 @@ const showAllConcerts = ref()
 div(vif="band")
     h1.text-red(v-if="preview && !band.enabled") Не отображается для всех
     div#header
-        NuxtLink#edit-link(v-if="canEdit && !preview" :to="band.editLink") Редактировать
         div#poster(:xstyle="`background-image:url('${band.poster}')`")
             v-img(:src="band.poster" onerror="this.src='/ykt-bands-logo.svg'")
         div#info-wrap
@@ -38,6 +38,7 @@ div(vif="band")
                 img.logo(:src="band.logo" onerror="this.src='/ykt-bands-logo.svg'" :style="`background-color: ${band.colorBanner}`")
                 h1#band-name(:style="`color: ${band.colorText}`") {{band.name}}
     v-banner#about {{band.about}}
+    NuxtLink#edit-link(v-if="canEdit && !preview" :to="band.editLink") Редактировать
     br
     v-row
         v-col(md="6")
@@ -82,6 +83,7 @@ div(vif="band")
 <style scoped lang="sass">
 .new-concert
     border: 1px dotted red
+
 .instruments
     width: 100%
     border-collapse: collapse
@@ -91,9 +93,11 @@ div(vif="band")
         td
             border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity))
             padding: 5px 0
+
 .v-theme--dark
     #info
         background-color: white
+
 #header
     text-align: center
     background-size: contain
@@ -106,8 +110,10 @@ div(vif="band")
         padding: 5px
         border-radius: 6px
         color: black
+
     #info-wrap
         position: relative
+
         #info
             width: 100%
             border-top-left-radius: 21px
@@ -116,11 +122,12 @@ div(vif="band")
             //position: absolute
             height: 70px
             top: -70px
+
             #band-name
                 width: 100%
                 display: flex
                 align-items: center
-                //justify-content: center
+    //justify-content: center
     #poster
         @media only screen and (min-width: 944px)
             height: 350px
@@ -130,10 +137,11 @@ div(vif="band")
         background-repeat: repeat
         //background-image: url("/poster-bg.jpg")
         display: flex
+
         img
             margin: auto
-            //width: 100%
-            //max-height: 400px
+    //width: 100%
+    //max-height: 400px
     .logo
         @media only screen and (max-width: 944px)
             width: 100px
@@ -147,8 +155,8 @@ div(vif="band")
         margin: 20px
         padding: 5px
         border-radius: 75px
-        //-webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
-        //-moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
-        //box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
+//-webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
+//-moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
+//box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2)
 
 </style>

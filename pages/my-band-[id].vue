@@ -13,29 +13,27 @@ $listen('my-band:refresh', () => {
     refreshBand()
 })
 
-const bandSnapshot = ref<IBand>(band.value && JSON.parse(JSON.stringify(band.value)))
-const edited = computed(() => {
-    return band.value
-            && !['concerts', 'instruments', 'photos', 'messages'].includes(tab.value)
-            && JSON.stringify(bandSnapshot.value) !== JSON.stringify(band.value)
-})
 
-function reset() {
-    for (const key in band.value) {
-        band.value[key] = bandSnapshot.value[key]
-    }
+async function reset() {
+    await refreshBand()
+    edited.value = false
 }
 
-function snapshot() {
-    for (const key in band.value) {
-        bandSnapshot.value[key] = band.value[key]
-    }
-}
+const edited = ref()
+
+watch(
+        () => band,
+        (n, o) => {
+            console.log(n.value.shareCode)
+            edited.value = !['concerts', 'instruments', 'photos', 'messages'].includes(tab.value)
+        },
+        {deep: true}
+)
+
 
 async function submit() {
     await useNuxtApp().$POST(`/my-band/update`, band.value)
-    await refreshBand()
-    snapshot()
+    edited.value = false
 }
 
 
@@ -45,7 +43,7 @@ const tabsItems = {
     instruments: {title: 'Состав группы'},
     photos: {title: 'Фото'},
     youtube: {title: 'Youtube'},
-    share: {title: 'Доступ для редактирования'},
+    share: {title: 'Администраторы'},
     messages: {title: 'Сообщения'},
 }
 
@@ -59,7 +57,7 @@ const tab = computed({
 })
 const {origin} = useRequestURL()
 
-const fullUrl = computed(()=>origin + band.value.viewLink)
+const fullUrl = computed(() => origin + band.value.viewLink)
 
 </script>
 
@@ -87,7 +85,7 @@ div
                         BandInstruments(v-if="tab==='instruments'" :band="band")
                         BandYoutube(v-if="tab==='youtube'" :band="band")
                         BandPhotoEdit(v-if="tab==='photos'" :band="band")
-                        BandShare(v-if="tab==='share'" :band="band")
+                        BandShare(v-if="tab==='share'" :band="band" :key="Math.random()")
                         MessagesEdit(v-if="tab==='messages'" :band="band")
                     div.action(v-if="edited")
                         v-card-actions
@@ -101,6 +99,6 @@ div
 
 <style scoped lang="sass">
 .action
-    border: 1px solid red
-    //background-color: red
+    border-top: 1px dotted red
+//background-color: red
 </style>
