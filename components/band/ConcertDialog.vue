@@ -18,7 +18,7 @@ $listen('concertDialog:show', (payload:IConcert) => {
 
 const canCreate = computed(() => {
     if (!concert.value) return
-    return concert.value.date && concert.value.place
+    return concert.value.date && concert.value.place.coordinate && concert.value.place.address && concert.value.place.name
 })
 
 async function upsertConcert(){
