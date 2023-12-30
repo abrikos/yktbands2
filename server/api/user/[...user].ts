@@ -61,7 +61,7 @@ router.delete('/:_id', defineEventHandler(async (event) => {
         Message.deleteMany({band: band._id})
     }
     await Band.deleteMany({user: _id})
-    await Artist.findByIdAndDelete(_id)
+    await User.findByIdAndDelete(_id)
 }))
 
 
