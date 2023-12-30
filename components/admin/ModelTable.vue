@@ -13,7 +13,6 @@ const sortBy: SortItem = [{key: 'date', order: 'desc'}]
 
 function parseField(h:string, item:any){
     const split = h.split('.')
-    console.log(split)
     if(split.length>1){
         let obj = item
         for(const f of split){
