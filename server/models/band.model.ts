@@ -68,6 +68,7 @@ schema.statics.getPopulation = () => [
     {path: 'messages', populate: {path: 'user'}},
     {path: 'concerts', populate: 'place'},
     {path: 'photos'},
+    {path: 'shares'},
 ]
 
 schema.virtual('date')
