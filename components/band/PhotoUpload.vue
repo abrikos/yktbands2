@@ -31,8 +31,7 @@ const types = {
 <template lang="pug">
 input(type="file" ref="input" @change="upload" hidden multiple)
 ButtonTooltip(v-if="types[type]" :icon="types[type].icon" :click="()=>input.click()" :tooltip="types[type].tooltip" :loading="loading")
-v-btn(v-else @click="()=>input.click()" :loading="loading" color="primary" ) Загрузить фото
-
+v-btn(v-else @click="()=>input.click()" :loading="loading" color="primary") Загрузить фото
 </template>
 
 <style scoped lang="sass">

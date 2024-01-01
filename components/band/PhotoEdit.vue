@@ -20,8 +20,8 @@ async function applyHeader(type:string, photo:IPhoto){
 
 <template lang="pug">
 div
-    PhotoUpload(:band="band")
-
+    div.text-center
+        PhotoUpload(:band="band")
     v-row(v-for="(photo,i) of band.photos" :key="i" align="center" )
         v-col
             img(:src="photo.thumb")
