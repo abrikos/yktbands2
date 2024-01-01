@@ -29,11 +29,11 @@ router.put('/band/:_id/upload', defineEventHandler(async (event) => {
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {_id} = event.context.params as Record<string, string>
     if (!Types.ObjectId.isValid(_id)) throw createError({statusCode: 406, message: 'Ошибочный id'})
-    const band = await Band.findById(_id)
+    const band = await Band.findById(_id).populate('photos')
     if (!band) throw createError({statusCode: 406, message: 'Группа не найдена'})
     let files = await readMultipartFormData(event)
     if (!files) throw createError({statusCode: 406, message: 'Необходимо отправить файлы'})
-    const photos = []
+    const photos = band.photos
     for (const file of files) {
         const url = `https://api.imgbb.com/1/upload?key=${imgbbKey}`
         const url2 = '/api/my-band/test'
@@ -44,8 +44,8 @@ router.put('/band/:_id/upload', defineEventHandler(async (event) => {
             const {data, success} = await response.json()
             if (!success) throw createError({statusCode: 406, message: 'IMGBB'})
             //console.log(data)
-            const photo = await Photo.create({image: data.image.url, thumb: data.thumb.url, band})
-            photos.push(photo)
+            const photo = await Photo.create({image: data.image.url, thumb: data.thumb.url, band: band.id})
+            photos.unshift(photo)
         } catch (e: any) {
             console.log(e)
             throw createError({statusCode: 400, message: 'Ошибка загрузки:' + e.message})

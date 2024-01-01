@@ -1,32 +1,14 @@
 <script setup lang="ts">
 import type {IBand} from "~/server/models/band.model";
-import type {IInstrument} from "~/server/models/instrument.model";
 import type {IPhoto} from "~/server/models/photo.model";
+import PhotoUpload from "~/components/band/PhotoUpload.vue";
 
-const {$event} = useNuxtApp()
 const {band} = defineProps<{ band: IBand }>()
-const {data, refresh} = await useNuxtApp().$GET(`/photo/band/${band.id}`)
-const photos = data as IPhoto[]
-const input = ref()
-const loading = ref()
 
 async function deleteLink(photo: IPhoto) {
     if(!window.confirm(`Удалить фото?`)) return
     await useNuxtApp().$DELETE(`/photo/${photo.id}`)
-    await refresh()
-    band.photos = photos
-}
-
-async function upload(e: any) {
-    loading.value = true
-    const formData = new FormData()
-    for (const file of e.target.files)
-        formData.append('photo', file)
-    await useNuxtApp().$PUT(`/photo/band/${band.id}/upload`, formData)
-    input.value.value = null
-    await refresh()
-    band.photos = photos
-    loading.value = false
+    band.photos = band.photos.filter(p=>p.id!==photo.id)
 }
 
 async function applyHeader(type:string, photo:IPhoto){
@@ -38,18 +20,18 @@ async function applyHeader(type:string, photo:IPhoto){
 
 <template lang="pug">
 div
-    input(type="file" ref="input" @change="upload" hidden multiple)
-    v-btn(@click="()=>input.click()" :loading="loading" color="primary" ) Загрузить фото
+    PhotoUpload(:band="band")
 
-    v-row(v-for="(photo,i) of photos" :key="i" align="center" )
+    v-row(v-for="(photo,i) of band.photos" :key="i" align="center" )
         v-col
             img(:src="photo.thumb")
-        v-col
-            v-btn(@click="applyHeader('logo', photo)" ) Установить как лого
-            v-btn(@click="applyHeader('poster', photo)") Установить как постер
-
-        v-col
+        v-col(cols="2")
             v-btn(@click="deleteLink(photo)" icon="mdi-delete" color="red" size="x-small")
+        v-col(cols="2")
+            ButtonTooltip(v-if="photo.image!==band.logo" icon="mdi-image-filter-tilt-shift" :click="()=>applyHeader('logo', photo)" tooltip="Установить как лого" )
+        v-col(cols="2")
+            ButtonTooltip(v-if="photo.image!==band.poster" icon="mdi-image-area" :click="()=>applyHeader('poster', photo)" tooltip="Установить как постер" )
+
     //BandPhotoView(:photos="band.photos")
 
 </template>

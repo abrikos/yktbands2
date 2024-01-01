@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import PhotoUpload from "~/components/band/PhotoUpload.vue";
+import type {IBand} from "~/server/models/band.model";
+
 const route = useRoute()
 const {$event} = useNuxtApp()
 const {band} = defineProps<{ band: IBand }>()
@@ -19,8 +22,11 @@ async function submit() {
 div
     v-switch(v-model="band.enabled" label="Отображать для всех")
     v-text-field(v-model="band.name" label="Название")
-    v-text-field(v-model="band.logo" label="Логотип")
-    v-text-field(v-model="band.poster" label="Постер")
+    PhotoUpload(:band="band" type="logo" )
+    br
+    PhotoUpload(:band="band" type="poster" )
+    //v-text-field(v-model="band.logo" label="Логотип")
+    //v-text-field(v-model="band.poster" label="Постер")
     v-textarea(v-model="band.about" label="Описание")
 
     v-text-field(v-model="band.colorText" label="Цвет текста" )

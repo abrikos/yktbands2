@@ -1,8 +1,5 @@
-import {defineMongooseModel} from '#nuxt/mongoose'
 import mongoose from 'mongoose';
-import {IPlace} from "~/server/models/place.model";
 import {IBand} from "~/server/models/band.model";
-import moment from "moment";
 
 const Schema = mongoose.Schema;
 const name = 'photo'
@@ -14,7 +11,7 @@ export interface IPhoto extends mongoose.Document {
     thumb: string
 }
 
-interface PhotoModel extends mongoose.Model<IConcert> {
+interface PhotoModel extends mongoose.Model<IPhoto> {
     getPopulation(): any
 }
 
