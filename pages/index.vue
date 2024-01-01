@@ -41,7 +41,7 @@ v-row
                         tr(v-for="band of data.bands" :key="band.id")
                             td
                                 NuxtLink(:to="`/band-${band.id}`") {{band.name}}
-        br
+    v-col
         v-card
             v-card-title Музыканты
             v-card-text
@@ -50,13 +50,24 @@ v-row
                         tr(v-for="artist of data.artists" :key="artist.id")
                             td {{artist.name}}
                             td
-                                div(v-for="instrument of artist.instruments" :key="instrument.id")
+                                div.d-flex.align-center(v-for="instrument of artist.instruments" :key="instrument.id")
                                         NuxtLink(:to="`/band-${instrument.band.id}`") {{instrument.band.name}}
                                         BandInstrumentIcon(v-for="icon of instrument.icons" :key="icon" :icon="icon")
 
 
 </template>
 
-<style scoped>
+<style scoped lang="sass">
+.v-theme--dark
+    tr
+        border-bottom: 1px dotted gray
+.v-theme--light
+    tr
+        border-bottom: 1px dotted silver
+table
+    width: 100%
+    border-collapse: collapse
+    td
+        padding: 2px 0
 
 </style>
