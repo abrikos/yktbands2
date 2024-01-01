@@ -26,7 +26,8 @@ div
         v-col
             img(:src="photo.thumb")
         v-col(cols="2")
-            v-btn(@click="deleteLink(photo)" icon="mdi-delete" color="red" size="x-small")
+            //v-btn(@click="deleteLink(photo)" icon="mdi-delete" color="red" size="x-small")
+            ButtonTooltip(icon="mdi-delete" :click="()=>deleteLink(photo)" tooltip="Удалить фото" color="red")
         v-col(cols="2")
             ButtonTooltip(v-if="photo.image!==band.logo" icon="mdi-image-filter-tilt-shift" :click="()=>applyHeader('logo', photo)" tooltip="Установить как лого" )
         v-col(cols="2")

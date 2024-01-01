@@ -48,8 +48,8 @@ div
             v-col(cols="1")
                 UserAvatar(:user="user")
             v-col {{user.name}}
-            v-col(cols="1")
-                v-btn(icon="mdi-delete" color="red" size="xs-small" @click="deleteAdmin(user)")
+            v-col(cols="2")
+                ButtonTooltip(icon="mdi-delete" :click="()=>deleteAdmin(user)" tooltip="Удалить")
 
 </template>
 

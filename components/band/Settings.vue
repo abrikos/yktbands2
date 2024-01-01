@@ -22,9 +22,11 @@ async function submit() {
 div
     v-switch(v-model="band.enabled" label="Отображать для всех")
     v-text-field(v-model="band.name" label="Название")
-    PhotoUpload(:band="band" type="logo" )
-    br
-    PhotoUpload(:band="band" type="poster" )
+    v-row
+        v-col
+            PhotoUpload(:band="band" type="logo" )
+        v-col
+            PhotoUpload(:band="band" type="poster" )
     //v-text-field(v-model="band.logo" label="Логотип")
     //v-text-field(v-model="band.poster" label="Постер")
     v-textarea(v-model="band.about" label="Описание")
@@ -33,7 +35,8 @@ div
         template(v-slot:append)
             v-menu(:close-on-content-click="false")
                 template(v-slot:activator="{ props }")
-                    v-btn(:color="band.colorText" v-bind="props" icon="mdi-eyedropper-variant")
+                    //v-btn(:color="band.colorText" v-bind="props" icon="mdi-eyedropper-variant")
+                    ButtonTooltip(icon="mdi-eyedropper-variant" tooltip="Выбрать цвет текста" :color="band.colorText")
                 v-card
                     v-card-text
                         v-color-picker(hide-inputs show-swatches v-model="band.colorText")
@@ -41,7 +44,7 @@ div
         template(v-slot:append)
             v-menu(:close-on-content-click="false")
                 template(v-slot:activator="{ props }")
-                    v-btn(:color="band.colorBanner" v-bind="props" icon="mdi-eyedropper-variant")
+                    ButtonTooltip(icon="mdi-eyedropper-variant" tooltip="Выбрать цвет банера" :color="band.colorBanner")
                 v-card
                     v-card-text
                         v-color-picker(hide-inputs show-swatches v-model="band.colorBanner")

@@ -49,8 +49,10 @@ div
                 //td.text-center
                     v-switch(v-model="concert.enabled")
                 td
-                    v-btn(@click="editConcert(concert)" icon="mdi-pencil" size="x-small" color="primary")
-                    v-btn(@click="deleteConcert(concert)" icon="mdi-delete" size="x-small" color="red")
+                    ButtonTooltip(:click="()=>editConcert(concert)" icon="mdi-pencil" tooltip="Редактировать концерт")
+                    ButtonTooltip(:click="()=>deleteConcert(concert)" icon="mdi-delete" tooltip="Удалить концерт")
+                    //v-btn(@click="editConcert(concert)" icon="mdi-pencil" size="x-small" color="primary")
+                    //v-btn(@click="deleteConcert(concert)" icon="mdi-delete" size="x-small" color="red")
 
     BandConcertDialog( :band="band")
 </template>

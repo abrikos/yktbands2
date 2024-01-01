@@ -29,7 +29,7 @@ v-card-text
     div(v-for="(link,i) of band.youtube" :key="i" )
         div {{link}}
         YoutubePlayer(:link="link")
-        v-btn(@click="deleteLink(i)" icon="mdi-delete" color="red")
+        ButtonTooltip(icon="mdi-delete" :click="()=>deleteLink(i)" tooltip="Удалить")
 </template>
 
 <style scoped lang="sass">
