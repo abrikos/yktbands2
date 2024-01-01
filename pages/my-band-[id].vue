@@ -24,7 +24,6 @@ const edited = ref()
 watch(
         () => band,
         (n, o) => {
-            console.log(n.value.shareCode)
             edited.value = !['concerts', 'instruments', 'photos', 'messages'].includes(tab.value)
         },
         {deep: true}

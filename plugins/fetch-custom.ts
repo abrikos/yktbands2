@@ -32,7 +32,8 @@ export default defineNuxtPlugin((_nuxtApp) => {
                     type: 'error',
                     text
                 })
-            }
+            },
+            watch: false
         }
 
         // for nice deep defaults, please use unjs/defu
