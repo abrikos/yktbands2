@@ -12,29 +12,9 @@ const {$listen} = useNuxtApp()
 $listen('my-band:refresh', () => {
     refreshBand()
 })
-
-
-async function reset() {
-    await refreshBand()
-    edited.value = false
-}
-
-const edited = ref()
-
-watch(
-        () => band,
-        (n, o) => {
-            edited.value = !['concerts', 'instruments', 'photos', 'messages'].includes(tab.value)
-        },
-        {deep: true}
-)
-
-
-async function submit() {
+$listen('my-band:update', async () => {
     await useNuxtApp().$POST(`/my-band/update`, band.value)
-    edited.value = false
-}
-
+})
 
 const tabsItems = {
     settings: {title: 'Параметры'},
@@ -54,6 +34,7 @@ const tab = computed({
         await router.replace({query: {...route.query, tab}})
     }
 })
+//const viewActions = computed(() => !['concerts', 'instruments', 'photos', 'messages'].includes(tab.value))
 const {origin} = useRequestURL()
 
 const fullUrl = computed(() => origin + band.value.viewLink)
@@ -86,18 +67,11 @@ div
                         BandPhotoEdit(v-if="tab==='photos'" :band="band")
                         BandShare(v-if="tab==='share'" :band="band" :key="Math.random()")
                         MessagesEdit(v-if="tab==='messages'" :band="band")
-                    div.action(v-if="edited")
-                        v-card-actions
-                            v-btn(@click="submit" color="primary" active="" ) Сохранить
-                            v-spacer
-                            v-btn(@click="reset") Сбросить
 
             v-col
                 BandView#preview(:band="band" :preview="true" :key="Math.random()")
 </template>
 
 <style scoped lang="sass">
-.action
-    border-top: 1px dotted red
 //background-color: red
 </style>

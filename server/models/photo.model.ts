@@ -26,6 +26,7 @@ const schema = new Schema({
         thumb: String,
     },
     {
+        timestamps: {createdAt: 'createdAt'},
         toObject: {virtuals: true},
         // use if your results might be retrieved as JSON
         // see http://stackoverflow.com/q/13133911/488666

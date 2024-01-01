@@ -10,11 +10,15 @@ const newLink = ref()
 async function addLink() {
     if (!newLink.value) return
     band.youtube.push(newLink.value)
+    await $event('my-band:update')
 }
 
 async function deleteLink(i: number) {
     band.youtube.splice(i, 1)
+    await $event('my-band:update')
 }
+
+
 </script>
 
 <template lang="pug">

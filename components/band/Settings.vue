@@ -3,6 +3,16 @@ const route = useRoute()
 const {$event} = useNuxtApp()
 const {band} = defineProps<{ band: IBand }>()
 
+async function reset() {
+    await $event('my-band:refresh')
+}
+
+
+async function submit() {
+    await $event('my-band:update')
+}
+
+
 </script>
 
 <template lang="pug">
@@ -29,6 +39,11 @@ div
                 v-card
                     v-card-text
                         v-color-picker(hide-inputs show-swatches v-model="band.colorBanner")
+
+v-card-actions
+    v-btn(@click="submit" color="primary" active="" ) Сохранить
+    v-spacer
+    v-btn(@click="reset") Сбросить
 
 </template>
 

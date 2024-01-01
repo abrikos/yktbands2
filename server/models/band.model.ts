@@ -121,7 +121,7 @@ schema.virtual('photos', {
     ref: 'photo',
     localField: '_id',
     foreignField: 'band',
-    options: {sort: {createdAt: 1}}
+    options: {sort: {createdAt: -1}}
 })
 
 export const Band = mongoose.model<IBand, BandModel>('band', schema)

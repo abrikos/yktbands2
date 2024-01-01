@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type {IBand} from "~/server/models/band.model";
+import type {IUser} from "~/server/models/user.model";
 
 const {band} = defineProps<{ band: IBand }>()
 const {origin} = useRequestURL()
+const {$event} = useNuxtApp()
 const shareUrl = computed(() => {
     return `${origin}/share-${band.id}-${band.shareCode}`
 })
@@ -10,11 +12,18 @@ const shareCode = ref()
 
 function createShare() {
     band.shareCode = Math.random().toString()
-    console.log(band.shareCode)
+    $event('my-band:update')
 }
 
 function cancelShare() {
     band.shareCode = ''
+    $event('my-band:update')
+
+}
+
+function deleteAdmin(user: IUser) {
+    band.shares = band.shares.filter(u => u.id !== user.id)
+    $event('my-band:update')
 }
 
 const messages = ['Передайте ссылку тому, кому хотите дать права администратора группы', 'Ссылка доступна только для подключения одного юзера']
@@ -35,9 +44,12 @@ div
     v-btn(v-else @click="createShare" color="primary" ) Дать доступ к группе
     v-card-title Имеют права администратора
     v-card-text
-        v-list(item-props :items="band.shares.map(u=>{u.prependAvatar = u.avatarImage; return u})" item-value="id"
-            item-title="name")
-        //div {{band.shares.map(u=>{u.prependAvatar = u.avatarImage; return u.avatarImage})}}
+        v-row(v-for="(user,i) of band.shares" :key="i" align="center" )
+            v-col(cols="1")
+                UserAvatar(:user="user")
+            v-col {{user.name}}
+            v-col(cols="1")
+                v-btn(icon="mdi-delete" color="red" size="xs-small" @click="deleteAdmin(user)")
 
 </template>
 
