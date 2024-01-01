@@ -28,10 +28,13 @@ router.put('/upsert', defineEventHandler(async (event) => {
         if (instrument.id) {
             await Instrument.findByIdAndUpdate(instrument.id, instrument)
         } else {
+            const found = await Instrument.findOne(instrument)
+            if (found) continue
             await Instrument.create(instrument)
         }
     }
-    //return Concert.findOneAndUpdate({_id: concert.id}, {$setOnInsert: concert}, {upsert: true, new: true})
+    const b = await Band.findById(band.id).populate(Band.getPopulation())
+    return b?.instruments
 
 }))
 

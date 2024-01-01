@@ -11,12 +11,15 @@ const {instrumentPosition} = useAppConfig()
 const selectedArtists = ref()
 
 async function addInstrument() {
-    await useNuxtApp().$PUT(`/instrument/upsert`, selectedArtists.value.map((artist:IArtist)=>({artist, band:band.id})))
+    const {data} = await useNuxtApp().$PUT(`/instrument/upsert`, selectedArtists.value.map((artist:IArtist)=>({artist, band:band.id})))
+    selectedArtists.value = null
+    band.instruments = data.value
 }
 
 async function deleteInstrument(instrument: IInstrument) {
     if (!confirm(`Удалить артиста ${instrument.artist.name}`)) return
     await useNuxtApp().$DELETE(`/instrument/${instrument.id}`)
+    band.instruments = band.instruments.filter(i=>i.id!==instrument.id)
 }
 
 async function setInstrument(instrument: IInstrument, icon: string) {
@@ -30,8 +33,8 @@ async function setInstrument(instrument: IInstrument, icon: string) {
 
 async function createArtist() {
     const {data: artist} = await useNuxtApp().$PUT(`/artist/create`, {name: newArtist.value})
-    await useNuxtApp().$PUT(`/instrument/upsert`, [{artist:artist.value, band:band.id}])
-    refreshArtists()
+    selectedArtists.value.push({artist:artist.value, band:band.id})
+    await addInstrument()
     newArtist.value = null
 }
 
@@ -60,7 +63,7 @@ div
                             span(v-for="(obj,i) of instrumentPosition" :key="i" @click="setInstrument(instrument, obj.key)")
                                 BandInstrumentIcon(:icon="obj.key" :class="instrument?.icons.includes(obj.key) ? 'selected':''")
                         v-col(cols="2")
-                            ButtonTooltip(:click="()=>deleteInstrument(instrument)" icon="mdi-delete" tooltip="Отменить музыканта")
+                            ButtonTooltip(:click="()=>deleteInstrument(instrument)" icon="mdi-delete" tooltip="Отменить назначение музыканта")
 
 </template>
 
