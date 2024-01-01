@@ -35,8 +35,7 @@ div
         template(v-slot:append)
             v-menu(:close-on-content-click="false")
                 template(v-slot:activator="{ props }")
-                    //v-btn(:color="band.colorText" v-bind="props" icon="mdi-eyedropper-variant")
-                    ButtonTooltip(icon="mdi-eyedropper-variant" tooltip="Выбрать цвет текста" :color="band.colorText")
+                    v-btn(:color="band.colorText" v-bind="props" icon="mdi-eyedropper-variant")
                 v-card
                     v-card-text
                         v-color-picker(hide-inputs show-swatches v-model="band.colorText")
@@ -44,7 +43,8 @@ div
         template(v-slot:append)
             v-menu(:close-on-content-click="false")
                 template(v-slot:activator="{ props }")
-                    ButtonTooltip(icon="mdi-eyedropper-variant" tooltip="Выбрать цвет банера" :color="band.colorBanner")
+                    v-btn(v-bind="props" icon="mdi-eyedropper-variant" :color="band.colorBanner")
+
                 v-card
                     v-card-text
                         v-color-picker(hide-inputs show-swatches v-model="band.colorBanner")
