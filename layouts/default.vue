@@ -11,8 +11,8 @@ const {loggedUser} = storeToRefs(useAuthStore()) as unknown as {loggedUser:IUser
 const drawerLeft = ref(true)
 const drawerRight = ref(false)
 const nightMode = ref(true)
-
-
+const title = 'Музыкальные группы Якутска'
+useHead({title})
 function toggleTheme () {
     theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
 }
@@ -26,7 +26,7 @@ v-app
             div.d-flex.align-center
                 div.px-2
                     img#logo(src="/ykt-bands-logo.svg")
-                span Музыкальные группы Якутска
+                span {{title}}
         v-btn(to="/") Начало
         v-btn(to="/admin" v-if="loggedUser?.isAdmin") ADMIN
         v-btn(to="/my-bands" v-if="loggedUser") Мои группы
