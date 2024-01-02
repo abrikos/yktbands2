@@ -22,28 +22,29 @@ async function submit() {
 div
     v-switch(v-model="band.enabled" label="Отображать для всех")
     v-text-field(v-model="band.name" label="Название")
-    v-row
-        v-col
+    v-text-field(v-model="band.logo" label="Логотип")
+        template(v-slot:append-inner)
             PhotoUpload(:band="band" type="logo" )
-        v-col
+    v-text-field(v-model="band.poster" label="Постер")
+        template(v-slot:append-inner)
             PhotoUpload(:band="band" type="poster" )
     //v-text-field(v-model="band.logo" label="Логотип")
     //v-text-field(v-model="band.poster" label="Постер")
     v-textarea(v-model="band.about" label="Описание")
 
     v-text-field(v-model="band.colorText" label="Цвет текста" )
-        template(v-slot:append)
+        template(v-slot:append-inner)
             v-menu(:close-on-content-click="false")
                 template(v-slot:activator="{ props }")
-                    v-btn(:color="band.colorText" v-bind="props" icon="mdi-eyedropper-variant")
+                    v-btn(:color="band.colorText" v-bind="props" icon="mdi-eyedropper-variant" size="small")
                 v-card
                     v-card-text
                         v-color-picker(hide-inputs show-swatches v-model="band.colorText")
     v-text-field(v-model="band.colorBanner" label="Цвет банера" )
-        template(v-slot:append)
+        template(v-slot:append-inner)
             v-menu(:close-on-content-click="false")
                 template(v-slot:activator="{ props }")
-                    v-btn(v-bind="props" icon="mdi-eyedropper-variant" :color="band.colorBanner")
+                    v-btn(v-bind="props" icon="mdi-eyedropper-variant" :color="band.colorBanner" size="small" )
 
                 v-card
                     v-card-text
