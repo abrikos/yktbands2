@@ -46,9 +46,7 @@ div(vif="band")
                 v-toolbar(density="compact" )
                     v-toolbar-title Концерты
                     v-spacer
-                    v-btn(@click="showAllConcerts=!showAllConcerts")
-                        span(v-if="showAllConcerts") Скрыть прошедшие
-                        span(v-else) Показать все
+                    v-btn(@click="showAllConcerts=!showAllConcerts" :icon="showAllConcerts ? 'mdi-eye-off':'mdi-eye'")
 
                 v-card-text
                     v-row(v-for="concert of band.concerts.filter(c=>c.enabled && (showAllConcerts || !expired(c)))" :key="concert.id"
