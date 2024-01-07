@@ -7,11 +7,12 @@ $listen('band:refresh',()=> {
     refreshBand()
 })
 
-useSeoMeta({
+const x = useServerSeoMeta({
+    title: band.value.name,
     ogTitle: band.value.name,
     ogDescription: band.value.about,
+    description: band.value.about,
     ogImage: band.value.logo,
-    twitterCard: 'summary_large_image',
 })
 
 </script>
