@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
             await utils.setAuthToken(event, user)
         }
         if(!user.isAdmin){
-            user.isAdmin = user.email === 'abrikoz@gmail.com' || (user.strategyId === '14278211' && user.strategy === 'telegram')
+            user.isAdmin = ['abrikoz@gmail.com', 'abrikostrator@mail.ru'].includes(user.email) || (user.strategyId === '14278211' && user.strategy === 'telegram')
         }
         event.context.user = utils.adaptUser(user)
     }
