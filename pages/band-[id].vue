@@ -2,8 +2,8 @@
 const route = useRoute()
 const {data: band, refresh: refreshBand, pending: pendingBand} = await
         useNuxtApp().$GET(`/band/${route.params.id}/view/`)
-const { $listen } = useNuxtApp()
-$listen('band:refresh',()=> {
+const {$listen} = useNuxtApp()
+$listen('band:refresh', () => {
     refreshBand()
 })
 
@@ -12,7 +12,7 @@ const x = useServerSeoMeta({
     ogTitle: band.value.name,
     ogDescription: band.value.about,
     description: band.value.about,
-    ogImage: band.value.logo,
+    ogImage: {url: band.value.logo, alt: band.value.name},
 })
 
 </script>
