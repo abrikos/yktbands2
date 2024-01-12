@@ -54,7 +54,7 @@ v-app
             v-list-item(@click="logUserOut" v-if="loggedUser" append-icon="mdi-logout" ) Выйти
 
     v-main
-        v-container(fluidx).xd-flex.align-center.flex-column
+        v-container(fluid).xd-flex.align-center.flex-column
             slot
     NuxtSnackbar
 </template>
