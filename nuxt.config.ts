@@ -3,6 +3,7 @@
 import type {NuxtPage} from "@nuxt/schema";
 
 export default defineNuxtConfig({
+    ssr:false,
     hooks: {
         'pages:extend'(pages) {
             function setMiddleware(pages: NuxtPage[]) {
